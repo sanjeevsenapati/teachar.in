@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // healthCheckHandler provides a simple health check endpoint.
@@ -48,8 +49,7 @@ func (app *Application) apiGetMenuItemHandler(w http.ResponseWriter, r *http.Req
 
 	item, err := app.MenuService.GetItemByID(r.Context(), id)
 	if err != nil {
-		// A simple way to distinguish not found from other errors.
-		if err.Error() == "not found" {
+		if strings.Contains(err.Error(), "not found") {
 			app.notFoundError(w, r)
 		} else {
 			app.serverError(w, r, err)

@@ -107,6 +107,11 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("GET /admin/users", mw.RequireAdmin(http.HandlerFunc(app.adminUsersHandler)))
 	router.Handle("POST /admin/users/create", mw.RequireAdmin(http.HandlerFunc(app.adminCreateStaffHandler)))
 	router.Handle("POST /admin/users/create-staff", mw.RequireAdmin(http.HandlerFunc(app.adminCreateStaffHandler)))
+	router.Handle("POST /admin/users/change-password", mw.RequireAdmin(http.HandlerFunc(app.adminChangePasswordHandler)))
+	router.Handle("POST /admin/users/toggle-lock", mw.RequireAdmin(http.HandlerFunc(app.adminToggleLockHandler)))
+	router.Handle("POST /admin/users/set-status", mw.RequireAdmin(http.HandlerFunc(app.adminSetStatusHandler)))
+	router.Handle("POST /admin/users/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteUserHandler)))
+	router.Handle("POST /api/staff/create", mw.RequireAdmin(http.HandlerFunc(app.apiCreateStaffHandler)))
 	router.Handle("POST /admin/cancellation-reasons/add", mw.RequireSuperadmin(http.HandlerFunc(app.adminAddCancellationReasonHandler)))
 	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
@@ -157,6 +162,11 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, status in
 		data["IsAdmin"] = (user.Role == "admin" || user.Role == "superadmin")
 		data["IsStaff"] = (user.Role == "staff")
 		data["CanManageOrders"] = (user.Role == "staff" || user.Role == "admin" || user.Role == "superadmin")
+		if app.MembershipService != nil {
+			if activeSub, err := app.MembershipService.GetUserSubscription(r.Context(), user.ID); err == nil && activeSub != nil {
+				data["ActiveSubscription"] = activeSub
+			}
+		}
 	} else {
 		data["IsAuthenticated"] = false
 		data["IsSuperadmin"] = false

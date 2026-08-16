@@ -24,6 +24,8 @@ type User struct {
 	PasswordHash string    `json:"password_hash"`
 	Salt         string    `json:"salt"`
 	Role         string    `json:"role"` // "client", "admin", "superadmin", "staff"
+	IsLocked     bool      `json:"is_locked"`
+	Status       string    `json:"status"` // "Active", "Locked", "Disabled"
 	CreatedAt    time.Time `json:"created_at"`
 }
 
@@ -75,6 +77,8 @@ type Order struct {
 	SubtotalPrice      float64     `json:"subtotal_price"`
 	CouponCode         string      `json:"coupon_code,omitempty"`
 	DiscountAmount     float64     `json:"discount_amount,omitempty"`
+	SubscriberDiscount float64     `json:"subscriber_discount,omitempty"`
+	SubscriberTierName string      `json:"subscriber_tier_name,omitempty"`
 	TotalPrice         float64     `json:"total_price"`
 	AssignedStaffID    int64       `json:"assigned_staff_id"`    // Staff member who claimed/handled this order
 	AssignedStaffName  string      `json:"assigned_staff_name"`  // Staff member's name

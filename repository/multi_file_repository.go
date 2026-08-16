@@ -415,6 +415,21 @@ func (r *MultiFileRepository) UpdateUser(ctx context.Context, user models.User) 
 	return nil, errors.New("user not found")
 }
 
+func (r *MultiFileRepository) DeleteUser(ctx context.Context, id int64) error {
+	r.usersMu.Lock()
+	defer r.usersMu.Unlock()
+
+	for i, u := range r.users {
+		if u.ID == id {
+			delete(r.usersByEmail, strings.ToLower(u.Email))
+			delete(r.usersByID, u.ID)
+			r.users = append(r.users[:i], r.users[i+1:]...)
+			return r.saveUsersLocked()
+		}
+	}
+	return errors.New("user not found")
+}
+
 func (r *MultiFileRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	r.usersMu.RLock()
 	defer r.usersMu.RUnlock()
@@ -765,20 +780,35 @@ func (r *MultiFileRepository) CreateOrder(ctx context.Context, order models.Orde
 	order.CreatedAt = time.Now()
 	order.Status = "Pending"
 
-	var totalPrice float64
+	var subtotal float64
 	for i, item := range order.Items {
 		item.ID = int64(i + 1)
 		item.OrderID = order.ID
 
 		if menuItem, exists := r.menuItemsByID[item.MenuItemID]; exists {
-			item.ItemName = menuItem.Name
-			item.Price = menuItem.Price
+			if item.ItemName == "" {
+				item.ItemName = menuItem.Name
+			}
+			if item.Price == 0 {
+				item.Price = menuItem.Price
+			}
 		}
-		totalPrice += item.Price * float64(item.Quantity)
+		subtotal += item.Price * float64(item.Quantity)
 		order.Items[i] = item
 	}
 
-	order.TotalPrice = mathRound(totalPrice * 1.05)
+	if order.SubtotalPrice == 0 {
+		order.SubtotalPrice = subtotal
+	}
+
+	discountedSubtotal := order.SubtotalPrice - order.DiscountAmount
+	if discountedSubtotal < 0 {
+		discountedSubtotal = 0
+	}
+
+	if order.TotalPrice == 0 {
+		order.TotalPrice = mathRound(discountedSubtotal * 1.05)
+	}
 
 	r.orders = append(r.orders, order)
 	saved := &r.orders[len(r.orders)-1]

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -517,6 +518,175 @@ func (app *Application) adminCreateStaffHandler(w http.ResponseWriter, r *http.R
 		actor := middleware.GetUserFromContext(r)
 		details := "Created " + role + " account for " + createdUser.Name + " (" + createdUser.Email + ")"
 		app.AuditService.LogEvent(r.Context(), actor, "STAFF_CREATED", details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+// apiCreateStaffHandler creates a new staff or admin user account via API call (JSON or Form).
+func (app *Application) apiCreateStaffHandler(w http.ResponseWriter, r *http.Request) {
+	var name, email, mobile, password, role string
+
+	if strings.Contains(r.Header.Get("Content-Type"), "application/json") {
+		var req struct {
+			Name     string `json:"name"`
+			Email    string `json:"email"`
+			Mobile   string `json:"mobile"`
+			Password string `json:"password"`
+			Role     string `json:"role"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			app.errorJSON(w, r, http.StatusBadRequest, "Invalid JSON payload: "+err.Error())
+			return
+		}
+		name = req.Name
+		email = req.Email
+		mobile = req.Mobile
+		password = req.Password
+		role = req.Role
+	} else {
+		_ = r.ParseForm()
+		name = r.FormValue("name")
+		email = r.FormValue("email")
+		mobile = r.FormValue("mobile")
+		password = r.FormValue("password")
+		role = r.FormValue("role")
+	}
+
+	if role != "staff" && role != "admin" {
+		role = "staff"
+	}
+
+	if password == "" {
+		password = "Staff@123"
+	}
+
+	createdUser, err := app.AuthService.CreateUserWithRole(r.Context(), name, email, mobile, password, role)
+	if err != nil {
+		app.errorJSON(w, r, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		details := "Created " + role + " account via API for " + createdUser.Name + " (" + createdUser.Email + ")"
+		app.AuditService.LogEvent(r.Context(), actor, "STAFF_CREATED_API", details, services.GetClientIP(r))
+	}
+
+	app.writeJSON(w, r, http.StatusCreated, createdUser, nil)
+}
+
+func (app *Application) adminChangePasswordHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	userID, err := strconv.ParseInt(r.FormValue("user_id"), 10, 64)
+	if err != nil || userID <= 0 {
+		app.badRequestError(w, r, fmt.Errorf("invalid user id"))
+		return
+	}
+
+	newPassword := r.FormValue("new_password")
+	actor := middleware.GetUserFromContext(r)
+
+	if err := app.AuthService.AdminChangeUserPassword(r.Context(), userID, newPassword, actor); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		details := fmt.Sprintf("Changed password for User #%d", userID)
+		app.AuditService.LogEvent(r.Context(), actor, "STAFF_PASSWORD_CHANGED", details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app *Application) adminToggleLockHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	userID, err := strconv.ParseInt(r.FormValue("user_id"), 10, 64)
+	if err != nil || userID <= 0 {
+		app.badRequestError(w, r, fmt.Errorf("invalid user id"))
+		return
+	}
+
+	action := r.FormValue("action") // "lock" or "unlock"
+	lockState := (action == "lock")
+	actor := middleware.GetUserFromContext(r)
+
+	if err := app.AuthService.AdminToggleUserLock(r.Context(), userID, lockState, actor); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		event := "STAFF_UNLOCKED"
+		if lockState {
+			event = "STAFF_LOCKED"
+		}
+		details := fmt.Sprintf("Set lock status of User #%d to %t", userID, lockState)
+		app.AuditService.LogEvent(r.Context(), actor, event, details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app *Application) adminSetStatusHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	userID, err := strconv.ParseInt(r.FormValue("user_id"), 10, 64)
+	if err != nil || userID <= 0 {
+		app.badRequestError(w, r, fmt.Errorf("invalid user id"))
+		return
+	}
+
+	status := r.FormValue("status") // "Active", "Locked", "Disabled"
+	actor := middleware.GetUserFromContext(r)
+
+	if err := app.AuthService.AdminSetUserStatus(r.Context(), userID, status, actor); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		details := fmt.Sprintf("Updated account status of User #%d to %s", userID, status)
+		app.AuditService.LogEvent(r.Context(), actor, "STAFF_STATUS_UPDATED", details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app *Application) adminDeleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	userID, err := strconv.ParseInt(r.FormValue("user_id"), 10, 64)
+	if err != nil || userID <= 0 {
+		app.badRequestError(w, r, fmt.Errorf("invalid user id"))
+		return
+	}
+
+	actor := middleware.GetUserFromContext(r)
+
+	if err := app.AuthService.AdminDeleteUser(r.Context(), userID, actor); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		details := fmt.Sprintf("Permanently deleted User #%d", userID)
+		app.AuditService.LogEvent(r.Context(), actor, "STAFF_DELETED", details, services.GetClientIP(r))
 	}
 
 	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)

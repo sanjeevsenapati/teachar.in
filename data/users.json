@@ -1,5 +1,5 @@
 {
-  "next_user_id": 9,
+  "next_user_id": 16,
   "users": [
     {
       "id": 1,
@@ -11,6 +11,8 @@
       "password_hash": "7531f4ee48a71c86a706bfbb4b81b0c5786a08316f6b850cc35059e1fb676a28",
       "salt": "a1b2c3d4e5f67890a1b2c3d4e5f67890",
       "role": "superadmin",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T10:00:00+05:30"
     },
     {
@@ -23,11 +25,13 @@
       "password_hash": "b00ab214e5f11a963c4b95a12e24db293fa77cdfe09afcd033e9a6aefc3495cc",
       "salt": "5c7fa96d763aee13ce9ac32f540ee8c6",
       "role": "admin",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T10:16:07.585081+05:30"
     },
     {
       "id": 3,
-      "name": "Client Customer",
+      "name": "Aadvika Senapati",
       "email": "client@teachar.in",
       "mobile_number": "9876543210",
       "address": "Plot 101, Marine Drive, Mumbai, 400020",
@@ -35,6 +39,8 @@
       "password_hash": "46a94ba558b65a14649e27bfb375689dc39a0b059b86a34534b2b50380ae48f4",
       "salt": "127ad518779095d235fa168d14f2280b",
       "role": "client",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T10:16:07.585082+05:30"
     },
     {
@@ -47,6 +53,8 @@
       "password_hash": "20eb1aa7c13b8cbfdf5e7d071c403a9c9d5eccad7d45957064898ae54cf4993f",
       "salt": "b2c3d4e5f67890a1b2c3d4e5f67890a1",
       "role": "staff",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T11:00:00+05:30"
     },
     {
@@ -59,6 +67,8 @@
       "password_hash": "7073f029d48d76f2425cdddfb6e31ad618a76c93273089b887133a0f3941d552",
       "salt": "ce313f32c8d06b4b77e41259530a177e",
       "role": "client",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T13:12:37.712213+05:30"
     },
     {
@@ -71,6 +81,8 @@
       "password_hash": "f8b64daee26cfe2354c7b4d5690a13ddb56230a17e28b5ead992e49c58b9a95f",
       "salt": "efacf6616fc977f572a5bf0c8e617170",
       "role": "staff",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T13:23:31.323249+05:30"
     },
     {
@@ -83,6 +95,8 @@
       "password_hash": "7a4c9d3c9f777ed830fb123cf38748b8bf721737c420d784ec373bb17632791a",
       "salt": "89c9d5c7dbb40c2a977ac60ed00b7323",
       "role": "client",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T16:42:15.840002+05:30"
     },
     {
@@ -95,7 +109,107 @@
       "password_hash": "693ac7bb08b204b60b7d27ebf5cb732a3300a64d2f71adc757decee418a31974",
       "salt": "28b3af61509b69bb1dac8f7a61b2097b",
       "role": "client",
+      "is_locked": false,
+      "status": "",
       "created_at": "2026-08-16T18:11:38.548697+05:30"
+    },
+    {
+      "id": 9,
+      "name": "Aadheesh Senapati",
+      "email": "aadi@senapati.co",
+      "mobile_number": "9998821521",
+      "address": "Binod Bhabana, Sendhtire, Bhadrakh, Odisha, 765114",
+      "avatar": "",
+      "password_hash": "80c062f50166fe2501d178a2d7cd4eac78ea69008f4d96b63d4a5de18f489841",
+      "salt": "07450d846f25d345cc222667a831ea41",
+      "role": "client",
+      "is_locked": false,
+      "status": "",
+      "created_at": "2026-08-17T02:23:26.890554+05:30"
+    },
+    {
+      "id": 10,
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@teachar.in",
+      "mobile_number": "9811223344",
+      "address": "",
+      "avatar": "",
+      "password_hash": "ae37899c1d68b0881299730207dab23981ee3f109aef38b5592f020e325100a3",
+      "salt": "13445cf4f74c467f2a9b62c69109d07f",
+      "role": "staff",
+      "is_locked": true,
+      "status": "Disabled",
+      "created_at": "2026-08-17T02:37:50.83909+05:30"
+    },
+    {
+      "id": 11,
+      "name": "Ananya Verma",
+      "email": "ananya.verma@teachar.in",
+      "mobile_number": "9822334455",
+      "address": "",
+      "avatar": "",
+      "password_hash": "cfc9ea6f99b5a599ea5409cccb5106f6e6719a7c395bc86473e917a603f42ecf",
+      "salt": "89075199bccd8711968346cdcbf09c0b",
+      "role": "staff",
+      "is_locked": false,
+      "status": "",
+      "created_at": "2026-08-17T02:37:50.839349+05:30"
+    },
+    {
+      "id": 12,
+      "name": "Rohan Deshmukh",
+      "email": "rohan.deshmukh@teachar.in",
+      "mobile_number": "9833445566",
+      "address": "",
+      "avatar": "",
+      "password_hash": "c8d41a7a7e48da306ae1a19d9bf720d9b8a71cc2778d0d4667b500ba5989681c",
+      "salt": "db68abc68ec3f745e10b441086625d7d",
+      "role": "staff",
+      "is_locked": true,
+      "status": "Disabled",
+      "created_at": "2026-08-17T02:37:50.839514+05:30"
+    },
+    {
+      "id": 13,
+      "name": "Kavya Kulkarni",
+      "email": "kavya.kulkarni@teachar.in",
+      "mobile_number": "9844556677",
+      "address": "",
+      "avatar": "",
+      "password_hash": "8ff5d9cbb7756fdd743bbd63f8e7c14de5a3761e3c311ba7221556e7a2976339",
+      "salt": "0f04dfe79a22271a5e31c07eb6e4688f",
+      "role": "staff",
+      "is_locked": false,
+      "status": "",
+      "created_at": "2026-08-17T02:37:50.839661+05:30"
+    },
+    {
+      "id": 14,
+      "name": "Vikramaditya Rao",
+      "email": "vikram.rao@teachar.in",
+      "mobile_number": "9855667788",
+      "address": "",
+      "avatar": "",
+      "password_hash": "06b6b3b660cc5868b17c0b11f8ca78459b2b57de8686f22698037d0689350668",
+      "salt": "c4a8b1d5a65b141a8bbdd8d21106778d",
+      "role": "staff",
+      "is_locked": false,
+      "status": "",
+      "created_at": "2026-08-17T02:37:50.839819+05:30"
+    },
+    {
+      "id": 15,
+      "name": "Pooja Deshpande",
+      "email": "pooja.deshpande@teachar.in",
+      "mobile_number": "9866778899",
+      "address": "",
+      "avatar": "",
+      "password_hash": "553ad5113e80576ad78c75f1b5d6af773cf768a0aa9c6877f8345a16e5519cc5",
+      "salt": "065d152a22634cfac2dc891c1f399605",
+      "role": "staff",
+      "is_locked": true,
+      "status": "Locked",
+      "created_at": "2026-08-17T02:40:35.500671+05:30"
     }
   ]
 }

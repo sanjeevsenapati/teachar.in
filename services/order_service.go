@@ -11,14 +11,16 @@ import (
 )
 
 type OrderService struct {
-	orderRepo repository.OrderRepository
-	couponSvc *CouponService
+	orderRepo     repository.OrderRepository
+	couponSvc     *CouponService
+	membershipSvc *MembershipService
 }
 
-func NewOrderService(orderRepo repository.OrderRepository, couponSvc *CouponService) *OrderService {
+func NewOrderService(orderRepo repository.OrderRepository, couponSvc *CouponService, membershipSvc *MembershipService) *OrderService {
 	return &OrderService{
-		orderRepo: orderRepo,
-		couponSvc: couponSvc,
+		orderRepo:     orderRepo,
+		couponSvc:     couponSvc,
+		membershipSvc: membershipSvc,
 	}
 }
 
@@ -57,18 +59,50 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 	}
 
 	order.SubtotalPrice = subtotal
-	var discountAmount float64
+	var couponDiscount float64
+	var subscriberDiscount float64
 
+	// 1. Coupon Discount Check
 	if order.CouponCode != "" && s.couponSvc != nil {
 		_, disc, _, err := s.couponSvc.ValidateCoupon(ctx, order.CouponCode, subtotal)
-		if err != nil {
+		if err == nil {
+			couponDiscount = disc
+		} else {
 			return nil, err
 		}
-		discountAmount = disc
-		order.DiscountAmount = discountAmount
 	}
 
-	discountedSubtotal := subtotal - discountAmount
+	// 2. Member Subscription Price Adjustment & Automated VIP Coupon Attachment
+	if order.UserID > 0 && s.membershipSvc != nil {
+		sub, err := s.membershipSvc.GetUserSubscription(ctx, order.UserID)
+		if err == nil && sub != nil && sub.Status == "Active" {
+			subscriberDiscount = (subtotal * sub.DiscountPercent) / 100.0
+			order.SubscriberDiscount = subscriberDiscount
+			order.SubscriberTierName = sub.TierName
+
+			// Automatically assign member VIP coupon code if not manually set
+			if order.CouponCode == "" {
+				switch sub.TierID {
+				case "silver":
+					order.CouponCode = "SILVERVIP"
+				case "gold":
+					order.CouponCode = "GOLDVIP"
+				case "platinum":
+					order.CouponCode = "PLATINUMVIP"
+				default:
+					order.CouponCode = "VIPMEMBERSHIP"
+				}
+			}
+
+			// Auto claim daily free beverage credit if eligible
+			_ = s.membershipSvc.ClaimDailyCup(ctx, order.UserID)
+		}
+	}
+
+	totalDiscount := couponDiscount + subscriberDiscount
+	order.DiscountAmount = totalDiscount
+
+	discountedSubtotal := subtotal - totalDiscount
 	if discountedSubtotal < 0 {
 		discountedSubtotal = 0
 	}

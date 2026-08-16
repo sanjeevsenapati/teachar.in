@@ -1,5 +1,5 @@
 {
-  "next_subscription_id": 7,
+  "next_subscription_id": 8,
   "subscriptions": [
     {
       "id": 1,
@@ -110,6 +110,25 @@
       "auto_renew": true,
       "payment_method": "UPI",
       "transaction_id": "SUB-1786913333-3"
+    },
+    {
+      "id": 7,
+      "user_id": 9,
+      "user_name": "Aadheesh Senapati",
+      "user_email": "aadi@senapati.co",
+      "tier_id": "platinum",
+      "tier_name": "Platinum Executive VIP Pass",
+      "status": "Active",
+      "price_paid": 1999,
+      "discount_percent": 20,
+      "daily_free_cup_limit": 2,
+      "cups_claimed_today": 2,
+      "last_claim_date": "2026-08-17T02:35:30.304012+05:30",
+      "start_date": "2026-08-17T02:23:38.514409+05:30",
+      "end_date": "2026-09-17T02:23:38.514409+05:30",
+      "auto_renew": true,
+      "payment_method": "UPI",
+      "transaction_id": "SUB-1786913618-9"
     }
   ]
 }

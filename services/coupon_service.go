@@ -65,6 +65,40 @@ func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtota
 		return nil, 0, subtotal, errors.New("coupon code cannot be empty")
 	}
 
+	// 1. Check for Virtual Member VIP Coupons (SILVERVIP, GOLDVIP, PLATINUMVIP, VIPPASS)
+	if strings.HasSuffix(code, "VIP") || strings.HasSuffix(code, "PASS") || strings.HasPrefix(code, "VIP") {
+		var discPercent float64 = 0
+		var tierName string = "VIP Member Pass"
+		switch code {
+		case "SILVERVIP", "SILVERPASS":
+			discPercent = 10
+			tierName = "Silver Chai Pass"
+		case "GOLDVIP", "GOLDPASS":
+			discPercent = 15
+			tierName = "Gold Coffee Pass"
+		case "PLATINUMVIP", "PLATINUMPASS", "VIPPASS", "VIPMEMBERSHIP":
+			discPercent = 20
+			tierName = "Platinum VIP Pass"
+		}
+
+		if discPercent > 0 {
+			discountAmount := math.Round(subtotal*(discPercent/100.0)*100) / 100
+			discountedSubtotal := subtotal - discountAmount
+			tax := discountedSubtotal * 0.05
+			finalTotal := math.Round((discountedSubtotal+tax)*100) / 100
+
+			virtualCoupon := &models.Coupon{
+				Code:           code,
+				DiscountType:   "percentage",
+				DiscountValue:  discPercent,
+				CreatedBy:      tierName,
+				MinOrderAmount: 0,
+			}
+			return virtualCoupon, discountAmount, finalTotal, nil
+		}
+	}
+
+	// 2. Standard Stored Coupon Check
 	coupon, err := s.couponRepo.GetCouponByCode(ctx, code)
 	if err != nil {
 		return nil, 0, subtotal, fmt.Errorf("invalid or non-existent coupon code: %s", code)
@@ -102,6 +136,11 @@ func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtota
 }
 
 func (s *CouponService) MarkCouponUsed(ctx context.Context, code string, orderID int64) error {
+	code = strings.ToUpper(strings.TrimSpace(code))
+	if strings.HasSuffix(code, "VIP") || strings.HasSuffix(code, "PASS") || strings.HasPrefix(code, "VIP") {
+		// Member coupons are reusable per active subscription pass
+		return nil
+	}
 	return s.couponRepo.MarkCouponUsed(ctx, code, orderID)
 }
 

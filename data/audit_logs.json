@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 231,
+  "next_audit_log_id": 249,
   "audit_logs": [
     {
       "id": 1,
@@ -2300,6 +2300,186 @@
       "action": "MEMBERSHIP_CUP_CLAIMED",
       "details": "Claimed daily free beverage credit",
       "ip_address": "127.0.0.1:60762"
+    },
+    {
+      "id": 231,
+      "timestamp": "2026-08-17T02:22:38.865586+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_PROFILE_UPDATED",
+      "details": "Updated profile details",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 232,
+      "timestamp": "2026-08-17T02:23:26.893614+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "USER_REGISTER",
+      "details": "Client registered new account: aadi@senapati.co",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 233,
+      "timestamp": "2026-08-17T02:23:38.516358+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_SUBSCRIBED",
+      "details": "Subscribed to Platinum Executive VIP Pass (Txn #SUB-1786913618-9, Amount ₹1999.00)",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 234,
+      "timestamp": "2026-08-17T02:25:03.999769+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "USER_PROFILE_UPDATED",
+      "details": "Updated profile details",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 235,
+      "timestamp": "2026-08-17T02:25:51.292586+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60864"
+    },
+    {
+      "id": 236,
+      "timestamp": "2026-08-17T02:26:26.987672+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #39 (Dine-in, Total: ₹42.00)",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 237,
+      "timestamp": "2026-08-17T02:26:41.591263+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_CUP_CLAIMED",
+      "details": "Claimed daily free beverage credit",
+      "ip_address": "127.0.0.1:60846"
+    },
+    {
+      "id": 238,
+      "timestamp": "2026-08-17T02:32:23.954763+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #40 (Dine-in, Total: ₹84.00)",
+      "ip_address": "127.0.0.1:60928"
+    },
+    {
+      "id": 239,
+      "timestamp": "2026-08-17T02:35:30.309222+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_CUP_CLAIMED",
+      "details": "Claimed daily free beverage credit",
+      "ip_address": "127.0.0.1:60953"
+    },
+    {
+      "id": 240,
+      "timestamp": "2026-08-17T02:36:11.652563+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #41 (Takeaway, Total: ₹168.00)",
+      "ip_address": "127.0.0.1:60953"
+    },
+    {
+      "id": 241,
+      "timestamp": "2026-08-17T02:40:16.879289+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:61015"
+    },
+    {
+      "id": 242,
+      "timestamp": "2026-08-17T02:40:35.491701+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:61021"
+    },
+    {
+      "id": 243,
+      "timestamp": "2026-08-17T02:40:35.500928+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Pooja Deshpande (pooja.deshpande@teachar.in)",
+      "ip_address": "[::1]:61022"
+    },
+    {
+      "id": 244,
+      "timestamp": "2026-08-17T02:46:10.874718+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:61122"
+    },
+    {
+      "id": 245,
+      "timestamp": "2026-08-17T02:46:25.052478+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_LOCKED",
+      "details": "Set lock status of User #15 to true",
+      "ip_address": "127.0.0.1:61122"
+    },
+    {
+      "id": 246,
+      "timestamp": "2026-08-17T02:49:40.570172+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_LOCKED",
+      "details": "Set lock status of User #12 to true",
+      "ip_address": "127.0.0.1:61150"
+    },
+    {
+      "id": 247,
+      "timestamp": "2026-08-17T02:49:51.352285+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_STATUS_UPDATED",
+      "details": "Updated account status of User #12 to Disabled",
+      "ip_address": "127.0.0.1:61150"
+    },
+    {
+      "id": 248,
+      "timestamp": "2026-08-17T02:56:44.811366+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_STATUS_UPDATED",
+      "details": "Updated account status of User #10 to Disabled",
+      "ip_address": "127.0.0.1:61236"
     }
   ]
 }

@@ -101,8 +101,38 @@ function updateCartUI() {
 
     itemsContainer.innerHTML = itemsHTML;
 
-    let discountedSubtotal = Math.max(0, subtotal - discountAmount);
-    const tax = Math.round(discountedSubtotal * 0.05);
+    // Subscriber Discount & Automated Member Coupon Calculation
+    let subscriberDiscount = 0;
+    const subDiscountRow = document.getElementById('cart-subscriber-discount-row');
+    const subTierNameEl = document.getElementById('cart-subscriber-tier-name');
+    const subDiscountEl = document.getElementById('cart-subscriber-discount');
+    const couponInput = document.getElementById('coupon-code-input');
+    const couponMsgEl = document.getElementById('coupon-message');
+
+    if (window.USER_SUBSCRIPTION && window.USER_SUBSCRIPTION.discount_percent > 0) {
+        subscriberDiscount = Math.round((subtotal * window.USER_SUBSCRIPTION.discount_percent) / 100 * 100) / 100;
+        const autoMemberCode = (window.USER_SUBSCRIPTION.tier_id || 'VIP').toUpperCase() + 'VIP';
+        
+        if (!appliedCouponCode || appliedCouponCode.endsWith('VIP')) {
+            appliedCouponCode = autoMemberCode;
+            if (couponInput) couponInput.value = autoMemberCode;
+            if (couponMsgEl) {
+                couponMsgEl.style.display = 'block';
+                couponMsgEl.style.color = '#d97706';
+                couponMsgEl.innerHTML = `<i class="fa-solid fa-crown me-1"></i> Auto-Applied ${window.USER_SUBSCRIPTION.tier_name} Coupon <strong>${autoMemberCode}</strong> (${window.USER_SUBSCRIPTION.discount_percent}% OFF)`;
+            }
+        }
+
+        if (subDiscountRow) subDiscountRow.style.display = 'flex';
+        if (subTierNameEl) subTierNameEl.textContent = `${window.USER_SUBSCRIPTION.tier_name} (${window.USER_SUBSCRIPTION.discount_percent}% OFF)`;
+        if (subDiscountEl) subDiscountEl.textContent = `-₹${subscriberDiscount.toFixed(2)}`;
+    } else {
+        if (subDiscountRow) subDiscountRow.style.display = 'none';
+    }
+
+    let totalDiscounts = discountAmount + subscriberDiscount;
+    let discountedSubtotal = Math.max(0, subtotal - totalDiscounts);
+    const tax = Math.round(discountedSubtotal * 0.05 * 100) / 100;
     const total = Math.round((discountedSubtotal + tax) * 100) / 100;
 
     const discountRow = document.getElementById('cart-discount-row');
@@ -117,9 +147,9 @@ function updateCartUI() {
         if (discountRow) discountRow.style.display = 'none';
     }
 
-    if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
-    if (taxEl) taxEl.textContent = `₹${tax}`;
-    if (totalEl) totalEl.textContent = `₹${total}`;
+    if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+    if (taxEl) taxEl.textContent = `₹${tax.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `₹${total.toFixed(2)}`;
     if (checkoutBtn) checkoutBtn.disabled = false;
 }
 

@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"path/filepath"
 	"testing"
 
 	"teachar.in/config"
@@ -20,8 +19,7 @@ func setupTestApp(t *testing.T) http.Handler {
 	cfg, _ := config.New()
 	
 	tempDir := t.TempDir()
-	dbPath := filepath.Join(tempDir, "test_db.json")
-	repo, err := repository.NewJSONRepository(dbPath)
+	repo, err := repository.NewMultiFileRepository(tempDir)
 	if err != nil {
 		t.Fatalf("failed to create test repo: %v", err)
 	}
@@ -29,21 +27,23 @@ func setupTestApp(t *testing.T) http.Handler {
 	couponService := services.NewCouponService(repo)
 	menuService := services.NewMenuService(repo)
 	authService := services.NewAuthService(repo)
-	orderService := services.NewOrderService(repo, couponService)
+	membershipService := services.NewMembershipService(repo)
+	orderService := services.NewOrderService(repo, couponService, membershipService)
 	auditService := services.NewAuditService(repo)
 	reportService := services.NewReportService(repo, repo, repo)
 	inventoryService := services.NewInventoryService(repo, repo)
 
 	app := &handlers.Application{
-		Logger:           logger,
-		Config:           cfg,
-		MenuService:      menuService,
-		AuthService:      authService,
-		OrderService:     orderService,
-		AuditService:     auditService,
-		ReportService:    reportService,
-		CouponService:    couponService,
-		InventoryService: inventoryService,
+		Logger:            logger,
+		Config:            cfg,
+		MenuService:       menuService,
+		AuthService:       authService,
+		OrderService:      orderService,
+		AuditService:      auditService,
+		ReportService:     reportService,
+		CouponService:     couponService,
+		InventoryService:  inventoryService,
+		MembershipService: membershipService,
 	}
 
 	mux := http.NewServeMux()

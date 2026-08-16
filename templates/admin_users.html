@@ -47,41 +47,105 @@
             <div class="table-card-header">
                 <h3><i class="fa-solid fa-user-gear text-primary"></i> Staff & Employee Directory ({{len .StaffList}})</h3>
             </div>
-            <div class="table-responsive">
-                <table class="admin-table">
+            <div class="table-responsive" style="overflow-x:hidden;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; table-layout:auto;">
                     <thead>
                         <tr>
-                            <th>Employee ID</th>
-                            <th>Staff Name</th>
-                            <th>Email Address</th>
-                            <th>Mobile Number</th>
-                            <th>Assigned Role</th>
-                            <th>Orders Handled</th>
-                            <th>Created At</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">ID</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Staff Name</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Email Address</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Mobile Number</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Role</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Status</th>
+                            <th style="padding:0.55rem 0.6rem; font-size:0.82rem;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{range .StaffList}}
                         <tr>
-                            <td><strong>#STF-{{.User.ID}}</strong></td>
-                            <td>
-                                <div style="display:flex; align-items:center; gap:0.75rem;">
-                                    <div style="width:38px; height:38px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:0.95rem; border:1px solid var(--border-color);">
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;"><strong style="font-size:0.82rem;">#STF-{{.User.ID}}</strong></td>
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;">
+                                <div style="display:flex; align-items:center; gap:0.5rem;">
+                                    <div style="width:30px; height:30px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-weight:800; display:flex; align-items:center; justify-content:center; font-size:0.82rem; border:1px solid var(--border-color); flex-shrink:0;">
                                         <i class="fa-solid fa-user-tie"></i>
                                     </div>
-                                    <strong>{{.User.Name}}</strong>
+                                    <div>
+                                        <strong style="display:block; font-size:0.85rem; color:var(--text-main); line-height:1.2;">{{.User.Name}}</strong>
+                                        <small class="text-muted" style="font-size:0.72rem;"><i class="fa-solid fa-receipt me-1"></i>{{.TotalOrdersHandled}} Orders</small>
+                                    </div>
                                 </div>
                             </td>
-                            <td><i class="fa-solid fa-envelope text-muted me-1"></i> {{.User.Email}}</td>
-                            <td><i class="fa-solid fa-phone text-muted me-1"></i> {{if .User.MobileNumber}}{{.User.MobileNumber}}{{else}}N/A{{end}}</td>
-                            <td>
-                                <span class="category-pill-sm {{if eq .User.Role "superadmin"}}bg-danger text-white{{else if eq .User.Role "admin"}}bg-primary text-white{{else}}bg-warning text-dark{{end}}" style="font-weight:800; text-transform:uppercase; padding:0.3rem 0.65rem; font-size:0.78rem;">
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;"><span style="font-size:0.82rem; color:var(--text-main);"><i class="fa-solid fa-envelope text-primary me-1"></i>{{.User.Email}}</span></td>
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;"><span style="font-size:0.82rem; color:var(--text-main);"><i class="fa-solid fa-phone text-primary me-1"></i>{{if .User.MobileNumber}}{{.User.MobileNumber}}{{else}}N/A{{end}}</span></td>
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;">
+                                <span class="category-pill-sm {{if eq .User.Role "superadmin"}}bg-danger text-white{{else if eq .User.Role "admin"}}bg-primary text-white{{else}}bg-warning text-dark{{end}}" style="font-weight:800; text-transform:uppercase; padding:0.2rem 0.5rem; font-size:0.72rem; display:inline-block;">
                                     <i class="fa-solid {{if eq .User.Role "superadmin"}}fa-crown{{else if eq .User.Role "admin"}}fa-shield-halved{{else}}fa-user-tie{{end}} me-1"></i>
                                     {{.User.Role}}
                                 </span>
                             </td>
-                            <td><span class="category-pill-sm" style="background:#fef3c7; color:#92400e; font-weight:700;"><i class="fa-solid fa-receipt me-1"></i> {{.TotalOrdersHandled}} Orders</span></td>
-                            <td><small class="text-muted"><i class="fa-solid fa-clock me-1"></i> {{.User.CreatedAt.Format "Jan 02, 2006 • 15:04"}}</small></td>
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;">
+                                {{if .User.IsLocked}}
+                                <span class="category-pill-sm" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:800; padding:0.2rem 0.5rem; font-size:0.72rem; display:inline-block;">
+                                    <i class="fa-solid fa-lock me-1"></i> Locked
+                                </span>
+                                {{else if eq .User.Status "Disabled"}}
+                                <span class="category-pill-sm" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:800; padding:0.2rem 0.5rem; font-size:0.72rem; display:inline-block;">
+                                    <i class="fa-solid fa-ban me-1"></i> Disabled
+                                </span>
+                                {{else}}
+                                <span class="category-pill-sm" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:800; padding:0.2rem 0.5rem; font-size:0.72rem; display:inline-block;">
+                                    <i class="fa-solid fa-circle-check me-1"></i> Active
+                                </span>
+                                {{end}}
+                            </td>
+                            <td style="padding:0.55rem 0.6rem; vertical-align:middle;">
+                                <div style="display:flex; align-items:center; gap:0.35rem; flex-wrap:nowrap;">
+                                    <!-- Change Password Button -->
+                                    <button type="button" class="btn btn-sm" onclick="openResetPasswordModal({{.User.ID}}, '{{.User.Name}}')" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Reset Password">
+                                        <i class="fa-solid fa-key"></i> Key
+                                    </button>
+
+                                    <!-- Lock / Unlock Toggle Form -->
+                                    <form action="/admin/users/toggle-lock" method="POST" style="margin:0;" {{if .User.IsLocked}}onsubmit="triggerStaffActionConfirm(event, this, 'unlock', '{{.User.Name}}', {{.User.ID}})"{{else}}onsubmit="triggerStaffActionConfirm(event, this, 'lock', '{{.User.Name}}', {{.User.ID}})"{{end}}>
+                                        <input type="hidden" name="user_id" value="{{.User.ID}}">
+                                        {{if .User.IsLocked}}
+                                        <input type="hidden" name="action" value="unlock">
+                                        <button type="submit" class="btn btn-sm" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Unlock Account">
+                                            <i class="fa-solid fa-lock-open"></i> Unlock
+                                        </button>
+                                        {{else}}
+                                        <input type="hidden" name="action" value="lock">
+                                        <button type="submit" class="btn btn-sm" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Lock Account">
+                                            <i class="fa-solid fa-lock"></i> Lock
+                                        </button>
+                                        {{end}}
+                                    </form>
+
+                                    <!-- Disable / Activate Toggle Form -->
+                                    <form action="/admin/users/set-status" method="POST" style="margin:0;" {{if eq .User.Status "Disabled"}}onsubmit="triggerStaffActionConfirm(event, this, 'activate', '{{.User.Name}}', {{.User.ID}})"{{else}}onsubmit="triggerStaffActionConfirm(event, this, 'disable', '{{.User.Name}}', {{.User.ID}})"{{end}}>
+                                        <input type="hidden" name="user_id" value="{{.User.ID}}">
+                                        {{if eq .User.Status "Disabled"}}
+                                        <input type="hidden" name="status" value="Active">
+                                        <button type="submit" class="btn btn-sm" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Activate Account">
+                                            <i class="fa-solid fa-user-check"></i> Activate
+                                        </button>
+                                        {{else}}
+                                        <input type="hidden" name="status" value="Disabled">
+                                        <button type="submit" class="btn btn-sm" style="background:#fff1f2; color:#e11d48; border:1px solid #fecdd3; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Disable Account">
+                                            <i class="fa-solid fa-ban"></i> Disable
+                                        </button>
+                                        {{end}}
+                                    </form>
+
+                                    <!-- Delete Staff Account Form -->
+                                    <form action="/admin/users/delete" method="POST" style="margin:0;" onsubmit="triggerStaffActionConfirm(event, this, 'delete', '{{.User.Name}}', {{.User.ID}})">
+                                        <input type="hidden" name="user_id" value="{{.User.ID}}">
+                                        <button type="submit" class="btn btn-sm" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:0.22rem 0.5rem; font-size:0.76rem; font-weight:700; display:inline-flex; align-items:center; gap:0.25rem;" title="Delete Staff Account">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         {{end}}
                     </tbody>
@@ -233,42 +297,184 @@
 
 <!-- Create Staff Account Modal -->
 <div class="modal-overlay" id="create-staff-modal">
-    <div class="modal-card" style="border-radius:var(--border-radius-lg);">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-user-plus text-primary me-2"></i> Create Staff / Admin Account</h3>
-            <button class="modal-close-btn" onclick="document.getElementById('create-staff-modal').classList.remove('active')">&times;</button>
+    <div class="modal-card" style="border-radius:var(--border-radius-lg); max-width:500px; background:#ffffff; box-shadow:var(--shadow-lg); border:1px solid var(--border-color); overflow:hidden; padding:0;">
+        <div class="modal-header" style="background:#fbf4eb; padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; font-family:var(--font-heading); font-size:1.15rem; color:var(--text-main); display:flex; align-items:center; gap:0.6rem;">
+                <i class="fa-solid fa-user-plus text-primary"></i> Create Staff / Admin Account
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('create-staff-modal').classList.remove('active')" style="background:none; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer;">&times;</button>
         </div>
-        <form action="/admin/users/create-staff" method="POST">
-            <div class="modal-body">
-                <div class="form-group mb-3">
+        <form action="/admin/users/create-staff" method="POST" style="margin:0; padding:0;">
+            <div class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+                <div class="form-group mb-0">
                     <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Full Name <span class="text-danger">*</span></label>
                     <input type="text" name="name" required placeholder="e.g. Ramesh Kumar" class="form-input" style="width:100%;">
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-0">
                     <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Email Address <span class="text-danger">*</span></label>
                     <input type="email" name="email" required placeholder="e.g. ramesh@teachar.in" class="form-input" style="width:100%;">
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-0">
                     <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Mobile Number <span class="text-danger">*</span></label>
                     <input type="tel" name="mobile" required placeholder="e.g. +91 98765 43210" class="form-input" style="width:100%;">
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-0">
                     <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Assigned Role <span class="text-danger">*</span></label>
                     <select name="role" class="form-select" style="width:100%;">
                         <option value="staff" selected>Staff / Counter Operator</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-0">
                     <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Account Password <span class="text-danger">*</span></label>
                     <input type="password" name="password" required placeholder="••••••••" class="form-input" style="width:100%;">
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="padding:1rem 1.5rem; background:#fafafa; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:0.75rem;">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('create-staff-modal').classList.remove('active')">Cancel</button>
                 <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check me-1"></i> Create Account</button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Reset Password Modal -->
+<div class="modal-overlay" id="change-password-modal">
+    <div class="modal-card" style="border-radius:var(--border-radius-lg); max-width:460px; background:#ffffff; box-shadow:var(--shadow-lg); border:1px solid var(--border-color); overflow:hidden; padding:0;">
+        <div class="modal-header" style="background:#fbf4eb; padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; font-family:var(--font-heading); font-size:1.15rem; color:var(--text-main); display:flex; align-items:center; gap:0.6rem;">
+                <i class="fa-solid fa-key text-primary"></i> Reset Account Password
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('change-password-modal').classList.remove('active')" style="background:none; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer;">&times;</button>
+        </div>
+        <form action="/admin/users/change-password" method="POST" style="margin:0; padding:0;">
+            <input type="hidden" name="user_id" id="reset-password-user-id">
+            <div class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+                <div style="background:#fef3c7; color:#92400e; padding:0.75rem 1rem; border-radius:var(--border-radius-sm); border:1px solid #fde68a; font-size:0.88rem; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-user-shield text-warning" style="font-size:1.1rem; flex-shrink:0;"></i>
+                    <span>Resetting password for <strong id="reset-password-user-name" style="color:#78350f;">Staff Account</strong></span>
+                </div>
+                <div class="form-group mb-0">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">New Password <span class="text-danger">*</span></label>
+                    <input type="password" name="new_password" required placeholder="Enter new secure password..." class="form-input" style="width:100%;">
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:1rem 1.5rem; background:#fafafa; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('change-password-modal').classList.remove('active')">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-key me-1"></i> Update Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Theme-Aligned Action Confirmation Modal -->
+<div class="modal-overlay" id="theme-confirm-modal">
+    <div class="modal-card" style="border-radius:var(--border-radius-lg); max-width:460px; background:#ffffff; box-shadow:var(--shadow-lg); border:1px solid var(--border-color); overflow:hidden; padding:0; text-align:left;">
+        <div class="modal-header" style="background:#fbf4eb; padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="confirm-modal-title" style="margin:0; font-family:var(--font-heading); font-size:1.15rem; color:var(--text-main); display:flex; align-items:center; gap:0.6rem;">
+                <i class="fa-solid fa-shield-halved text-primary" id="confirm-modal-icon" style="font-size:1.1rem;"></i>
+                <span id="confirm-modal-header-text">Confirm Action</span>
+            </h3>
+            <button type="button" class="modal-close-btn" onclick="closeConfirmModal()" style="background:none; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer;">&times;</button>
+        </div>
+        <form id="confirm-modal-form" method="POST" action="" style="margin:0; padding:0;">
+            <input type="hidden" name="user_id" id="confirm-modal-user-id">
+            <input type="hidden" name="action" id="confirm-modal-action-val">
+            <input type="hidden" name="status" id="confirm-modal-status-val">
+
+            <div class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:0.85rem;">
+                <div id="confirm-modal-badge-wrapper"></div>
+                <p id="confirm-modal-message" style="font-size:0.92rem; color:var(--text-main); margin:0; line-height:1.5;"></p>
+            </div>
+
+            <div class="modal-footer" style="padding:1rem 1.5rem; background:#fafafa; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button type="submit" id="confirm-modal-submit-btn" class="btn btn-primary">
+                    <i class="fa-solid fa-check me-1"></i> Proceed
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openResetPasswordModal(userId, userName) {
+    document.getElementById('reset-password-user-id').value = userId;
+    document.getElementById('reset-password-user-name').textContent = userName;
+    document.getElementById('change-password-modal').classList.add('active');
+}
+
+function triggerStaffActionConfirm(event, form, actionType, userName, userId) {
+    event.preventDefault();
+    const modal = document.getElementById('theme-confirm-modal');
+    const formEl = document.getElementById('confirm-modal-form');
+    const titleText = document.getElementById('confirm-modal-header-text');
+    const iconEl = document.getElementById('confirm-modal-icon');
+    const msgEl = document.getElementById('confirm-modal-message');
+    const submitBtn = document.getElementById('confirm-modal-submit-btn');
+    const badgeWrapper = document.getElementById('confirm-modal-badge-wrapper');
+
+    formEl.action = form.action;
+    document.getElementById('confirm-modal-user-id').value = userId;
+
+    const actionInput = form.querySelector('input[name="action"]');
+    const statusInput = form.querySelector('input[name="status"]');
+    if (actionInput) document.getElementById('confirm-modal-action-val').value = actionInput.value;
+    if (statusInput) document.getElementById('confirm-modal-status-val').value = statusInput.value;
+
+    if (actionType === 'lock') {
+        titleText.textContent = 'Lock Staff Account';
+        iconEl.className = 'fa-solid fa-lock text-warning';
+        badgeWrapper.innerHTML = `<span class="category-pill-sm" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:800;"><i class="fa-solid fa-user-lock me-1"></i> Lock Account</span>`;
+        msgEl.innerHTML = `Are you sure you want to <strong>LOCK</strong> staff account <strong>${userName}</strong>?<br><small class="text-muted" style="display:block; margin-top:0.35rem;">The user will be blocked from logging into the portal until unlocked.</small>`;
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.style.background = '#d97706';
+        submitBtn.style.borderColor = '#d97706';
+        submitBtn.innerHTML = `<i class="fa-solid fa-lock me-1"></i> Yes, Lock Account`;
+    } else if (actionType === 'unlock') {
+        titleText.textContent = 'Unlock Staff Account';
+        iconEl.className = 'fa-solid fa-lock-open text-success';
+        badgeWrapper.innerHTML = `<span class="category-pill-sm" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:800;"><i class="fa-solid fa-user-check me-1"></i> Unlock Account</span>`;
+        msgEl.innerHTML = `Are you sure you want to <strong>UNLOCK</strong> staff account <strong>${userName}</strong>?<br><small class="text-muted" style="display:block; margin-top:0.35rem;">This will restore full portal access for the user.</small>`;
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.style.background = '#059669';
+        submitBtn.style.borderColor = '#059669';
+        submitBtn.innerHTML = `<i class="fa-solid fa-lock-open me-1"></i> Yes, Unlock Account`;
+    } else if (actionType === 'disable') {
+        titleText.textContent = 'Disable Staff Account';
+        iconEl.className = 'fa-solid fa-ban text-danger';
+        badgeWrapper.innerHTML = `<span class="category-pill-sm" style="background:#fff1f2; color:#e11d48; border:1px solid #fecdd3; font-weight:800;"><i class="fa-solid fa-user-slash me-1"></i> Disable Account</span>`;
+        msgEl.innerHTML = `Are you sure you want to <strong>PERMANENTLY DISABLE</strong> staff account <strong>${userName}</strong>?<br><small class="text-muted" style="display:block; margin-top:0.35rem;">This account status will be changed to Disabled.</small>`;
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.style.background = '#e11d48';
+        submitBtn.style.borderColor = '#e11d48';
+        submitBtn.innerHTML = `<i class="fa-solid fa-ban me-1"></i> Yes, Disable Account`;
+    } else if (actionType === 'activate') {
+        titleText.textContent = 'Activate Staff Account';
+        iconEl.className = 'fa-solid fa-circle-check text-success';
+        badgeWrapper.innerHTML = `<span class="category-pill-sm" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:800;"><i class="fa-solid fa-user-check me-1"></i> Activate Account</span>`;
+        msgEl.innerHTML = `Are you sure you want to <strong>RE-ACTIVATE</strong> staff account <strong>${userName}</strong>?`;
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.style.background = '#059669';
+        submitBtn.style.borderColor = '#059669';
+        submitBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> Yes, Activate Account`;
+    } else if (actionType === 'delete') {
+        titleText.textContent = 'Delete Staff Account';
+        iconEl.className = 'fa-solid fa-trash-can text-danger';
+        badgeWrapper.innerHTML = `<span class="category-pill-sm" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:800;"><i class="fa-solid fa-triangle-exclamation me-1"></i> Permanent Deletion</span>`;
+        msgEl.innerHTML = `Are you sure you want to <strong>PERMANENTLY DELETE</strong> staff account <strong>${userName}</strong>?<br><strong class="text-danger" style="display:block; margin-top:0.35rem; font-size:0.85rem;">⚠️ This action is irreversible!</strong>`;
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.style.background = '#dc2626';
+        submitBtn.style.borderColor = '#dc2626';
+        submitBtn.innerHTML = `<i class="fa-solid fa-trash-can me-1"></i> Delete Account Permanently`;
+    }
+
+    modal.classList.add('active');
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('theme-confirm-modal');
+    if (modal) modal.classList.remove('active');
+}
+</script>
 {{end}}

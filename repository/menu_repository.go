@@ -24,6 +24,7 @@ type UserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByID(ctx context.Context, id int64) (*models.User, error)
 	GetAllUsers(ctx context.Context) ([]models.User, error)
+	DeleteUser(ctx context.Context, id int64) error
 	CreateSession(ctx context.Context, session models.Session) error
 	GetSession(ctx context.Context, token string) (*models.Session, error)
 	DeleteSession(ctx context.Context, token string) error

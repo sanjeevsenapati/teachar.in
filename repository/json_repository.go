@@ -360,6 +360,19 @@ func (r *JSONRepository) GetUserByID(ctx context.Context, id int64) (*models.Use
 	return nil, fmt.Errorf("user not found")
 }
 
+func (r *JSONRepository) DeleteUser(ctx context.Context, id int64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for i, u := range r.data.Users {
+		if u.ID == id {
+			r.data.Users = append(r.data.Users[:i], r.data.Users[i+1:]...)
+			return r.save()
+		}
+	}
+	return fmt.Errorf("user not found")
+}
+
 func (r *JSONRepository) CreateSession(ctx context.Context, session models.Session) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()

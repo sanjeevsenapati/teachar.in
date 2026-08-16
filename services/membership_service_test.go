@@ -73,4 +73,37 @@ func TestMembershipService(t *testing.T) {
 	if discount != 75.0 { // 15% of 500 = 75
 		t.Errorf("expected ₹75 discount, got ₹%.2f", discount)
 	}
+
+	// 6. Test Subscriber Order Price Adjustment in OrderService.CreateOrder
+	couponSvc := services.NewCouponService(repo)
+	orderSvc := services.NewOrderService(repo, couponSvc, memSvc)
+
+	orderInput := models.Order{
+		UserID:        user.ID,
+		CustomerName:  user.Name,
+		CustomerPhone: "9876543210",
+		OrderType:     "Dine-in",
+		TableNumber:   "Table 5",
+		PaymentMethod: "UPI",
+		Items: []models.OrderItem{
+			{MenuItemID: 1, ItemName: "Masala Chai", Price: 100.0, Quantity: 2}, // Subtotal = ₹200
+		},
+	}
+
+	createdOrder, err := orderSvc.CreateOrder(ctx, orderInput)
+	if err != nil {
+		t.Fatalf("failed creating order for subscriber: %v", err)
+	}
+
+	// 15% subscriber discount on ₹200 = ₹30.00
+	if createdOrder.SubscriberDiscount != 30.0 {
+		t.Errorf("expected subscriber discount of ₹30.00, got ₹%.2f", createdOrder.SubscriberDiscount)
+	}
+	if createdOrder.SubscriberTierName != "Gold Coffee Pass" {
+		t.Errorf("expected tier name 'Gold Coffee Pass', got '%s'", createdOrder.SubscriberTierName)
+	}
+	// Discounted Subtotal = 200 - 30 = 170. 5% GST on 170 = 8.50. Total = 178.50
+	if createdOrder.TotalPrice != 178.50 {
+		t.Errorf("expected total price of ₹178.50, got ₹%.2f", createdOrder.TotalPrice)
+	}
 }
