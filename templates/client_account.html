@@ -21,6 +21,10 @@
                     <span class="detail-value">{{.User.Email}}</span>
                 </div>
                 <div class="detail-row">
+                    <span class="detail-label"><i class="fa-solid fa-phone"></i> Mobile Number</span>
+                    <span class="detail-value">{{if .User.MobileNumber}}{{.User.MobileNumber}}{{else}}Not Provided{{end}}</span>
+                </div>
+                <div class="detail-row">
                     <span class="detail-label"><i class="fa-solid fa-receipt"></i> Total Orders Placed</span>
                     <span class="detail-value">{{.TotalOrders}} orders</span>
                 </div>

@@ -79,15 +79,17 @@ func (app *Application) registerSubmitHandler(w http.ResponseWriter, r *http.Req
 
 	name := r.FormValue("name")
 	email := r.FormValue("email")
+	mobile := r.FormValue("mobile")
 	password := r.FormValue("password")
 
-	user, err := app.AuthService.RegisterUser(r.Context(), name, email, password)
+	user, err := app.AuthService.RegisterUser(r.Context(), name, email, mobile, password)
 	if err != nil {
 		data := models.PageData{
-			"Title": "Create Account",
-			"Error": err.Error(),
-			"Name":  name,
-			"Email": email,
+			"Title":  "Create Account",
+			"Error":  err.Error(),
+			"Name":   name,
+			"Email":  email,
+			"Mobile": mobile,
 		}
 		app.render(w, r, http.StatusBadRequest, "register.html", data)
 		return

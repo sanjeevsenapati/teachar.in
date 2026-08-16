@@ -19,9 +19,9 @@ func NewAuthService(userRepo repository.UserRepository) *AuthService {
 	return &AuthService{userRepo: userRepo}
 }
 
-func (s *AuthService) RegisterUser(ctx context.Context, name, email, password string) (*models.User, error) {
-	if name == "" || email == "" || password == "" {
-		return nil, errors.New("all fields are required")
+func (s *AuthService) RegisterUser(ctx context.Context, name, email, mobileNumber, password string) (*models.User, error) {
+	if name == "" || email == "" || mobileNumber == "" || password == "" {
+		return nil, errors.New("all fields including mobile number are required")
 	}
 
 	salt := repository.GenerateSalt()
@@ -30,6 +30,7 @@ func (s *AuthService) RegisterUser(ctx context.Context, name, email, password st
 	user := models.User{
 		Name:         name,
 		Email:        email,
+		MobileNumber: mobileNumber,
 		PasswordHash: passwordHash,
 		Salt:         salt,
 		Role:         "client",

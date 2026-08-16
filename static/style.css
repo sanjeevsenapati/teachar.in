@@ -349,3 +349,15 @@ a { color: inherit; text-decoration: none; transition: color var(--transition-fa
     .hero-container, .features-grid, .metrics-grid, .footer-grid { grid-template-columns: 1fr; }
     .admin-header-content { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
+
+/* Order Fulfillment & Order Type Styles */
+.order-fulfillment-section { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border-color); background: #faf8f5; }
+.order-types-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+.order-type-card { border: 1.5px solid var(--border-color); padding: 0.6rem 0.4rem; border-radius: var(--border-radius-md); text-align: center; cursor: pointer; background: var(--bg-surface); transition: all var(--transition-fast); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; }
+.order-type-card i { font-size: 1.1rem; color: var(--text-light); }
+.order-type-card span { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+.order-type-card.active { border-color: var(--primary); background: rgba(217, 107, 39, 0.06); box-shadow: 0 0 0 1px var(--primary); }
+.order-type-card.active i { color: var(--primary); }
+.fulfillment-panel { margin-top: 0.5rem; }
+.fulfillment-panel .form-input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-family: var(--font-body); font-size: 0.9rem; }
+.fulfillment-panel label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 0.3rem; }

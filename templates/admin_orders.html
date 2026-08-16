@@ -38,11 +38,18 @@
                         <tr>
                             <td>
                                 <strong>Order #{{.ID}}</strong><br>
+                                <span class="category-pill-sm" style="margin-top:0.2rem; display:inline-block;">
+                                    {{if eq .OrderType "Dine-in"}}<i class="fa-solid fa-chair"></i> Dine-in
+                                    {{else if eq .OrderType "Takeaway"}}<i class="fa-solid fa-bag-shopping"></i> Takeaway
+                                    {{else if eq .OrderType "Delivery"}}<i class="fa-solid fa-truck-fast"></i> Delivery
+                                    {{else}}<i class="fa-solid fa-receipt"></i> {{.OrderType}}{{end}}
+                                </span><br>
                                 <small class="text-muted"><i class="fa-solid fa-barcode"></i> {{.TransactionID}}</small><br>
                                 <small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "15:04 • Jan 02"}}</small>
                             </td>
                             <td>
                                 <strong>{{.CustomerName}}</strong>
+                                {{if .TableNumber}}<br><small class="text-primary" style="font-weight:700;"><i class="fa-solid fa-chair"></i> {{.TableNumber}}</small>{{end}}
                                 {{if .CustomerPhone}}<br><small class="text-muted"><i class="fa-solid fa-phone"></i> {{.CustomerPhone}}</small>{{end}}
                                 {{if .DeliveryAddress}}<br><small class="text-muted"><i class="fa-solid fa-location-dot"></i> {{.DeliveryAddress}}</small>{{end}}
                             </td>

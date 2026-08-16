@@ -23,6 +23,30 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 		return nil, errors.New("cannot create an empty order")
 	}
 
+	if order.OrderType == "" {
+		order.OrderType = "Dine-in"
+	}
+
+	switch order.OrderType {
+	case "Dine-in":
+		if order.TableNumber == "" {
+			return nil, errors.New("table number is required for Dine-in orders")
+		}
+	case "Takeaway":
+		if order.CustomerPhone == "" {
+			return nil, errors.New("mobile number is required for Takeaway orders")
+		}
+	case "Delivery":
+		if order.CustomerPhone == "" {
+			return nil, errors.New("mobile number is required for Delivery orders")
+		}
+		if order.DeliveryAddress == "" {
+			return nil, errors.New("delivery address is required for Delivery orders")
+		}
+	default:
+		return nil, errors.New("invalid order type")
+	}
+
 	var calculatedTotal float64
 	for _, item := range order.Items {
 		calculatedTotal += item.Price * float64(item.Quantity)

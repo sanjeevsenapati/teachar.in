@@ -18,6 +18,7 @@ type User struct {
 	ID           int64     `json:"id"`
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
+	MobileNumber string    `json:"mobile_number"`
 	PasswordHash string    `json:"password_hash"`
 	Salt         string    `json:"salt"`
 	Role         string    `json:"role"` // "client" or "admin"
@@ -47,7 +48,9 @@ type Order struct {
 	UserID          int64       `json:"user_id"`
 	CustomerName    string      `json:"customer_name"`
 	CustomerPhone   string      `json:"customer_phone"`
-	DeliveryAddress string      `json:"delivery_address"`
+	OrderType       string      `json:"order_type"`    // "Dine-in", "Takeaway", "Delivery"
+	TableNumber     string      `json:"table_number"`  // Required for Dine-in
+	DeliveryAddress string      `json:"delivery_address"` // Required for Delivery
 	Status          string      `json:"status"` // "Pending", "Preparing", "Ready", "Completed", "Cancelled"
 	PaymentMethod   string      `json:"payment_method"` // "UPI", "Card", "NetBanking", "COD"
 	PaymentStatus   string      `json:"payment_status"` // "Paid", "Pending", "Failed"

@@ -39,6 +39,7 @@ func TestJSONRepository(t *testing.T) {
 		user, err := repo.CreateUser(ctx, models.User{
 			Name:         "Test User",
 			Email:        "testuser@example.com",
+			MobileNumber: "9876543210",
 			PasswordHash: hash,
 			Salt:         salt,
 			Role:         "client",
@@ -55,8 +56,11 @@ func TestJSONRepository(t *testing.T) {
 
 	t.Run("Order Management", func(t *testing.T) {
 		order, err := repo.CreateOrder(ctx, models.Order{
-			UserID:       1,
-			CustomerName: "Test Order",
+			UserID:        1,
+			CustomerName:  "Test Order",
+			CustomerPhone: "9876543210",
+			OrderType:     "Dine-in",
+			TableNumber:   "Table 1",
 			Items: []models.OrderItem{
 				{MenuItemID: 1, ItemName: "Masala Tea", Quantity: 2, Price: 30},
 			},

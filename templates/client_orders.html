@@ -25,7 +25,17 @@
                 <div class="order-card-header">
                     <div>
                         <span class="order-id">Order #{{.ID}}</span>
+                        <span class="category-pill-sm" style="margin-left:0.4rem;">
+                            {{if eq .OrderType "Dine-in"}}<i class="fa-solid fa-chair"></i> Dine-in
+                            {{else if eq .OrderType "Takeaway"}}<i class="fa-solid fa-bag-shopping"></i> Takeaway
+                            {{else if eq .OrderType "Delivery"}}<i class="fa-solid fa-truck-fast"></i> Delivery
+                            {{else}}<i class="fa-solid fa-receipt"></i> {{.OrderType}}{{end}}
+                        </span>
+                        <br>
                         <span class="order-date"><i class="fa-solid fa-calendar"></i> {{.CreatedAt.Format "Jan 02, 2006 • 15:04"}}</span>
+                        {{if .TableNumber}}<br><small class="text-primary" style="font-weight:700;"><i class="fa-solid fa-chair"></i> Table: {{.TableNumber}}</small>{{end}}
+                        {{if .CustomerPhone}}<br><small class="text-muted"><i class="fa-solid fa-phone"></i> Mobile: {{.CustomerPhone}}</small>{{end}}
+                        {{if .DeliveryAddress}}<br><small class="text-muted"><i class="fa-solid fa-location-dot"></i> Address: {{.DeliveryAddress}}</small>{{end}}
                         {{if .TransactionID}}<br><small class="text-muted"><i class="fa-solid fa-barcode"></i> TXN ID: <code>{{.TransactionID}}</code></small>{{end}}
                     </div>
                     <div class="order-badges">

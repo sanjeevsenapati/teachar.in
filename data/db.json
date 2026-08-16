@@ -1,12 +1,13 @@
 {
-  "next_user_id": 3,
+  "next_user_id": 4,
   "next_menu_item_id": 13,
-  "next_order_id": 1,
+  "next_order_id": 5,
   "users": [
     {
       "id": 1,
       "name": "TEACHAR Admin",
       "email": "admin@teachar.in",
+      "mobile_number": "9876543210",
       "password_hash": "b00ab214e5f11a963c4b95a12e24db293fa77cdfe09afcd033e9a6aefc3495cc",
       "salt": "5c7fa96d763aee13ce9ac32f540ee8c6",
       "role": "admin",
@@ -16,13 +17,35 @@
       "id": 2,
       "name": "Sample Client",
       "email": "client@teachar.in",
+      "mobile_number": "9123456789",
       "password_hash": "46a94ba558b65a14649e27bfb375689dc39a0b059b86a34534b2b50380ae48f4",
       "salt": "127ad518779095d235fa168d14f2280b",
       "role": "client",
       "created_at": "2026-08-16T10:16:07.585082+05:30"
+    },
+    {
+      "id": 3,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "mobile_number": "9988776655",
+      "password_hash": "7073f029d48d76f2425cdddfb6e31ad618a76c93273089b887133a0f3941d552",
+      "salt": "ce313f32c8d06b4b77e41259530a177e",
+      "role": "client",
+      "created_at": "2026-08-16T13:12:37.712213+05:30"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "id": "4c8cb2123f3916a68dc436ea1e19e8f54de18900bd66e62bf3afff3259d93eff",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:12:37.712807+05:30"
+    },
+    {
+      "id": "bfd69d16de765935876dd311bcb14c92e31ad89f6790b91f661ce233f1ac0a88",
+      "user_id": 1,
+      "expires_at": "2026-08-17T13:13:32.996328+05:30"
+    }
+  ],
   "menu_items": [
     {
       "id": 1,
@@ -133,5 +156,122 @@
       "available": true
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN84326091",
+      "total_price": 162.75,
+      "items": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 2,
+          "order_id": 1,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        }
+      ],
+      "created_at": "2026-08-16T12:06:36.17067+05:30"
+    },
+    {
+      "id": 2,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "",
+      "order_type": "Dine-in",
+      "table_number": "Table 12",
+      "delivery_address": "",
+      "status": "Pending",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN17868661241126",
+      "total_price": 63,
+      "items": [
+        {
+          "id": 1,
+          "order_id": 2,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 2,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T13:12:04.112635+05:30"
+    },
+    {
+      "id": 3,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "9876543210",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Pending",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868661299408",
+      "total_price": 31.5,
+      "items": [
+        {
+          "id": 1,
+          "order_id": 3,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 1,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T13:12:09.940899+05:30"
+    },
+    {
+      "id": 4,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "9876543210",
+      "order_type": "Delivery",
+      "table_number": "",
+      "delivery_address": "42 Park Street, Bangalore",
+      "status": "Pending",
+      "payment_method": "Card",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868661356538",
+      "total_price": 84,
+      "items": [
+        {
+          "id": 1,
+          "order_id": 4,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T13:12:15.653858+05:30"
+    }
+  ]
 }

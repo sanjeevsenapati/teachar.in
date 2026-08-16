@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     initActiveNav();
     initCartDrawer();
+    initOrderTypeTabs();
     initPaymentMethodTabs();
     initCategoryTabs();
     initSearchFilter();
@@ -24,6 +25,7 @@ function initActiveNav() {
 
 let cart = JSON.parse(localStorage.getItem('teachar_cart') || '[]');
 let selectedPaymentMethod = 'UPI';
+let selectedOrderType = 'Dine-in';
 
 function saveCart() {
     localStorage.setItem('teachar_cart', JSON.stringify(cart));
@@ -38,6 +40,7 @@ function updateCartUI() {
     const totalEl = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
     const paymentSection = document.getElementById('payment-options-section');
+    const fulfillmentSection = document.getElementById('order-fulfillment-section');
 
     const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     if (badgeCount) badgeCount.textContent = totalItemCount;
@@ -57,6 +60,7 @@ function updateCartUI() {
         if (totalEl) totalEl.textContent = '₹0';
         if (checkoutBtn) checkoutBtn.disabled = true;
         if (paymentSection) paymentSection.style.display = 'none';
+        if (fulfillmentSection) fulfillmentSection.style.display = 'none';
         
         const exploreBtn = document.getElementById('cart-explore-btn');
         if (exploreBtn) exploreBtn.addEventListener('click', closeCart);
@@ -64,6 +68,7 @@ function updateCartUI() {
     }
 
     if (paymentSection) paymentSection.style.display = 'block';
+    if (fulfillmentSection) fulfillmentSection.style.display = 'block';
 
     let subtotal = 0;
     let itemsHTML = '';
@@ -130,6 +135,25 @@ window.removeFromCart = function(id) {
     showToast('Item removed from cart');
 };
 
+function initOrderTypeTabs() {
+    const cards = document.querySelectorAll('.order-type-card');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+
+            const type = card.dataset.type;
+            selectedOrderType = type;
+
+            const panels = document.querySelectorAll('.fulfillment-panel');
+            panels.forEach(p => p.classList.add('hidden'));
+
+            const activePanel = document.getElementById(`panel-fulfillment-${type}`);
+            if (activePanel) activePanel.classList.remove('hidden');
+        });
+    });
+}
+
 function initPaymentMethodTabs() {
     const cards = document.querySelectorAll('.payment-method-card');
     cards.forEach(card => {
@@ -149,6 +173,42 @@ function initPaymentMethodTabs() {
     });
 }
 
+function validateFulfillmentFields() {
+    if (selectedOrderType === 'Dine-in') {
+        const tableInput = document.getElementById('checkout-table-number');
+        const tableNumber = tableInput ? tableInput.value.trim() : '';
+        if (!tableNumber) {
+            showToast('⚠️ Please enter Table Number for Dine-in order');
+            if (tableInput) tableInput.focus();
+            return false;
+        }
+    } else if (selectedOrderType === 'Takeaway') {
+        const mobileInput = document.getElementById('checkout-takeaway-mobile');
+        const mobile = mobileInput ? mobileInput.value.trim() : '';
+        if (!mobile) {
+            showToast('⚠️ Please enter Mobile Number for Takeaway');
+            if (mobileInput) mobileInput.focus();
+            return false;
+        }
+    } else if (selectedOrderType === 'Delivery') {
+        const mobileInput = document.getElementById('checkout-delivery-mobile');
+        const addressInput = document.getElementById('checkout-delivery-address');
+        const mobile = mobileInput ? mobileInput.value.trim() : '';
+        const address = addressInput ? addressInput.value.trim() : '';
+        if (!mobile) {
+            showToast('⚠️ Please enter Mobile Number for Delivery');
+            if (mobileInput) mobileInput.focus();
+            return false;
+        }
+        if (!address) {
+            showToast('⚠️ Please enter Delivery Address');
+            if (addressInput) addressInput.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function initCartDrawer() {
     const openBtn = document.getElementById('open-cart-btn');
     const closeBtn = document.getElementById('close-cart-btn');
@@ -162,6 +222,10 @@ function initCartDrawer() {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
+
+            if (!validateFulfillmentFields()) {
+                return;
+            }
 
             if (selectedPaymentMethod === 'Card') {
                 openOtpModal();
@@ -182,6 +246,19 @@ async function executeOrderPlacement(paymentMethod, txnID) {
         checkoutBtn.innerHTML = '<span>Processing Payment...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
     }
 
+    let tableNumber = '';
+    let customerPhone = '';
+    let deliveryAddress = '';
+
+    if (selectedOrderType === 'Dine-in') {
+        tableNumber = document.getElementById('checkout-table-number')?.value.trim() || '';
+    } else if (selectedOrderType === 'Takeaway') {
+        customerPhone = document.getElementById('checkout-takeaway-mobile')?.value.trim() || '';
+    } else if (selectedOrderType === 'Delivery') {
+        customerPhone = document.getElementById('checkout-delivery-mobile')?.value.trim() || '';
+        deliveryAddress = document.getElementById('checkout-delivery-address')?.value.trim() || '';
+    }
+
     const generatedTxnID = txnID || ('TXN' + Math.floor(10000000 + Math.random() * 90000000));
     const paymentStatus = (paymentMethod === 'COD') ? 'Pending' : 'Paid';
 
@@ -190,6 +267,10 @@ async function executeOrderPlacement(paymentMethod, txnID) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                order_type: selectedOrderType,
+                table_number: tableNumber,
+                customer_phone: customerPhone,
+                delivery_address: deliveryAddress,
                 payment_method: paymentMethod,
                 payment_status: paymentStatus,
                 transaction_id: generatedTxnID,
@@ -211,7 +292,8 @@ async function executeOrderPlacement(paymentMethod, txnID) {
                 window.location.href = '/orders';
             }, 1200);
         } else {
-            showToast('Failed to process payment. Please try again.');
+            const errData = await response.json().catch(() => ({}));
+            showToast(errData.error || 'Failed to process order. Please check inputs.');
         }
     } catch (err) {
         console.error(err);

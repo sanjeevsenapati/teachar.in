@@ -11,6 +11,8 @@ import (
 type createOrderRequest struct {
 	CustomerName    string `json:"customer_name"`
 	CustomerPhone   string `json:"customer_phone"`
+	OrderType       string `json:"order_type"`
+	TableNumber     string `json:"table_number"`
 	DeliveryAddress string `json:"delivery_address"`
 	PaymentMethod   string `json:"payment_method"`
 	PaymentStatus   string `json:"payment_status"`
@@ -70,11 +72,15 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 	user := middleware.GetUserFromContext(r)
 	var userID int64 = 0
 	var customerName = req.CustomerName
+	var customerPhone = req.CustomerPhone
 
 	if user != nil {
 		userID = user.ID
 		if customerName == "" {
 			customerName = user.Name
+		}
+		if customerPhone == "" {
+			customerPhone = user.MobileNumber
 		}
 	}
 
@@ -95,7 +101,9 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 	order := models.Order{
 		UserID:          userID,
 		CustomerName:    customerName,
-		CustomerPhone:   req.CustomerPhone,
+		CustomerPhone:   customerPhone,
+		OrderType:       req.OrderType,
+		TableNumber:     req.TableNumber,
 		DeliveryAddress: req.DeliveryAddress,
 		PaymentMethod:   req.PaymentMethod,
 		PaymentStatus:   req.PaymentStatus,
