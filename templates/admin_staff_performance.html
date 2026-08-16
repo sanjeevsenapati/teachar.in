@@ -1,0 +1,142 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Fulfillment & Quality Audit</span>
+            <h1 class="page-title">Staff Speed, Countdown & Satisfaction Analytics</h1>
+            <p class="text-muted" style="margin-top:0.25rem;">Real-time tracking of staff order fulfillment speed, 20-minute SLA compliance, and customer star ratings.</p>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin/orders" class="btn btn-secondary"><i class="fa-solid fa-receipt"></i> Orders Board</a>
+            <a href="/admin" class="btn btn-primary"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section" style="padding: 2.5rem 0 6rem; background: var(--bg-main);">
+    <div class="container" style="display:flex; flex-direction:column; gap:2rem;">
+        
+        <!-- Summary Cards Grid -->
+        <div class="reports-metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Active Staff</span>
+                    <h3 class="metric-value">{{len .StaffPerformance}}</h3>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon icon-pending"><i class="fa-solid fa-stopwatch"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Target Speed SLA</span>
+                    <h3 class="metric-value">20 Mins</h3>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon icon-revenue"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">On-Time Standard</span>
+                    <h3 class="metric-value">&le; 20m</h3>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-star"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Client Satisfaction</span>
+                    <h3 class="metric-value">5.0 ⭐ Scale</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Performance Leaderboard Table -->
+        <div class="admin-table-card">
+            <div class="table-card-header">
+                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                    <i class="fa-solid fa-award text-primary"></i> 
+                    Staff Speed & Customer Rating Leaderboard
+                </h3>
+                <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:700;">
+                    <i class="fa-solid fa-clock"></i> 20-Min Countdown SLA
+                </span>
+            </div>
+
+            {{if not .StaffPerformance}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-user-clock p-3" style="font-size: 3rem; color:var(--border-color);"></i>
+                <h3>No Staff Metrics Recorded Yet</h3>
+                <p>Metrics will update automatically as staff fulfill customer orders.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Staff Member</th>
+                            <th>Total Assigned</th>
+                            <th>Completed</th>
+                            <th>On-Time (&le;20m)</th>
+                            <th>Overdue (&gt;20m)</th>
+                            <th>On-Time Rate</th>
+                            <th>Avg Prep Time</th>
+                            <th>Customer Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .StaffPerformance}}
+                        <tr>
+                            <td>
+                                <strong>{{.StaffName}}</strong><br>
+                                <small class="text-muted"><i class="fa-solid fa-envelope"></i> {{.StaffEmail}}</small>
+                            </td>
+                            <td><strong>{{.TotalAssignedOrders}}</strong> orders</td>
+                            <td><strong style="color:var(--text-main);">{{.CompletedOrders}}</strong> completed</td>
+                            <td>
+                                <span class="category-pill-sm" style="background:#d1fae5; color:#065f46; font-weight:800;">
+                                    <i class="fa-solid fa-check"></i> {{.OnTimeOrders}}
+                                </span>
+                            </td>
+                            <td>
+                                {{if gt .OverdueOrders 0}}
+                                <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> {{.OverdueOrders}}
+                                </span>
+                                {{else}}
+                                <span class="category-pill-sm" style="background:#f3f4f6; color:#6b7280;">0</span>
+                                {{end}}
+                            </td>
+                            <td>
+                                {{if ge .OnTimeRate 85.0}}
+                                <strong style="color:#059669; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                {{else if ge .OnTimeRate 60.0}}
+                                <strong style="color:#d97706; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                {{else}}
+                                <strong style="color:#dc2626; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                {{end}}
+                            </td>
+                            <td>
+                                <strong>{{printf "%.1f" .AvgFulfillmentMinutes}} mins</strong>
+                            </td>
+                            <td>
+                                {{if gt .TotalRatings 0}}
+                                <span class="rating-tag" style="background:#fef3c7; color:#b45309; padding:0.25rem 0.6rem; border-radius:var(--border-radius-full); font-weight:800; font-size:0.85rem;">
+                                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i> {{printf "%.1f" .AvgRating}} / 5.0
+                                </span>
+                                <br><small class="text-muted">({{.TotalRatings}} reviews)</small>
+                                {{else}}
+                                <span class="text-muted" style="font-size:0.85rem;">No reviews yet</span>
+                                {{end}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+
+    </div>
+</section>
+{{end}}

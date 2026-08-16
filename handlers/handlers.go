@@ -65,6 +65,8 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/menu/toggle", mw.RequireAdmin(http.HandlerFunc(app.adminToggleMenuItemHandler)))
 	router.Handle("GET /admin/orders", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminOrdersHandler)))
 	router.Handle("POST /admin/orders/status", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminUpdateOrderStatusHandler)))
+	router.Handle("POST /admin/orders/assign", mw.RequireAdmin(http.HandlerFunc(app.adminAssignOrderHandler)))
+	router.Handle("GET /admin/staff-performance", mw.RequireAdmin(http.HandlerFunc(app.adminStaffPerformanceHandler)))
 
 	// Superadmin specific handlers
 	router.Handle("GET /admin/users", mw.RequireSuperadmin(http.HandlerFunc(app.adminUsersHandler)))
@@ -72,7 +74,8 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/cancellation-reasons/add", mw.RequireSuperadmin(http.HandlerFunc(app.adminAddCancellationReasonHandler)))
 	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
-	router.Handle("GET /admin/reports", mw.RequireSuperadmin(http.HandlerFunc(app.adminReportsHandler)))
+	router.Handle("GET /admin/reports", mw.RequireAdmin(http.HandlerFunc(app.adminReportsHandler)))
+	router.Handle("GET /admin/reports/export", mw.RequireAdmin(http.HandlerFunc(app.adminReportsExportHandler)))
 	router.Handle("GET /admin/coupons", mw.RequireSuperadmin(http.HandlerFunc(app.adminCouponsHandler)))
 	router.Handle("POST /admin/coupons/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateCouponHandler)))
 	router.Handle("POST /admin/coupons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCouponHandler)))

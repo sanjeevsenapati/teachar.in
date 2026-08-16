@@ -76,11 +76,30 @@ type Order struct {
 	TotalPrice         float64     `json:"total_price"`
 	AssignedStaffID    int64       `json:"assigned_staff_id"`    // Staff member who claimed/handled this order
 	AssignedStaffName  string      `json:"assigned_staff_name"`  // Staff member's name
+	AssignedBy         string      `json:"assigned_by,omitempty"` // "Admin", "Super Admin", or "Self Claimed"
+	AssignedAt         *time.Time  `json:"assigned_at,omitempty"`
+	CompletedAt        *time.Time  `json:"completed_at,omitempty"`
+	FulfillmentMinutes int         `json:"fulfillment_minutes,omitempty"` // Duration in minutes to complete
 	CancellationReason string      `json:"cancellation_reason"`  // Staff cancellation explanation
 	Rating             int         `json:"rating"`               // 1 to 5 stars customer rating
 	Review             string      `json:"review"`               // Customer feedback comment
 	Items              []OrderItem `json:"items"`
 	CreatedAt          time.Time   `json:"created_at"`
+}
+
+// StaffPerformanceReport holds aggregated performance metrics for a staff member.
+type StaffPerformanceReport struct {
+	StaffID               int64   `json:"staff_id"`
+	StaffName             string  `json:"staff_name"`
+	StaffEmail            string  `json:"staff_email"`
+	TotalAssignedOrders   int     `json:"total_assigned_orders"`
+	CompletedOrders       int     `json:"completed_orders"`
+	OnTimeOrders          int     `json:"on_time_orders"`          // Completed in <= 20 minutes
+	OverdueOrders         int     `json:"overdue_orders"`         // Completed in > 20 minutes
+	OnTimeRate            float64 `json:"on_time_rate"`           // On-time percentage (0 - 100%)
+	AvgFulfillmentMinutes float64 `json:"avg_fulfillment_minutes"` // Average duration in minutes
+	TotalRatings          int     `json:"total_ratings"`          // Count of customer 1-5 star reviews
+	AvgRating             float64 `json:"avg_rating"`             // Average star rating out of 5
 }
 
 // PageData holds the data to be passed to HTML templates.
@@ -127,8 +146,22 @@ type TopItemReport struct {
 	TotalRevenue float64 `json:"total_revenue"`
 }
 
-// FinancialReportData holds complete auditing and revenue metrics.
+// HourlyPoint represents aggregated time-series metrics for an individual hour.
+type HourlyPoint struct {
+	Hour       int     `json:"hour"`        // 0 to 23
+	Label      string  `json:"label"`       // e.g. "08:00 AM", "01:00 PM"
+	OrderCount int     `json:"order_count"`
+	Revenue    float64 `json:"revenue"`
+	IsPeak     bool    `json:"is_peak"`
+	IsSlow     bool    `json:"is_slow"`
+}
+
+// FinancialReportData holds complete auditing, period-filtered, and time-series metrics.
 type FinancialReportData struct {
+	Period            string                `json:"period"`            // "today", "daily", "weekly", "monthly", "yearly"
+	PeriodLabel       string                `json:"period_label"`      // e.g. "Today (Live)", "FY 2026-27"
+	StartDate         time.Time             `json:"start_date"`
+	EndDate           time.Time             `json:"end_date"`
 	GrossRevenue      float64               `json:"gross_revenue"`
 	TotalTax          float64               `json:"total_tax"`
 	NetRevenue        float64               `json:"net_revenue"`
@@ -139,6 +172,10 @@ type FinancialReportData struct {
 	AverageOrderValue float64               `json:"average_order_value"`
 	PaidAmount        float64               `json:"paid_amount"`
 	PendingPayment    float64               `json:"pending_payment"`
+	HourlyAnalytics   []HourlyPoint         `json:"hourly_analytics"`  // 24-hour time series
+	PeakRushHour      string                `json:"peak_rush_hour"`    // e.g. "01:00 PM - 02:00 PM (12 Orders, ₹850.00)"
+	SlowestHour       string                `json:"slowest_hour"`       // e.g. "04:00 PM - 05:00 PM (1 Order, ₹45.00)"
+	MarketingAdvice   string                `json:"marketing_advice"`   // Data-driven marketing recommendation
 	PaymentMethods    []PaymentMethodReport `json:"payment_methods"`
 	OrderTypes        []OrderTypeReport     `json:"order_types"`
 	CategorySales     []CategoryReport      `json:"category_sales"`

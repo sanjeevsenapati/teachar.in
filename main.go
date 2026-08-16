@@ -41,7 +41,7 @@ func main() {
 	authSvc := services.NewAuthService(dbRepo)
 	orderSvc := services.NewOrderService(dbRepo, couponSvc)
 	auditSvc := services.NewAuditService(dbRepo)
-	reportSvc := services.NewReportService(dbRepo, dbRepo)
+	reportSvc := services.NewReportService(dbRepo, dbRepo, dbRepo)
 
 	// Create application dependencies container.
 	app := &handlers.Application{

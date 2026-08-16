@@ -749,10 +749,44 @@ func (r *MultiFileRepository) UpdateOrderStatusWithStaff(ctx context.Context, id
 	if staffID != 0 {
 		order.AssignedStaffID = staffID
 		order.AssignedStaffName = staffName
+		if order.AssignedBy == "" {
+			order.AssignedBy = "Self Claimed"
+		}
+		if order.AssignedAt == nil {
+			now := time.Now()
+			order.AssignedAt = &now
+		}
 	}
 	if cancellationReason != "" {
 		order.CancellationReason = cancellationReason
 	}
+	if status == "Completed" && order.CompletedAt == nil {
+		now := time.Now()
+		order.CompletedAt = &now
+		duration := int(now.Sub(order.CreatedAt).Minutes())
+		if duration < 1 {
+			duration = 1
+		}
+		order.FulfillmentMinutes = duration
+	}
+
+	return r.saveOrdersLocked()
+}
+
+func (r *MultiFileRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string) error {
+	r.ordersMu.Lock()
+	defer r.ordersMu.Unlock()
+
+	order, exists := r.ordersByID[id]
+	if !exists {
+		return errors.New("order not found")
+	}
+
+	now := time.Now()
+	order.AssignedStaffID = staffID
+	order.AssignedStaffName = staffName
+	order.AssignedBy = assignedBy
+	order.AssignedAt = &now
 
 	return r.saveOrdersLocked()
 }

@@ -1,5 +1,5 @@
 {
-  "next_user_id": 7,
+  "next_user_id": 8,
   "users": [
     {
       "id": 1,
@@ -60,6 +60,16 @@
       "salt": "efacf6616fc977f572a5bf0c8e617170",
       "role": "staff",
       "created_at": "2026-08-16T13:23:31.323249+05:30"
+    },
+    {
+      "id": 7,
+      "name": "Sanjeev Senapati",
+      "email": "sanjeev@gmail.com",
+      "mobile_number": "8976546787",
+      "password_hash": "7a4c9d3c9f777ed830fb123cf38748b8bf721737c420d784ec373bb17632791a",
+      "salt": "89c9d5c7dbb40c2a977ac60ed00b7323",
+      "role": "client",
+      "created_at": "2026-08-16T16:42:15.840002+05:30"
     }
   ]
 }

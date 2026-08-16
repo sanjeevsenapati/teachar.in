@@ -52,6 +52,21 @@
                             {{else}}<i class="fa-solid fa-circle-xmark"></i>{{end}}
                             {{.Status}}
                         </span>
+                        {{if or (eq .Status "Pending") (eq .Status "Preparing") (eq .Status "Ready")}}
+                        <div style="margin-top:0.35rem; text-align:right;">
+                            <span class="order-countdown-timer category-pill-sm" data-created="{{.CreatedAt.Format "2006-01-02T15:04:05Z07:00"}}" style="font-size:0.75rem;">
+                                <i class="fa-solid fa-stopwatch"></i> Est. 20m SLA
+                            </span>
+                        </div>
+                        {{else if eq .Status "Completed"}}
+                        {{if gt .FulfillmentMinutes 0}}
+                        <div style="margin-top:0.35rem; text-align:right;">
+                            <span class="category-pill-sm {{if le .FulfillmentMinutes 20}}bg-success-light text-success{{else}}bg-danger-light text-danger{{end}}" style="font-size:0.75rem; font-weight:700;">
+                                <i class="fa-solid fa-clock"></i> {{.FulfillmentMinutes}}m ({{if le .FulfillmentMinutes 20}}On-Time{{else}}Overdue{{end}})
+                            </span>
+                        </div>
+                        {{end}}
+                        {{end}}
                     </div>
                 </div>
                 <div class="order-card-body">
@@ -124,4 +139,50 @@
         {{end}}
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    function updateOrderCountdowns() {
+        const timers = document.querySelectorAll('.order-countdown-timer');
+        const now = new Date();
+        
+        timers.forEach(timer => {
+            const createdStr = timer.getAttribute('data-created');
+            if (!createdStr) return;
+            
+            const created = new Date(createdStr);
+            // 20 minutes target limit = 1200 seconds
+            const targetTime = new Date(created.getTime() + 20 * 60 * 1000);
+            const diffMs = targetTime - now;
+            const totalSecs = Math.floor(diffMs / 1000);
+            
+            if (totalSecs >= 0) {
+                const mins = Math.floor(totalSecs / 60);
+                const secs = totalSecs % 60;
+                const padSecs = secs < 10 ? '0' + secs : secs;
+                timer.className = 'category-pill-sm order-countdown-timer';
+                timer.style.background = '#d1fae5';
+                timer.style.color = '#065f46';
+                timer.style.fontWeight = '700';
+                timer.style.border = '1px solid #a7f3d0';
+                timer.innerHTML = `<i class="fa-solid fa-stopwatch text-primary"></i> ${mins}:${padSecs} left`;
+            } else {
+                const overdueSecs = Math.abs(totalSecs);
+                const mins = Math.floor(overdueSecs / 60);
+                const secs = overdueSecs % 60;
+                const padSecs = secs < 10 ? '0' + secs : secs;
+                timer.className = 'category-pill-sm order-countdown-timer';
+                timer.style.background = '#fee2e2';
+                timer.style.color = '#991b1b';
+                timer.style.fontWeight = '800';
+                timer.style.border = '1px solid #fca5a5';
+                timer.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;"></i> OVERDUE +${mins}m ${padSecs}s`;
+            }
+        });
+    }
+
+    updateOrderCountdowns();
+    setInterval(updateOrderCountdowns, 1000);
+});
+</script>
 {{end}}

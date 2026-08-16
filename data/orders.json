@@ -1,5 +1,5 @@
 {
-  "next_order_id": 16,
+  "next_order_id": 19,
   "cancellation_reasons": [
     "Item out of stock",
     "Kitchen load exceeded / High volume",
@@ -646,6 +646,119 @@
         }
       ],
       "created_at": "2026-08-16T16:16:25.464835+05:30"
+    },
+    {
+      "id": 16,
+      "user_id": 7,
+      "customer_name": "Sanjeev Senapati",
+      "customer_phone": "8976546787",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN29568833",
+      "subtotal_price": 75,
+      "total_price": 78.75,
+      "assigned_staff_id": 1,
+      "assigned_staff_name": "Super Admin",
+      "assigned_by": "Self Claimed",
+      "assigned_at": "2026-08-16T17:04:04.879991+05:30",
+      "completed_at": "2026-08-16T17:04:10.010943+05:30",
+      "fulfillment_minutes": 21,
+      "cancellation_reason": "",
+      "rating": 4,
+      "review": "One of the best  Service and Experience",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 16,
+          "menu_item_id": 10,
+          "item_name": "Popped Rice",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 2,
+          "order_id": 16,
+          "menu_item_id": 13,
+          "item_name": "Milk Tea with Overnight High fiber Roti",
+          "quantity": 1,
+          "price": 45
+        }
+      ],
+      "created_at": "2026-08-16T16:42:46.209007+05:30"
+    },
+    {
+      "id": 17,
+      "user_id": 7,
+      "customer_name": "Sanjeev Senapati",
+      "customer_phone": "8976546787",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN99110140",
+      "subtotal_price": 80,
+      "total_price": 84,
+      "assigned_staff_id": 6,
+      "assigned_staff_name": "Order Staff 1",
+      "assigned_by": "Super Admin",
+      "assigned_at": "2026-08-16T17:05:34.11168+05:30",
+      "completed_at": "2026-08-16T17:06:45.844746+05:30",
+      "fulfillment_minutes": 1,
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 17,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T17:05:08.725662+05:30"
+    },
+    {
+      "id": 18,
+      "user_id": 0,
+      "customer_name": "Speed Test Client",
+      "customer_phone": "9988776655",
+      "order_type": "Dine-in",
+      "table_number": "Table 7",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868802334464",
+      "subtotal_price": 0,
+      "total_price": 0,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Super Admin",
+      "assigned_at": "2026-08-16T17:07:18.004787+05:30",
+      "completed_at": "2026-08-16T17:07:27.664678+05:30",
+      "fulfillment_minutes": 1,
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "Lightning fast service!",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 18,
+          "menu_item_id": 0,
+          "item_name": "",
+          "quantity": 2,
+          "price": 0
+        }
+      ],
+      "created_at": "2026-08-16T17:07:13.44643+05:30"
     }
   ]
 }

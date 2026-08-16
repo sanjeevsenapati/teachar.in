@@ -31,7 +31,7 @@ func setupTestApp(t *testing.T) http.Handler {
 	authService := services.NewAuthService(repo)
 	orderService := services.NewOrderService(repo, couponService)
 	auditService := services.NewAuditService(repo)
-	reportService := services.NewReportService(repo, repo)
+	reportService := services.NewReportService(repo, repo, repo)
 
 	app := &handlers.Application{
 		Logger:        logger,

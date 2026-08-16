@@ -51,6 +51,10 @@ func (s *AuthService) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	return s.userRepo.GetAllUsers(ctx)
 }
 
+func (s *AuthService) GetUserByID(ctx context.Context, id int64) (*models.User, error) {
+	return s.userRepo.GetUserByID(ctx, id)
+}
+
 func (s *AuthService) AuthenticateUser(ctx context.Context, email, password string) (*models.User, error) {
 	user, err := s.userRepo.GetUserByEmail(ctx, email)
 	if err != nil {

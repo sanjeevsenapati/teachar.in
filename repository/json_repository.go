@@ -452,10 +452,48 @@ func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int6
 			if staffID != 0 {
 				r.data.Orders[i].AssignedStaffID = staffID
 				r.data.Orders[i].AssignedStaffName = staffName
+				if r.data.Orders[i].AssignedBy == "" {
+					r.data.Orders[i].AssignedBy = "Self Claimed"
+				}
+				if r.data.Orders[i].AssignedAt == nil {
+					now := time.Now()
+					r.data.Orders[i].AssignedAt = &now
+				}
 			}
 			if cancellationReason != "" {
 				r.data.Orders[i].CancellationReason = cancellationReason
 			}
+			if status == "Completed" && r.data.Orders[i].CompletedAt == nil {
+				now := time.Now()
+				r.data.Orders[i].CompletedAt = &now
+				duration := int(now.Sub(r.data.Orders[i].CreatedAt).Minutes())
+				if duration < 1 {
+					duration = 1
+				}
+				r.data.Orders[i].FulfillmentMinutes = duration
+			}
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("order not found")
+	}
+	return r.save()
+}
+
+func (r *JSONRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	found := false
+	for i, o := range r.data.Orders {
+		if o.ID == id {
+			now := time.Now()
+			r.data.Orders[i].AssignedStaffID = staffID
+			r.data.Orders[i].AssignedStaffName = staffName
+			r.data.Orders[i].AssignedBy = assignedBy
+			r.data.Orders[i].AssignedAt = &now
 			found = true
 			break
 		}

@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 88,
+  "next_audit_log_id": 116,
   "audit_logs": [
     {
       "id": 1,
@@ -870,6 +870,286 @@
       "action": "REVIEW_SUBMITTED",
       "details": "Submitted 5-Star review for Order #15",
       "ip_address": "[::1]:54934"
+    },
+    {
+      "id": 88,
+      "timestamp": "2026-08-16T16:21:49.1194+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55025"
+    },
+    {
+      "id": 89,
+      "timestamp": "2026-08-16T16:37:17.146502+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55390"
+    },
+    {
+      "id": 90,
+      "timestamp": "2026-08-16T16:37:35.008202+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55393"
+    },
+    {
+      "id": 91,
+      "timestamp": "2026-08-16T16:38:02.398219+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55393"
+    },
+    {
+      "id": 92,
+      "timestamp": "2026-08-16T16:40:53.876548+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55417"
+    },
+    {
+      "id": 93,
+      "timestamp": "2026-08-16T16:42:15.841405+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "USER_REGISTER",
+      "details": "Client registered new account: sanjeev@gmail.com",
+      "ip_address": "[::1]:55417"
+    },
+    {
+      "id": 94,
+      "timestamp": "2026-08-16T16:42:46.21133+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #16 (Takeaway, Total: ₹78.75)",
+      "ip_address": "[::1]:55417"
+    },
+    {
+      "id": 95,
+      "timestamp": "2026-08-16T16:43:01.61238+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #16 status to 'Preparing' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55461"
+    },
+    {
+      "id": 96,
+      "timestamp": "2026-08-16T16:43:31.334362+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #16 status to 'Completed' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55461"
+    },
+    {
+      "id": 97,
+      "timestamp": "2026-08-16T16:44:49.599469+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_CREATED",
+      "details": "Created single-use coupon 'SANJEEV05'",
+      "ip_address": "[::1]:55461"
+    },
+    {
+      "id": 98,
+      "timestamp": "2026-08-16T16:45:29.498862+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 4-Star review for Order #16",
+      "ip_address": "[::1]:55485"
+    },
+    {
+      "id": 99,
+      "timestamp": "2026-08-16T16:46:18.271248+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55500"
+    },
+    {
+      "id": 100,
+      "timestamp": "2026-08-16T16:47:38.303698+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55532"
+    },
+    {
+      "id": 101,
+      "timestamp": "2026-08-16T16:51:54.632782+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55586"
+    },
+    {
+      "id": 102,
+      "timestamp": "2026-08-16T17:04:04.880956+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #16 status to 'Ready' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 103,
+      "timestamp": "2026-08-16T17:04:10.011905+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #16 status to 'Completed' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 104,
+      "timestamp": "2026-08-16T17:04:21.619183+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55738"
+    },
+    {
+      "id": 105,
+      "timestamp": "2026-08-16T17:05:08.726327+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #17 (Dine-in, Total: ₹84.00)",
+      "ip_address": "[::1]:55746"
+    },
+    {
+      "id": 106,
+      "timestamp": "2026-08-16T17:05:17.748648+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 107,
+      "timestamp": "2026-08-16T17:05:34.112084+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #17 to staff Order Staff 1 (ID: 6)",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 108,
+      "timestamp": "2026-08-16T17:05:52.963581+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 109,
+      "timestamp": "2026-08-16T17:06:33.539656+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 110,
+      "timestamp": "2026-08-16T17:06:45.845376+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #17 status to 'Completed' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55732"
+    },
+    {
+      "id": 111,
+      "timestamp": "2026-08-16T17:07:00.213087+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #17",
+      "ip_address": "[::1]:55786"
+    },
+    {
+      "id": 112,
+      "timestamp": "2026-08-16T17:07:13.446795+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #18 (Dine-in, Total: ₹0.00)",
+      "ip_address": "[::1]:55789"
+    },
+    {
+      "id": 113,
+      "timestamp": "2026-08-16T17:07:18.005172+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #18 to staff Counter Staff (ID: 4)",
+      "ip_address": "[::1]:55791"
+    },
+    {
+      "id": 114,
+      "timestamp": "2026-08-16T17:07:27.665159+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #18 status to 'Completed' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55792"
+    },
+    {
+      "id": 115,
+      "timestamp": "2026-08-16T17:07:33.477974+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #18",
+      "ip_address": "[::1]:55794"
     }
   ]
 }

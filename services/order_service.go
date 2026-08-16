@@ -138,6 +138,14 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 		return err
 	}
 
+	// Superadmin / Admin restriction:
+	// Superadmin/Admin must not claim an order directly. They must assign it to a staff member.
+	if staff != nil && (staff.Role == "superadmin" || staff.Role == "admin") {
+		if order.AssignedStaffID == 0 && status != "Cancelled" {
+			return errors.New("As Superadmin/Admin, you cannot claim or fulfill orders directly. Please assign this order to a staff member to fulfill it.")
+		}
+	}
+
 	// Duplicate protection logic:
 	// If order is already claimed by another staff member, block staff update unless actor is admin/superadmin
 	if staff != nil && order.AssignedStaffID != 0 && order.AssignedStaffID != staff.ID {
@@ -149,8 +157,8 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 	staffID := order.AssignedStaffID
 	staffName := order.AssignedStaffName
 
-	// Assign staff if not currently assigned, or if staff is claiming it
-	if staff != nil {
+	// Staff members (role == "staff") can claim unassigned orders directly
+	if staff != nil && staff.Role == "staff" {
 		if staffID == 0 || staffID == staff.ID {
 			staffID = staff.ID
 			staffName = staff.Name
@@ -158,6 +166,27 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 	}
 
 	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName, cancellationReason)
+}
+
+func (s *OrderService) AssignOrderToStaff(ctx context.Context, orderID int64, staffUser *models.User, assignedBy string) error {
+	if staffUser == nil {
+		return errors.New("invalid staff user")
+	}
+
+	if staffUser.Role != "staff" {
+		return errors.New("orders can only be assigned to staff members")
+	}
+
+	order, err := s.orderRepo.GetOrderByID(ctx, orderID)
+	if err != nil {
+		return err
+	}
+
+	if order.Status == "Cancelled" || order.Status == "Completed" {
+		return fmt.Errorf("cannot reassign an order that is already %s", order.Status)
+	}
+
+	return s.orderRepo.AssignOrderToStaff(ctx, orderID, staffUser.ID, staffUser.Name, assignedBy)
 }
 
 func (s *OrderService) GetCancellationReasons(ctx context.Context) ([]string, error) {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -162,12 +163,104 @@ func (app *Application) adminOrdersHandler(w http.ResponseWriter, r *http.Reques
 
 	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
 
+	var staffList []models.User
+	if app.AuthService != nil {
+		allUsers, _ := app.AuthService.GetAllUsers(r.Context())
+		for _, u := range allUsers {
+			if u.Role == "staff" {
+				staffList = append(staffList, u)
+			}
+		}
+	}
+
 	data := models.PageData{
-		"Title":               "Manage Orders",
+		"Title":               "Manage Orders & Staff Fulfillment",
 		"Orders":              orders,
+		"StaffList":           staffList,
 		"CancellationReasons": reasons,
 	}
 	app.render(w, r, http.StatusOK, "admin_orders.html", data)
+}
+
+func (app *Application) adminAssignOrderHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	orderIDStr := r.FormValue("order_id")
+	staffIDStr := r.FormValue("staff_id")
+
+	orderID, err := strconv.ParseInt(orderIDStr, 10, 64)
+	if err != nil {
+		app.badRequestError(w, r, fmt.Errorf("invalid order ID"))
+		return
+	}
+
+	staffID, err := strconv.ParseInt(staffIDStr, 10, 64)
+	if err != nil {
+		app.badRequestError(w, r, fmt.Errorf("invalid staff ID"))
+		return
+	}
+
+	staffUser, err := app.AuthService.GetUserByID(r.Context(), staffID)
+	if err != nil {
+		app.badRequestError(w, r, fmt.Errorf("selected staff member not found"))
+		return
+	}
+
+	actor := middleware.GetUserFromContext(r)
+	assignedBy := "Admin"
+	if actor != nil {
+		if actor.Role == "superadmin" {
+			assignedBy = "Super Admin"
+		} else if actor.Role == "admin" {
+			assignedBy = "Admin"
+		}
+	}
+
+	if err := app.OrderService.AssignOrderToStaff(r.Context(), orderID, staffUser, assignedBy); err != nil {
+		orders, _ := app.OrderService.GetAllOrders(r.Context())
+		reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
+		allUsers, _ := app.AuthService.GetAllUsers(r.Context())
+		var staffList []models.User
+		for _, u := range allUsers {
+			if u.Role == "staff" {
+				staffList = append(staffList, u)
+			}
+		}
+		data := models.PageData{
+			"Title":               "Manage Orders",
+			"Error":               err.Error(),
+			"Orders":              orders,
+			"StaffList":           staffList,
+			"CancellationReasons": reasons,
+		}
+		app.render(w, r, http.StatusConflict, "admin_orders.html", data)
+		return
+	}
+
+	if app.AuditService != nil && actor != nil {
+		app.AuditService.LogEvent(r.Context(), actor, "ORDER_ASSIGNED_TO_STAFF",
+			fmt.Sprintf("%s assigned Order #%d to staff %s (ID: %d)", assignedBy, orderID, staffUser.Name, staffUser.ID),
+			services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/orders", http.StatusSeeOther)
+}
+
+func (app *Application) adminStaffPerformanceHandler(w http.ResponseWriter, r *http.Request) {
+	performanceData, err := app.ReportService.GetStaffPerformanceReport(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := models.PageData{
+		"Title":            "Staff Performance & Client Satisfaction Analytics",
+		"StaffPerformance": performanceData,
+	}
+	app.render(w, r, http.StatusOK, "admin_staff_performance.html", data)
 }
 
 func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *http.Request) {
@@ -184,10 +277,18 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 	if err := app.OrderService.UpdateOrderStatusWithStaff(r.Context(), id, status, cancellationReason, actor); err != nil {
 		orders, _ := app.OrderService.GetAllOrders(r.Context())
 		reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
+		allUsers, _ := app.AuthService.GetAllUsers(r.Context())
+		var staffList []models.User
+		for _, u := range allUsers {
+			if u.Role == "staff" {
+				staffList = append(staffList, u)
+			}
+		}
 		data := models.PageData{
 			"Title":               "Manage Orders",
 			"Error":               err.Error(),
 			"Orders":              orders,
+			"StaffList":           staffList,
 			"CancellationReasons": reasons,
 		}
 		app.render(w, r, http.StatusConflict, "admin_orders.html", data)
@@ -321,17 +422,89 @@ func (app *Application) adminAuditLogsHandler(w http.ResponseWriter, r *http.Req
 }
 
 func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Request) {
-	report, err := app.ReportService.GenerateFinancialReport(r.Context())
+	period := r.URL.Query().Get("period")
+	if period == "" {
+		period = "today"
+	}
+
+	report, err := app.ReportService.GenerateFinancialReport(r.Context(), period)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
 	data := models.PageData{
-		"Title":  "Financial & Auditing Reports",
-		"Report": report,
+		"Title":         "Executive Financial & Time-Series Reports",
+		"Report":        report,
+		"CurrentPeriod": period,
 	}
 	app.render(w, r, http.StatusOK, "admin_reports.html", data)
+}
+
+func (app *Application) adminReportsExportHandler(w http.ResponseWriter, r *http.Request) {
+	period := r.URL.Query().Get("period")
+	if period == "" {
+		period = "today"
+	}
+
+	report, err := app.ReportService.GenerateFinancialReport(r.Context(), period)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	filename := fmt.Sprintf("teachar_financial_report_%s.csv", period)
+	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+
+	writer := csv.NewWriter(w)
+
+	// Header / Title
+	_ = writer.Write([]string{"TEACHAR.in Executive Financial Report"})
+	_ = writer.Write([]string{"Report Period", report.PeriodLabel})
+	_ = writer.Write([]string{"Date Generated", time.Now().Format("2006-01-02 15:04:05")})
+	_ = writer.Write([]string{})
+
+	// Executive Summary Section
+	_ = writer.Write([]string{"--- EXECUTIVE FINANCIAL SUMMARY ---"})
+	_ = writer.Write([]string{"Metric", "Value"})
+	_ = writer.Write([]string{"Gross Revenue (INR)", fmt.Sprintf("%.2f", report.GrossRevenue)})
+	_ = writer.Write([]string{"Total GST Tax Collected (5%)", fmt.Sprintf("%.2f", report.TotalTax)})
+	_ = writer.Write([]string{"Net Revenue (INR)", fmt.Sprintf("%.2f", report.NetRevenue)})
+	_ = writer.Write([]string{"Average Order Value (INR)", fmt.Sprintf("%.2f", report.AverageOrderValue)})
+	_ = writer.Write([]string{"Total Orders Count", strconv.Itoa(report.TotalOrders)})
+	_ = writer.Write([]string{"Completed Orders", strconv.Itoa(report.CompletedOrders)})
+	_ = writer.Write([]string{"Cancelled Orders", strconv.Itoa(report.CancelledOrders)})
+	_ = writer.Write([]string{"Total Paid Amount (INR)", fmt.Sprintf("%.2f", report.PaidAmount)})
+	_ = writer.Write([]string{"Pending Payments (INR)", fmt.Sprintf("%.2f", report.PendingPayment)})
+	_ = writer.Write([]string{"Peak Rush Hour", report.PeakRushHour})
+	_ = writer.Write([]string{"Slowest Hour", report.SlowestHour})
+	_ = writer.Write([]string{})
+
+	// Revenue by Payment Method
+	_ = writer.Write([]string{"--- REVENUE BY PAYMENT METHOD ---"})
+	_ = writer.Write([]string{"Payment Method", "Order Count", "Total Revenue (INR)"})
+	for _, pm := range report.PaymentMethods {
+		_ = writer.Write([]string{pm.Method, strconv.Itoa(pm.OrderCount), fmt.Sprintf("%.2f", pm.TotalAmount)})
+	}
+	_ = writer.Write([]string{})
+
+	// Revenue by Order Type
+	_ = writer.Write([]string{"--- REVENUE BY ORDER TYPE ---"})
+	_ = writer.Write([]string{"Order Type", "Order Count", "Total Revenue (INR)"})
+	for _, ot := range report.OrderTypes {
+		_ = writer.Write([]string{ot.Type, strconv.Itoa(ot.OrderCount), fmt.Sprintf("%.2f", ot.TotalAmount)})
+	}
+	_ = writer.Write([]string{})
+
+	// Top Selling Menu Items
+	_ = writer.Write([]string{"--- TOP SELLING MENU ITEMS ---"})
+	_ = writer.Write([]string{"Item Name", "Category", "Units Sold", "Total Revenue (INR)"})
+	for _, item := range report.TopSellingItems {
+		_ = writer.Write([]string{item.ItemName, item.Category, strconv.Itoa(item.Quantity), fmt.Sprintf("%.2f", item.TotalRevenue)})
+	}
+
+	writer.Flush()
 }
 
 func (app *Application) adminCouponsHandler(w http.ResponseWriter, r *http.Request) {
