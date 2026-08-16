@@ -12,6 +12,9 @@ type createOrderRequest struct {
 	CustomerName    string `json:"customer_name"`
 	CustomerPhone   string `json:"customer_phone"`
 	DeliveryAddress string `json:"delivery_address"`
+	PaymentMethod   string `json:"payment_method"`
+	PaymentStatus   string `json:"payment_status"`
+	TransactionID   string `json:"transaction_id"`
 	Items           []struct {
 		ID       int64   `json:"id"`
 		Name     string  `json:"name"`
@@ -50,8 +53,8 @@ func (app *Application) clientAccountHandler(w http.ResponseWriter, r *http.Requ
 	orders, _ := app.OrderService.GetClientOrders(r.Context(), user.ID)
 
 	data := models.PageData{
-		"Title":      "My Account",
-		"User":       user,
+		"Title":       "My Account",
+		"User":        user,
 		"TotalOrders": len(orders),
 	}
 	app.render(w, r, http.StatusOK, "client_account.html", data)
@@ -94,6 +97,9 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 		CustomerName:    customerName,
 		CustomerPhone:   req.CustomerPhone,
 		DeliveryAddress: req.DeliveryAddress,
+		PaymentMethod:   req.PaymentMethod,
+		PaymentStatus:   req.PaymentStatus,
+		TransactionID:   req.TransactionID,
 		Items:           orderItems,
 	}
 

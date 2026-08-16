@@ -49,6 +49,9 @@ type Order struct {
 	CustomerPhone   string      `json:"customer_phone"`
 	DeliveryAddress string      `json:"delivery_address"`
 	Status          string      `json:"status"` // "Pending", "Preparing", "Ready", "Completed", "Cancelled"
+	PaymentMethod   string      `json:"payment_method"` // "UPI", "Card", "NetBanking", "COD"
+	PaymentStatus   string      `json:"payment_status"` // "Paid", "Pending", "Failed"
+	TransactionID   string      `json:"transaction_id"`
 	TotalPrice      float64     `json:"total_price"`
 	Items           []OrderItem `json:"items"`
 	CreatedAt       time.Time   `json:"created_at"`

@@ -12,7 +12,7 @@ A modern, elegant, and responsive web application for **TEACHAR**, built using *
 
 ## 🌟 Overview
 
-**TEACHAR.in** is a digital platform for an artisanal tea, coffee, and snack house. It demonstrates the power, performance, and completeness of Go's standard library for web development—featuring persistent database storage, cryptographic authentication, interactive customer shopping cart, order tracking, and a comprehensive admin management dashboard.
+**TEACHAR.in** is a digital platform for an artisanal tea, coffee, and snack house. It demonstrates the power, performance, and completeness of Go's standard library for web development—featuring persistent database storage, cryptographic authentication, an interactive customer shopping cart, multi-channel payment gateway, order tracking, and a comprehensive admin management dashboard.
 
 ---
 
@@ -20,14 +20,19 @@ A modern, elegant, and responsive web application for **TEACHAR**, built using *
 
 ### 🍵 Customer Features
 - **Artisanal Menu**: Browse categorised items (*Tea*, *Coffee*, *Snacks*, *Cold Beverages*) with live instant search and category filtering tabs.
-- **Interactive Cart Drawer**: Real-time item additions, quantity management, tax calculations (5% GST), and seamless checkout.
+- **Interactive Cart & Multi-Channel Payment Gateway**:
+  - **UPI / QR Instant Pay**: Dynamic QR code preview (`teachar@upi`), auto-generated VPA string, and instant authorization.
+  - **Credit / Debit Card**: Formatted card inputs with CVV validation and an interactive **3D Secure OTP Modal** verification!
+  - **NetBanking**: Major Indian banks (HDFC, ICICI, SBI, Axis, Kotak).
+  - **Cash on Delivery (COD)**: Pay at table or on delivery (Payment Status: *Pending COD*).
+  - **Tax Calculation**: Automated 5% GST tax breakdown.
 - **Customer Authentication**: Secure sign-up (`/register`), sign-in (`/login`), and sign-out (`/logout`).
-- **Order Tracking (`/orders`)**: View purchase history and monitor order progress in real-time (*Pending*, *Preparing*, *Ready*, *Completed*, *Cancelled*).
-- **User Profile (`/account`)**: Manage personal account information and view order statistics.
+- **Order & Receipt Tracking (`/orders`)**: Monitor order fulfillment status (*Pending*, *Preparing*, *Ready*, *Completed*, *Cancelled*), view Payment Method pills (*UPI*, *Card*, *COD*), Payment Status badges (*Paid*, *Pending COD*), and unique Transaction IDs (`TXN...`).
+- **User Profile (`/account`)**: Manage personal account information and view purchase statistics.
 
 ### 🛡️ Admin Portal (`/admin`)
 - **Executive Dashboard**: Key business metrics including Total Revenue (₹), Total Orders Count, Active Orders Count, and Total Menu Items.
-- **Order Fulfillment Workflow**: Update customer order status dynamically in real-time.
+- **Order & Payment Fulfillment**: View customer transaction IDs, payment methods, and update order fulfillment status dynamically in real-time.
 - **Menu Management (`/admin/menu`)**: Add new menu items with image uploads, edit item details, toggle availability (*Available* / *Sold Out*), or delete items.
 
 ---
@@ -52,9 +57,9 @@ HTTP Request
      ↓
 Middleware (Logging, Security Headers, Session Authentication, Role Authorization)
      ↓
-Handlers Layer (Web Pages, Auth, Client Portal, Admin Portal, JSON APIs)
+Handlers Layer (Web Pages, Auth, Client Portal, Admin Portal, Payment APIs)
      ↓
-Services Layer (MenuService, AuthService, OrderService)
+Services Layer (MenuService, AuthService, OrderService with Payment Verification)
      ↓
 Repository Layer (JSONRepository using sync.RWMutex & atomic file operations)
      ↓
@@ -124,8 +129,8 @@ teachar.in/
 │   └── admin_orders.html
 │
 ├── static/                 # Static Assets
-│   ├── style.css           # Custom CSS Design System
-│   ├── app.js              # Client JS Cart & Search logic
+│   ├── style.css           # Custom CSS Design System with Payment Gateway UI
+│   ├── app.js              # Client JS Cart, Payment Selector & OTP Modal
 │   └── images/             # High-definition food & hero images
 │
 └── data/                   # Persistent Database directory
@@ -206,7 +211,7 @@ The application is configured using environment variables with sensible defaults
 - `GET /register` - Account Registration Page
 
 ### Customer Portal
-- `GET /orders` - Customer Order History
+- `GET /orders` - Customer Order History & Payment Status
 - `GET /account` - User Account Profile
 
 ### Admin Portal
@@ -216,7 +221,7 @@ The application is configured using environment variables with sensible defaults
 - `POST /admin/menu/edit` - Edit Menu Item
 - `POST /admin/menu/delete` - Delete Menu Item
 - `POST /admin/menu/toggle` - Toggle Availability Status
-- `GET /admin/orders` - Order Fulfillment List
+- `GET /admin/orders` - Order Fulfillment & Payment List
 - `POST /admin/orders/status` - Update Order Status
 
 ### API Endpoints
@@ -224,7 +229,7 @@ The application is configured using environment variables with sensible defaults
 - `GET /api/status` - Detailed API status
 - `GET /api/menu` - Returns full menu grouped by category (JSON)
 - `GET /api/menu/{id}` - Returns specific menu item by ID (JSON)
-- `POST /api/orders` - Submit new order (JSON)
+- `POST /api/orders` - Submit new order with Payment Gateway details (JSON)
 
 ---
 

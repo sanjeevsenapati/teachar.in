@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
+	"time"
 
 	"teachar.in/models"
 	"teachar.in/repository"
@@ -29,6 +31,20 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 	// 5% GST tax calculation
 	tax := calculatedTotal * 0.05
 	order.TotalPrice = calculatedTotal + tax
+
+	if order.PaymentMethod == "" {
+		order.PaymentMethod = "UPI"
+	}
+
+	if order.TransactionID == "" {
+		order.TransactionID = fmt.Sprintf("TXN%d", time.Now().UnixNano()/1e5)
+	}
+
+	if order.PaymentMethod == "COD" {
+		order.PaymentStatus = "Pending"
+	} else {
+		order.PaymentStatus = "Paid"
+	}
 
 	return s.orderRepo.CreateOrder(ctx, order)
 }

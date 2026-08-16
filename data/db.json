@@ -1,7 +1,7 @@
 {
   "next_user_id": 3,
   "next_menu_item_id": 11,
-  "next_order_id": 1,
+  "next_order_id": 2,
   "users": [
     {
       "id": 1,
@@ -115,5 +115,29 @@
       "available": true
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": 1,
+      "user_id": 0,
+      "customer_name": "Guest Customer",
+      "customer_phone": "",
+      "delivery_address": "",
+      "status": "Pending",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN82291558",
+      "total_price": 84,
+      "items": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T09:30:29.847456+05:30"
+    }
+  ]
 }

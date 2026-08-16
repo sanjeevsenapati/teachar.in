@@ -1,13 +1,15 @@
 /**
- * TEACHAR.in - Interactive Client & Cart App JS
+ * TEACHAR.in - Interactive Client, Cart & Payment Gateway JS
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     initActiveNav();
     initCartDrawer();
+    initPaymentMethodTabs();
     initCategoryTabs();
     initSearchFilter();
     initAddToCartButtons();
+    initOtpModal();
 });
 
 function initActiveNav() {
@@ -21,6 +23,7 @@ function initActiveNav() {
 }
 
 let cart = JSON.parse(localStorage.getItem('teachar_cart') || '[]');
+let selectedPaymentMethod = 'UPI';
 
 function saveCart() {
     localStorage.setItem('teachar_cart', JSON.stringify(cart));
@@ -34,6 +37,7 @@ function updateCartUI() {
     const taxEl = document.getElementById('cart-tax');
     const totalEl = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
+    const paymentSection = document.getElementById('payment-options-section');
 
     const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     if (badgeCount) badgeCount.textContent = totalItemCount;
@@ -52,11 +56,14 @@ function updateCartUI() {
         if (taxEl) taxEl.textContent = '₹0';
         if (totalEl) totalEl.textContent = '₹0';
         if (checkoutBtn) checkoutBtn.disabled = true;
+        if (paymentSection) paymentSection.style.display = 'none';
         
         const exploreBtn = document.getElementById('cart-explore-btn');
         if (exploreBtn) exploreBtn.addEventListener('click', closeCart);
         return;
     }
+
+    if (paymentSection) paymentSection.style.display = 'block';
 
     let subtotal = 0;
     let itemsHTML = '';
@@ -123,6 +130,25 @@ window.removeFromCart = function(id) {
     showToast('Item removed from cart');
 };
 
+function initPaymentMethodTabs() {
+    const cards = document.querySelectorAll('.payment-method-card');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+
+            const method = card.dataset.method;
+            selectedPaymentMethod = method;
+
+            const panels = document.querySelectorAll('.payment-details-panel');
+            panels.forEach(p => p.classList.remove('active'));
+
+            const activePanel = document.getElementById(`panel-${method}`);
+            if (activePanel) activePanel.classList.add('active');
+        });
+    });
+}
+
 function initCartDrawer() {
     const openBtn = document.getElementById('open-cart-btn');
     const closeBtn = document.getElementById('close-cart-btn');
@@ -137,45 +163,96 @@ function initCartDrawer() {
         checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
 
-            checkoutBtn.disabled = true;
-            checkoutBtn.innerHTML = '<span>Processing...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
-
-            try {
-                const response = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        items: cart.map(item => ({
-                            id: item.id,
-                            name: item.name,
-                            price: item.price,
-                            quantity: item.quantity
-                        }))
-                    })
-                });
-
-                if (response.ok) {
-                    cart = [];
-                    saveCart();
-                    closeCart();
-                    showToast('🎉 Order placed successfully!');
-                    setTimeout(() => {
-                        window.location.href = '/orders';
-                    }, 1200);
-                } else {
-                    showToast('Failed to place order. Please try again.');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('An error occurred. Please try again.');
-            } finally {
-                checkoutBtn.disabled = false;
-                checkoutBtn.innerHTML = '<span>Place Order</span> <i class="fa-solid fa-check"></i>';
+            if (selectedPaymentMethod === 'Card') {
+                openOtpModal();
+                return;
             }
+
+            await executeOrderPlacement(selectedPaymentMethod);
         });
     }
 
     updateCartUI();
+}
+
+async function executeOrderPlacement(paymentMethod, txnID) {
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = '<span>Processing Payment...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    const generatedTxnID = txnID || ('TXN' + Math.floor(10000000 + Math.random() * 90000000));
+    const paymentStatus = (paymentMethod === 'COD') ? 'Pending' : 'Paid';
+
+    try {
+        const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                payment_method: paymentMethod,
+                payment_status: paymentStatus,
+                transaction_id: generatedTxnID,
+                items: cart.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            })
+        });
+
+        if (response.ok) {
+            cart = [];
+            saveCart();
+            closeCart();
+            showToast(`🎉 Order Paid via ${paymentMethod}! TXN: ${generatedTxnID}`);
+            setTimeout(() => {
+                window.location.href = '/orders';
+            }, 1200);
+        } else {
+            showToast('Failed to process payment. Please try again.');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('An error occurred. Please try again.');
+    } finally {
+        if (checkoutBtn) {
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = '<span>Pay & Place Order</span> <i class="fa-solid fa-lock"></i>';
+        }
+    }
+}
+
+function initOtpModal() {
+    const modal = document.getElementById('otp-modal');
+    const closeBtn = document.getElementById('close-otp-btn');
+    const verifyBtn = document.getElementById('verify-otp-btn');
+
+    if (closeBtn) closeBtn.addEventListener('click', closeOtpModal);
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', async () => {
+            const otpInput = document.getElementById('otp-input');
+            if (!otpInput || otpInput.value.length < 4) {
+                showToast('Please enter a valid OTP code');
+                return;
+            }
+
+            closeOtpModal();
+            const cardTxnID = 'TXN_CARD_' + Math.floor(100000 + Math.random() * 900000);
+            await executeOrderPlacement('Card', cardTxnID);
+        });
+    }
+}
+
+function openOtpModal() {
+    const modal = document.getElementById('otp-modal');
+    if (modal) modal.classList.add('active');
+}
+
+function closeOtpModal() {
+    const modal = document.getElementById('otp-modal');
+    if (modal) modal.classList.remove('active');
 }
 
 function openCart() {

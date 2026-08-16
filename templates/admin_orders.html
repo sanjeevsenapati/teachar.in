@@ -3,7 +3,7 @@
     <div class="container admin-header-content">
         <div>
             <span class="section-tag">Order Fulfillment</span>
-            <h1 class="page-title">Manage Customer Orders</h1>
+            <h1 class="page-title">Manage Customer Orders & Payments</h1>
         </div>
         <div class="admin-nav-btns">
             <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
@@ -25,12 +25,12 @@
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Order ID & Date</th>
+                            <th>Order & TXN ID</th>
                             <th>Customer Info</th>
                             <th>Items Purchased</th>
-                            <th>Total (incl. tax)</th>
-                            <th>Current Status</th>
-                            <th>Change Status</th>
+                            <th>Payment Method & Status</th>
+                            <th>Total Amount</th>
+                            <th>Fulfillment Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,7 +38,8 @@
                         <tr>
                             <td>
                                 <strong>Order #{{.ID}}</strong><br>
-                                <small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "15:04 • Jan 02, 2006"}}</small>
+                                <small class="text-muted"><i class="fa-solid fa-barcode"></i> {{.TransactionID}}</small><br>
+                                <small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "15:04 • Jan 02"}}</small>
                             </td>
                             <td>
                                 <strong>{{.CustomerName}}</strong>
@@ -52,10 +53,11 @@
                                     {{end}}
                                 </ul>
                             </td>
-                            <td><strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong></td>
                             <td>
-                                <span class="order-status-badge status-{{.Status}}">{{.Status}}</span>
+                                <span class="payment-method-pill"><i class="fa-solid fa-credit-card"></i> {{.PaymentMethod}}</span><br>
+                                <span class="payment-status-badge pay-{{.PaymentStatus}}" style="margin-top:0.3rem;">{{.PaymentStatus}}</span>
                             </td>
+                            <td><strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong></td>
                             <td>
                                 <form action="/admin/orders/status" method="POST" class="inline-status-form">
                                     <input type="hidden" name="id" value="{{.ID}}">

@@ -75,11 +75,11 @@
         {{template "main" .}}
     </main>
 
-    <!-- Cart Drawer -->
+    <!-- Cart & Payment Drawer -->
     <div class="cart-overlay" id="cart-overlay"></div>
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
-            <h3><i class="fa-solid fa-bag-shopping"></i> Your Order</h3>
+            <h3><i class="fa-solid fa-bag-shopping"></i> Your Order & Payment</h3>
             <button class="cart-close-btn" id="close-cart-btn">&times;</button>
         </div>
         <div class="cart-body" id="cart-items-container">
@@ -89,6 +89,73 @@
                 <a href="/menu" class="btn btn-secondary btn-sm" id="cart-explore-btn">Explore Menu</a>
             </div>
         </div>
+
+        <!-- Payment Options Accordion/Selector -->
+        <div class="payment-options-section" id="payment-options-section">
+            <h4 class="payment-section-title"><i class="fa-solid fa-credit-card"></i> Select Payment Method</h4>
+            
+            <div class="payment-methods-grid">
+                <label class="payment-method-card active" data-method="UPI">
+                    <input type="radio" name="payment_method" value="UPI" checked>
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>UPI / QR</span>
+                </label>
+                <label class="payment-method-card" data-method="Card">
+                    <input type="radio" name="payment_method" value="Card">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Card</span>
+                </label>
+                <label class="payment-method-card" data-method="NetBanking">
+                    <input type="radio" name="payment_method" value="NetBanking">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>Banking</span>
+                </label>
+                <label class="payment-method-card" data-method="COD">
+                    <input type="radio" name="payment_method" value="COD">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <span>COD</span>
+                </label>
+            </div>
+
+            <!-- UPI Details -->
+            <div class="payment-details-panel active" id="panel-UPI">
+                <div class="upi-qr-box">
+                    <div class="qr-code-placeholder">
+                        <i class="fa-solid fa-qrcode qr-icon"></i>
+                        <span>Scan with GPay / PhonePe / Paytm</span>
+                    </div>
+                    <div class="upi-id-badge">UPI ID: <strong>teachar@upi</strong></div>
+                </div>
+            </div>
+
+            <!-- Card Details -->
+            <div class="payment-details-panel" id="panel-Card">
+                <div class="card-form-grid">
+                    <input type="text" id="card-number" placeholder="Card Number (4000 1234 5678 9010)" maxlength="19" class="form-input">
+                    <div class="card-form-row">
+                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" class="form-input">
+                        <input type="password" id="card-cvv" placeholder="CVV" maxlength="4" class="form-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- NetBanking Details -->
+            <div class="payment-details-panel" id="panel-NetBanking">
+                <select id="bank-select" class="form-select" style="width:100%;">
+                    <option value="HDFC">HDFC Bank</option>
+                    <option value="ICICI">ICICI Bank</option>
+                    <option value="SBI">State Bank of India</option>
+                    <option value="AXIS">Axis Bank</option>
+                    <option value="KOTAK">Kotak Mahindra Bank</option>
+                </select>
+            </div>
+
+            <!-- COD Details -->
+            <div class="payment-details-panel" id="panel-COD">
+                <p class="cod-note"><i class="fa-solid fa-circle-info"></i> Pay cash directly at the counter or upon table serving.</p>
+            </div>
+        </div>
+
         <div class="cart-footer">
             <div class="cart-summary-row">
                 <span>Subtotal</span>
@@ -103,10 +170,30 @@
                 <span id="cart-total">₹0</span>
             </div>
             <button class="btn btn-primary btn-block" id="checkout-btn" disabled>
-                <span>Place Order</span> <i class="fa-solid fa-check"></i>
+                <span>Pay & Place Order</span> <i class="fa-solid fa-lock"></i>
             </button>
         </div>
     </aside>
+
+    <!-- 3D Secure OTP Payment Verification Modal -->
+    <div class="modal-overlay" id="otp-modal">
+        <div class="modal-card" style="max-width:420px; text-align:center;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-shield-halved text-primary"></i> Payment Verification</h3>
+                <button class="modal-close-btn" id="close-otp-btn">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.75rem;">
+                <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                <p>Enter the 6-digit OTP sent to your registered mobile number to complete payment.</p>
+                <div class="form-group my-3" style="margin: 1.25rem 0;">
+                    <input type="text" id="otp-input" placeholder="123456" maxlength="6" style="text-align:center; font-size:1.5rem; letter-spacing:0.25em; font-weight:800; padding:0.6rem;">
+                </div>
+                <button class="btn btn-primary btn-block" id="verify-otp-btn">
+                    <span>Authorize Payment</span> <i class="fa-solid fa-check-double"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -167,7 +254,7 @@
         <div class="footer-bottom">
             <div class="container footer-bottom-content">
                 <p>&copy; {{.CurrentYear}} TEACHAR.in. All rights reserved.</p>
-                <p class="footer-badge">Built with 100% Pure Go Standard Library</p>
+                <p class="footer-badge">Enabled with Multi-Channel Payment Gateway</p>
             </div>
         </div>
     </footer>

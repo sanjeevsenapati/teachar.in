@@ -3,7 +3,7 @@
     <div class="container text-center">
         <span class="section-tag">Customer Portal</span>
         <h1 class="page-title">My Orders</h1>
-        <p class="page-subtitle">Track your recent orders and view purchase history</p>
+        <p class="page-subtitle">Track your recent orders, payment receipts, and purchase history</p>
     </div>
 </section>
 
@@ -26,15 +26,18 @@
                     <div>
                         <span class="order-id">Order #{{.ID}}</span>
                         <span class="order-date"><i class="fa-solid fa-calendar"></i> {{.CreatedAt.Format "Jan 02, 2006 • 15:04"}}</span>
+                        {{if .TransactionID}}<br><small class="text-muted"><i class="fa-solid fa-barcode"></i> TXN ID: <code>{{.TransactionID}}</code></small>{{end}}
                     </div>
-                    <span class="order-status-badge status-{{.Status}}">
-                        {{if eq .Status "Pending"}}<i class="fa-solid fa-clock"></i>
-                        {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire"></i>
-                        {{else if eq .Status "Ready"}}<i class="fa-solid fa-bell"></i>
-                        {{else if eq .Status "Completed"}}<i class="fa-solid fa-circle-check"></i>
-                        {{else}}<i class="fa-solid fa-circle-xmark"></i>{{end}}
-                        {{.Status}}
-                    </span>
+                    <div class="order-badges">
+                        <span class="order-status-badge status-{{.Status}}">
+                            {{if eq .Status "Pending"}}<i class="fa-solid fa-clock"></i>
+                            {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire"></i>
+                            {{else if eq .Status "Ready"}}<i class="fa-solid fa-bell"></i>
+                            {{else if eq .Status "Completed"}}<i class="fa-solid fa-circle-check"></i>
+                            {{else}}<i class="fa-solid fa-circle-xmark"></i>{{end}}
+                            {{.Status}}
+                        </span>
+                    </div>
                 </div>
                 <div class="order-card-body">
                     <div class="order-items-list">
@@ -48,8 +51,17 @@
                     </div>
                 </div>
                 <div class="order-card-footer">
-                    <span>Total Amount (incl. tax)</span>
-                    <strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong>
+                    <div class="payment-info">
+                        <span class="payment-method-pill"><i class="fa-solid fa-credit-card"></i> {{.PaymentMethod}}</span>
+                        <span class="payment-status-badge pay-{{.PaymentStatus}}">
+                            {{if eq .PaymentStatus "Paid"}}<i class="fa-solid fa-shield-check"></i> Paid
+                            {{else}}<i class="fa-solid fa-clock"></i> Pending Payment{{end}}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-muted" style="font-size:0.85rem; margin-right:0.5rem;">Total Amount</span>
+                        <strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong>
+                    </div>
                 </div>
             </div>
             {{end}}
