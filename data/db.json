@@ -1,8 +1,8 @@
 {
   "next_user_id": 7,
   "next_menu_item_id": 13,
-  "next_order_id": 10,
-  "next_audit_log_id": 51,
+  "next_order_id": 12,
+  "next_audit_log_id": 56,
   "users": [
     {
       "id": 1,
@@ -556,6 +556,210 @@
         }
       ],
       "created_at": "2026-08-16T14:04:58.459516+05:30"
+    },
+    {
+      "id": 10,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 4",
+      "delivery_address": "",
+      "status": "Preparing",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN87804767",
+      "total_price": 756,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 10,
+          "menu_item_id": 7,
+          "item_name": "Samosa",
+          "quantity": 1,
+          "price": 25
+        },
+        {
+          "id": 2,
+          "order_id": 10,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        },
+        {
+          "id": 3,
+          "order_id": 10,
+          "menu_item_id": 6,
+          "item_name": "Veg Sandwich",
+          "quantity": 1,
+          "price": 70
+        },
+        {
+          "id": 4,
+          "order_id": 10,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 5,
+          "price": 40
+        },
+        {
+          "id": 5,
+          "order_id": 10,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 6,
+          "order_id": 10,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 7,
+          "order_id": 10,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 6,
+          "price": 30
+        },
+        {
+          "id": 8,
+          "order_id": 10,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 3,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T14:17:42.000081+05:30"
+    },
+    {
+      "id": 11,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 3",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN26436753",
+      "total_price": 829.5,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 11,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 2,
+          "order_id": 11,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 3,
+          "order_id": 11,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 4,
+          "order_id": 11,
+          "menu_item_id": 6,
+          "item_name": "Veg Sandwich",
+          "quantity": 1,
+          "price": 70
+        },
+        {
+          "id": 5,
+          "order_id": 11,
+          "menu_item_id": 7,
+          "item_name": "Samosa",
+          "quantity": 1,
+          "price": 25
+        },
+        {
+          "id": 6,
+          "order_id": 11,
+          "menu_item_id": 10,
+          "item_name": "Popped Rice",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 7,
+          "order_id": 11,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        },
+        {
+          "id": 8,
+          "order_id": 11,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 9,
+          "order_id": 11,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 3,
+          "price": 30
+        },
+        {
+          "id": 10,
+          "order_id": 11,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 11,
+          "order_id": 11,
+          "menu_item_id": 9,
+          "item_name": "Red Tea",
+          "quantity": 2,
+          "price": 35
+        },
+        {
+          "id": 12,
+          "order_id": 11,
+          "menu_item_id": 12,
+          "item_name": "Red Tea \u0026 Popped Rice Combo",
+          "quantity": 5,
+          "price": 50
+        }
+      ],
+      "created_at": "2026-08-16T14:27:55.004826+05:30"
     }
   ],
   "audit_logs": [
@@ -1058,6 +1262,56 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "[::1]:52947"
+    },
+    {
+      "id": 51,
+      "timestamp": "2026-08-16T14:17:42.001905+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #10 (Dine-in, Total: ₹756.00)",
+      "ip_address": "[::1]:52982"
+    },
+    {
+      "id": 52,
+      "timestamp": "2026-08-16T14:18:09.287948+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #10 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52991"
+    },
+    {
+      "id": 53,
+      "timestamp": "2026-08-16T14:27:55.006898+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #11 (Dine-in, Total: ₹829.50)",
+      "ip_address": "[::1]:53095"
+    },
+    {
+      "id": 54,
+      "timestamp": "2026-08-16T14:28:12.169725+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #11 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:53099"
+    },
+    {
+      "id": 55,
+      "timestamp": "2026-08-16T14:28:24.19981+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #11 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:53099"
     }
   ],
   "cancellation_reasons": [
