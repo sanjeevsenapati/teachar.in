@@ -72,6 +72,38 @@
                         </div>
                     </div>
                     {{end}}
+
+                    {{if eq .Status "Completed"}}
+                        {{if eq .Rating 0}}
+                        <div class="order-review-form-box" style="margin-top:0.85rem; padding:0.85rem; background:#fffbeb; border:1px solid #fde68a; border-radius:8px;">
+                            <h5 style="margin-bottom:0.4rem; font-size:0.9rem; color:#b45309;"><i class="fa-solid fa-star text-warning"></i> Rate & Review Your Experience</h5>
+                            <form action="/api/orders/review" method="POST" class="review-form">
+                                <input type="hidden" name="order_id" value="{{.ID}}">
+                                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                                    <span style="font-size:0.85rem; font-weight:600; color:#374151;">Rating:</span>
+                                    <select name="rating" required style="padding:0.35rem 0.6rem; border:1px solid var(--border-color); border-radius:6px; font-weight:700; background:#fff; font-size:0.85rem;">
+                                        <option value="5" selected>★★★★★ (5/5 Excellent)</option>
+                                        <option value="4">★★★★☆ (4/5 Very Good)</option>
+                                        <option value="3">★★★☆☆ (3/5 Good)</option>
+                                        <option value="2">★★☆☆☆ (2/5 Fair)</option>
+                                        <option value="1">★☆☆☆☆ (1/5 Poor)</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <input type="text" name="review" placeholder="Optional comments on food quality & service..." class="form-input" style="flex:1; font-size:0.85rem; padding:0.4rem 0.75rem;">
+                                    <button type="submit" class="btn btn-primary btn-sm" style="padding:0.4rem 0.85rem; font-size:0.85rem;"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                        {{else}}
+                        <div style="margin-top:0.75rem; padding:0.6rem 0.85rem; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; color:#065f46; font-size:0.85rem;">
+                            <div style="display:flex; align-items:center; gap:0.4rem; font-weight:700; color:#059669; margin-bottom:0.2rem;">
+                                <i class="fa-solid fa-star" style="color:#f59e0b;"></i> Customer Rating: {{.Rating}} / 5 Stars
+                            </div>
+                            {{if .Review}}<p style="margin:0; color:#374151; font-style:italic;">"{{.Review}}"</p>{{end}}
+                        </div>
+                        {{end}}
+                    {{end}}
                 </div>
                 <div class="order-card-footer">
                     <div class="payment-info">

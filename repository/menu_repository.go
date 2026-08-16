@@ -39,6 +39,7 @@ type OrderRepository interface {
 	GetCancellationReasons(ctx context.Context) ([]string, error)
 	AddCancellationReason(ctx context.Context, reason string) error
 	DeleteCancellationReason(ctx context.Context, reason string) error
+	SaveOrderReview(ctx context.Context, id int64, rating int, review string) error
 }
 
 // AuditRepository defines the interface for audit trail logs.

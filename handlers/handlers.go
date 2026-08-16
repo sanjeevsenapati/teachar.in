@@ -52,6 +52,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("GET /orders", app.clientOrdersHandler)
 	router.HandleFunc("GET /account", app.clientAccountHandler)
 	router.HandleFunc("POST /api/orders", app.apiCreateOrderHandler)
+	router.HandleFunc("POST /api/orders/review", app.apiSubmitOrderReviewHandler)
 
 	// Admin / Staff / Superadmin handlers
 	router.Handle("GET /admin", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminDashboardHandler)))

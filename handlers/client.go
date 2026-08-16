@@ -126,3 +126,45 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 
 	app.writeJSON(w, r, http.StatusCreated, createdOrder, nil)
 }
+
+type submitReviewRequest struct {
+	OrderID int64  `json:"order_id"`
+	Rating  int    `json:"rating"`
+	Review  string `json:"review"`
+}
+
+func (app *Application) apiSubmitOrderReviewHandler(w http.ResponseWriter, r *http.Request) {
+	var req submitReviewRequest
+	if r.Header.Get("Content-Type") == "application/json" {
+		json.NewDecoder(r.Body).Decode(&req)
+	} else {
+		r.ParseForm()
+		req.OrderID, _ = strconv.ParseInt(r.FormValue("order_id"), 10, 64)
+		req.Rating, _ = strconv.Atoi(r.FormValue("rating"))
+		req.Review = r.FormValue("review")
+	}
+
+	user := middleware.GetUserFromContext(r)
+	var userID int64
+	if user != nil {
+		userID = user.ID
+	}
+
+	if err := app.OrderService.SubmitOrderReview(r.Context(), req.OrderID, userID, req.Rating, req.Review); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		details := "Submitted " + strconv.Itoa(req.Rating) + "-Star review for Order #" + strconv.FormatInt(req.OrderID, 10)
+		app.AuditService.LogEvent(r.Context(), user, "REVIEW_SUBMITTED", details, services.GetClientIP(r))
+	}
+
+	referer := r.Header.Get("Referer")
+	if referer != "" && r.Header.Get("X-Requested-With") == "" {
+		http.Redirect(w, r, referer, http.StatusSeeOther)
+		return
+	}
+
+	app.writeJSON(w, r, http.StatusOK, map[string]string{"message": "Review submitted successfully"}, nil)
+}

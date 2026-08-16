@@ -59,6 +59,8 @@ type Order struct {
 	AssignedStaffID    int64       `json:"assigned_staff_id"`    // Staff member who claimed/handled this order
 	AssignedStaffName  string      `json:"assigned_staff_name"`  // Staff member's name
 	CancellationReason string      `json:"cancellation_reason"`  // Staff cancellation explanation
+	Rating             int         `json:"rating"`               // 1 to 5 stars customer rating
+	Review             string      `json:"review"`               // Customer feedback comment
 	Items              []OrderItem `json:"items"`
 	CreatedAt          time.Time   `json:"created_at"`
 }

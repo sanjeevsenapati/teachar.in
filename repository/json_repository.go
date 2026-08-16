@@ -579,3 +579,22 @@ func (r *JSONRepository) DeleteCancellationReason(ctx context.Context, reason st
 	r.data.CancellationReasons = updated
 	return r.save()
 }
+
+func (r *JSONRepository) SaveOrderReview(ctx context.Context, id int64, rating int, review string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	found := false
+	for i, o := range r.data.Orders {
+		if o.ID == id {
+			r.data.Orders[i].Rating = rating
+			r.data.Orders[i].Review = review
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("order not found")
+	}
+	return r.save()
+}

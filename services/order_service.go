@@ -140,3 +140,24 @@ func (s *OrderService) AddCancellationReason(ctx context.Context, reason string)
 func (s *OrderService) DeleteCancellationReason(ctx context.Context, reason string) error {
 	return s.orderRepo.DeleteCancellationReason(ctx, reason)
 }
+
+func (s *OrderService) SubmitOrderReview(ctx context.Context, orderID int64, userID int64, rating int, review string) error {
+	if rating < 1 || rating > 5 {
+		return errors.New("rating must be between 1 and 5 stars")
+	}
+
+	order, err := s.orderRepo.GetOrderByID(ctx, orderID)
+	if err != nil {
+		return err
+	}
+
+	if userID != 0 && order.UserID != 0 && order.UserID != userID {
+		return errors.New("unauthorized to review this order")
+	}
+
+	if order.Status != "Completed" {
+		return errors.New("reviews can only be submitted for completed orders")
+	}
+
+	return s.orderRepo.SaveOrderReview(ctx, orderID, rating, review)
+}
