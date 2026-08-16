@@ -4,9 +4,28 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
 
 ---
 
-## 📸 Home Screen
+## 📸 Visual Showcase & Menu Gallery
 
+### 🏠 Homepage Showcase & Artisanal Hero Banner
 ![TEACHAR Home Screen](static/images/home-screenshot.png)
+
+---
+
+### 🍵 Signature Teas & Authentic Indian Brews
+
+| Kulhad Masala Chai | Red Tea & Popped Rice Combo | Fresh Ginger Tea |
+|:---:|:---:|:---:|
+| ![Kulhad Masala Chai](static/images/hero-banner.jpg) | ![Red Tea Combo](static/images/red-tea-combo.jpg) | ![Ginger Tea](static/images/ginger-tea.jpg) |
+| *Signature Spiced Kulhad Chai* | *Red Tea & Popped Rice Ritual* | *Fresh Crushed Ginger Tea* |
+
+---
+
+### 🥐 Artisanal Snacks & Beverages
+
+| Golden Masala Samosa | Iced Cold Coffee | Grilled Veg Sandwich |
+|:---:|:---:|:---:|
+| ![Golden Samosa](static/images/samosa.jpg) | ![Cold Coffee](static/images/cold-coffee.jpg) | ![Veg Sandwich](static/images/veg-sandwich.jpg) |
+| *Crispy Handcrafted Samosa* | *Creamy Espresso Cold Brew* | *Fresh Grilled Sandwich* |
 
 ---
 
