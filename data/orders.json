@@ -1,0 +1,512 @@
+{
+  "next_order_id": 12,
+  "cancellation_reasons": [
+    "Item out of stock",
+    "Kitchen load exceeded / High volume",
+    "Customer requested cancellation",
+    "Raw ingredients unavailable",
+    "End of operational hours / Store closing",
+    "Delivery location unreachable",
+    "Equipment maintenance - Espresso machine cleaning"
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN84326091",
+      "total_price": 162.75,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Raw ingredients unavailable",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 2,
+          "order_id": 1,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        }
+      ],
+      "created_at": "2026-08-16T12:06:36.17067+05:30"
+    },
+    {
+      "id": 2,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "",
+      "order_type": "Dine-in",
+      "table_number": "Table 12",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN17868661241126",
+      "total_price": 63,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 2,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 2,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T13:12:04.112635+05:30"
+    },
+    {
+      "id": 3,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "9876543210",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868661299408",
+      "total_price": 31.5,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Out of fresh mint leaves",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 3,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 1,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T13:12:09.940899+05:30"
+    },
+    {
+      "id": 4,
+      "user_id": 0,
+      "customer_name": "Test Customer",
+      "customer_phone": "9876543210",
+      "order_type": "Delivery",
+      "table_number": "",
+      "delivery_address": "42 Park Street, Bangalore",
+      "status": "Cancelled",
+      "payment_method": "Card",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868661356538",
+      "total_price": 84,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Equipment maintenance - Espresso machine cleaning",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 4,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T13:12:15.653858+05:30"
+    },
+    {
+      "id": 5,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN94418022",
+      "total_price": 42,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 3,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 5,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T13:46:07.141469+05:30"
+    },
+    {
+      "id": 6,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN23566276",
+      "total_price": 84,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 6,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T13:48:56.215971+05:30"
+    },
+    {
+      "id": 7,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN42486056",
+      "total_price": 42,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Item not availble",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 7,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T13:53:41.592435+05:30"
+    },
+    {
+      "id": 8,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 9",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN82891101",
+      "total_price": 84,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "Delicious tea and prompt service!",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 8,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 2,
+          "order_id": 8,
+          "menu_item_id": 12,
+          "item_name": "Red Tea \u0026 Popped Rice Combo",
+          "quantity": 1,
+          "price": 50
+        }
+      ],
+      "created_at": "2026-08-16T14:03:34.553519+05:30"
+    },
+    {
+      "id": 9,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 1",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN97524752",
+      "total_price": 42,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Item out of stock",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 9,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T14:04:58.459516+05:30"
+    },
+    {
+      "id": 10,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 4",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN87804767",
+      "total_price": 756,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 10,
+          "menu_item_id": 7,
+          "item_name": "Samosa",
+          "quantity": 1,
+          "price": 25
+        },
+        {
+          "id": 2,
+          "order_id": 10,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        },
+        {
+          "id": 3,
+          "order_id": 10,
+          "menu_item_id": 6,
+          "item_name": "Veg Sandwich",
+          "quantity": 1,
+          "price": 70
+        },
+        {
+          "id": 4,
+          "order_id": 10,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 5,
+          "price": 40
+        },
+        {
+          "id": 5,
+          "order_id": 10,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 6,
+          "order_id": 10,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 7,
+          "order_id": 10,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 6,
+          "price": 30
+        },
+        {
+          "id": 8,
+          "order_id": 10,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 3,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T14:17:42.000081+05:30"
+    },
+    {
+      "id": 11,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 3",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN26436753",
+      "total_price": 829.5,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "Mudhi and Chai is the best experience  We had. ",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 11,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 2,
+          "order_id": 11,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 3,
+          "order_id": 11,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 4,
+          "order_id": 11,
+          "menu_item_id": 6,
+          "item_name": "Veg Sandwich",
+          "quantity": 1,
+          "price": 70
+        },
+        {
+          "id": 5,
+          "order_id": 11,
+          "menu_item_id": 7,
+          "item_name": "Samosa",
+          "quantity": 1,
+          "price": 25
+        },
+        {
+          "id": 6,
+          "order_id": 11,
+          "menu_item_id": 10,
+          "item_name": "Popped Rice",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 7,
+          "order_id": 11,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        },
+        {
+          "id": 8,
+          "order_id": 11,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 9,
+          "order_id": 11,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 3,
+          "price": 30
+        },
+        {
+          "id": 10,
+          "order_id": 11,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 11,
+          "order_id": 11,
+          "menu_item_id": 9,
+          "item_name": "Red Tea",
+          "quantity": 2,
+          "price": 35
+        },
+        {
+          "id": 12,
+          "order_id": 11,
+          "menu_item_id": 12,
+          "item_name": "Red Tea \u0026 Popped Rice Combo",
+          "quantity": 5,
+          "price": 50
+        }
+      ],
+      "created_at": "2026-08-16T14:27:55.004826+05:30"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "sessions": [
+    {
+      "id": "4c8cb2123f3916a68dc436ea1e19e8f54de18900bd66e62bf3afff3259d93eff",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:12:37.712807+05:30"
+    },
+    {
+      "id": "a9d1e8b61fdffa7a8c605e2ec04be31b47ce5fe528f8f4c9d38675c58eeaf015",
+      "user_id": 1,
+      "expires_at": "2026-08-17T13:23:23.550685+05:30"
+    },
+    {
+      "id": "baf65285494dd92af56ebc781e816f250d857914df772dd92ce3a36bb1468846",
+      "user_id": 1,
+      "expires_at": "2026-08-17T13:36:07.909577+05:30"
+    },
+    {
+      "id": "d59d8b75c84dd8093af0926ec19ad4c84cfb5376a4712449c9cd0229b04e61d5",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:44:30.116113+05:30"
+    },
+    {
+      "id": "c30bac7f742bd970223918216620763863a8cfff4c1ef7d2ee4b9b13003208e7",
+      "user_id": 6,
+      "expires_at": "2026-08-17T13:44:38.696134+05:30"
+    },
+    {
+      "id": "ccc6871825e2b9d9356d5ca1264fe28b55a78ca0d4db441ae661139fecff8cb1",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:44:57.469625+05:30"
+    },
+    {
+      "id": "2b6164abcfcf116273c86f71999f5d618ac9f73c3e1abc46ffd577a364a0fc18",
+      "user_id": 6,
+      "expires_at": "2026-08-17T13:45:03.537458+05:30"
+    },
+    {
+      "id": "a70caf35514c6c0593722b65a693b903a68a33a27f111a667c6fc9a6973b096f",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:46:36.099649+05:30"
+    },
+    {
+      "id": "935738596d438ba27d47437df55a14ee18a23879c6ec2ef715a3aaf0973eefcc",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:52:40.936779+05:30"
+    },
+    {
+      "id": "34f1c2202ad2438daec8cd50980feefe21d88307cb4b631d26a7a0c5f1627cd3",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:52:53.604563+05:30"
+    },
+    {
+      "id": "d75b455d4125a540c0981ff672c19f7663bfb5bbae236814e260bcdc90a2efcc",
+      "user_id": 1,
+      "expires_at": "2026-08-17T14:01:25.525917+05:30"
+    },
+    {
+      "id": "7599169d067f9593f7b76a368961e2b8211fdc241f66e57b8425ccec7f3f5990",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:01:39.309819+05:30"
+    },
+    {
+      "id": "f7f8e215f659fb429eb66573edd1e02a07d008207062378cbb9089c1d516cd08",
+      "user_id": 3,
+      "expires_at": "2026-08-17T14:08:43.547257+05:30"
+    },
+    {
+      "id": "206c3dd8c58ff2baeb364ba7c64dd960ddf4f51dd6de0bf015951798548a4a53",
+      "user_id": 3,
+      "expires_at": "2026-08-17T14:09:07.187171+05:30"
+    },
+    {
+      "id": "3ad8dfbded7125f884d436eee5ec49c619e8ed66106db5b130f8de8e1b8ff8c5",
+      "user_id": 2,
+      "expires_at": "2026-08-17T14:09:18.72185+05:30"
+    },
+    {
+      "id": "04076589f2d4827f8ce31fa5b72ac31a4b64dff0cac6941e5bb92268db943b43",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:15:15.693621+05:30"
+    },
+    {
+      "id": "6f3d453e21fb2d4d266c13d588a137e8df8e4a476daea45390822965be4fbeef",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:35:29.169467+05:30"
+    },
+    {
+      "id": "a31b4bdc2ff23680dd99cfcc4df0cd992911609bdd8d3536c486c3c88468fbc8",
+      "user_id": 3,
+      "expires_at": "2026-08-17T14:43:50.267998+05:30"
+    },
+    {
+      "id": "91d419528a2eb91a46b994ecc28e3d6b07b9ef6ea556ee6c6ad42a4d937cc0b2",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:47:15.050099+05:30"
+    }
+  ]
+}

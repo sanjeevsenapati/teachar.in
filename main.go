@@ -28,10 +28,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Initialize the persistent standard library JSON repository.
-	dbRepo, err := repository.NewJSONRepository("data/db.json")
+	// Initialize the high-performance multi-file domain-isolated repository.
+	dbRepo, err := repository.NewMultiFileRepository("data")
 	if err != nil {
-		logger.Error("failed to initialize persistent repository", "error", err)
+		logger.Error("failed to initialize multi-file repository", "error", err)
 		os.Exit(1)
 	}
 
