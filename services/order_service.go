@@ -168,7 +168,7 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName, cancellationReason)
 }
 
-func (s *OrderService) AssignOrderToStaff(ctx context.Context, orderID int64, staffUser *models.User, assignedBy string) error {
+func (s *OrderService) AssignOrderToStaff(ctx context.Context, orderID int64, staffUser *models.User, assignedBy string, estimatedMinutes int) error {
 	if staffUser == nil {
 		return errors.New("invalid staff user")
 	}
@@ -186,7 +186,11 @@ func (s *OrderService) AssignOrderToStaff(ctx context.Context, orderID int64, st
 		return fmt.Errorf("cannot reassign an order that is already %s", order.Status)
 	}
 
-	return s.orderRepo.AssignOrderToStaff(ctx, orderID, staffUser.ID, staffUser.Name, assignedBy)
+	if estimatedMinutes <= 0 {
+		estimatedMinutes = 20
+	}
+
+	return s.orderRepo.AssignOrderToStaff(ctx, orderID, staffUser.ID, staffUser.Name, assignedBy, estimatedMinutes)
 }
 
 func (s *OrderService) GetCancellationReasons(ctx context.Context) ([]string, error) {

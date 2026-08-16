@@ -773,7 +773,7 @@ func (r *MultiFileRepository) UpdateOrderStatusWithStaff(ctx context.Context, id
 	return r.saveOrdersLocked()
 }
 
-func (r *MultiFileRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string) error {
+func (r *MultiFileRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string, estimatedMinutes int) error {
 	r.ordersMu.Lock()
 	defer r.ordersMu.Unlock()
 
@@ -787,6 +787,11 @@ func (r *MultiFileRepository) AssignOrderToStaff(ctx context.Context, id int64, 
 	order.AssignedStaffName = staffName
 	order.AssignedBy = assignedBy
 	order.AssignedAt = &now
+	if estimatedMinutes > 0 {
+		order.EstimatedMinutes = estimatedMinutes
+	} else if order.EstimatedMinutes <= 0 {
+		order.EstimatedMinutes = 20
+	}
 
 	return r.saveOrdersLocked()
 }

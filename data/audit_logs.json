@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 116,
+  "next_audit_log_id": 134,
   "audit_logs": [
     {
       "id": 1,
@@ -1150,6 +1150,186 @@
       "action": "REVIEW_SUBMITTED",
       "details": "Submitted 5-Star review for Order #18",
       "ip_address": "[::1]:55794"
+    },
+    {
+      "id": 116,
+      "timestamp": "2026-08-16T17:14:11.442458+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55892"
+    },
+    {
+      "id": 117,
+      "timestamp": "2026-08-16T17:14:29.362009+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #19 (Takeaway, Total: ₹0.00)",
+      "ip_address": "[::1]:55895"
+    },
+    {
+      "id": 118,
+      "timestamp": "2026-08-16T17:15:28.57098+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #19 to staff Counter Staff (ID: 4)",
+      "ip_address": "[::1]:55904"
+    },
+    {
+      "id": 119,
+      "timestamp": "2026-08-16T17:17:18.788758+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #20 (Delivery, Total: ₹84.00)",
+      "ip_address": "[::1]:55940"
+    },
+    {
+      "id": 120,
+      "timestamp": "2026-08-16T17:17:26.921898+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55946"
+    },
+    {
+      "id": 121,
+      "timestamp": "2026-08-16T17:17:43.837679+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #20 to staff Counter Staff (ID: 4)",
+      "ip_address": "[::1]:55946"
+    },
+    {
+      "id": 122,
+      "timestamp": "2026-08-16T17:17:48.276977+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #20 status to 'Preparing' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55946"
+    },
+    {
+      "id": 123,
+      "timestamp": "2026-08-16T17:17:56.285749+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #19 status to 'Ready' (Handled by: Super Admin)",
+      "ip_address": "[::1]:55946"
+    },
+    {
+      "id": 124,
+      "timestamp": "2026-08-16T17:18:06.532032+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:55957"
+    },
+    {
+      "id": 125,
+      "timestamp": "2026-08-16T17:18:13.204157+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #20 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:55957"
+    },
+    {
+      "id": 126,
+      "timestamp": "2026-08-16T17:18:21.833762+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #20 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:55957"
+    },
+    {
+      "id": 127,
+      "timestamp": "2026-08-16T17:18:24.723358+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #20 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:55957"
+    },
+    {
+      "id": 128,
+      "timestamp": "2026-08-16T17:19:29.020742+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #21 (Dine-in, Total: ₹36.75)",
+      "ip_address": "[::1]:55961"
+    },
+    {
+      "id": 129,
+      "timestamp": "2026-08-16T17:19:41.77289+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #21 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:55970"
+    },
+    {
+      "id": 130,
+      "timestamp": "2026-08-16T17:22:39.853532+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #21 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56004"
+    },
+    {
+      "id": 131,
+      "timestamp": "2026-08-16T17:23:13.743354+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #19 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56004"
+    },
+    {
+      "id": 132,
+      "timestamp": "2026-08-16T17:23:20.24428+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #20 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56004"
+    },
+    {
+      "id": 133,
+      "timestamp": "2026-08-16T17:23:43.89077+05:30",
+      "actor_id": 7,
+      "actor_name": "Sanjeev Senapati",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 3-Star review for Order #20",
+      "ip_address": "[::1]:56016"
     }
   ]
 }

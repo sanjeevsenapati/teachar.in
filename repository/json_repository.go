@@ -482,7 +482,7 @@ func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int6
 	return r.save()
 }
 
-func (r *JSONRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string) error {
+func (r *JSONRepository) AssignOrderToStaff(ctx context.Context, id int64, staffID int64, staffName string, assignedBy string, estimatedMinutes int) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -494,6 +494,11 @@ func (r *JSONRepository) AssignOrderToStaff(ctx context.Context, id int64, staff
 			r.data.Orders[i].AssignedStaffName = staffName
 			r.data.Orders[i].AssignedBy = assignedBy
 			r.data.Orders[i].AssignedAt = &now
+			if estimatedMinutes > 0 {
+				r.data.Orders[i].EstimatedMinutes = estimatedMinutes
+			} else if r.data.Orders[i].EstimatedMinutes <= 0 {
+				r.data.Orders[i].EstimatedMinutes = 20
+			}
 			found = true
 			break
 		}

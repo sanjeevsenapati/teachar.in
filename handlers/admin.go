@@ -190,6 +190,7 @@ func (app *Application) adminAssignOrderHandler(w http.ResponseWriter, r *http.R
 
 	orderIDStr := r.FormValue("order_id")
 	staffIDStr := r.FormValue("staff_id")
+	estMinsStr := r.FormValue("estimated_minutes")
 
 	orderID, err := strconv.ParseInt(orderIDStr, 10, 64)
 	if err != nil {
@@ -201,6 +202,11 @@ func (app *Application) adminAssignOrderHandler(w http.ResponseWriter, r *http.R
 	if err != nil {
 		app.badRequestError(w, r, fmt.Errorf("invalid staff ID"))
 		return
+	}
+
+	estimatedMinutes, _ := strconv.Atoi(estMinsStr)
+	if estimatedMinutes <= 0 {
+		estimatedMinutes = 20
 	}
 
 	staffUser, err := app.AuthService.GetUserByID(r.Context(), staffID)
@@ -219,7 +225,7 @@ func (app *Application) adminAssignOrderHandler(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	if err := app.OrderService.AssignOrderToStaff(r.Context(), orderID, staffUser, assignedBy); err != nil {
+	if err := app.OrderService.AssignOrderToStaff(r.Context(), orderID, staffUser, assignedBy, estimatedMinutes); err != nil {
 		orders, _ := app.OrderService.GetAllOrders(r.Context())
 		reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
 		allUsers, _ := app.AuthService.GetAllUsers(r.Context())

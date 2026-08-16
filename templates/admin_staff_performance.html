@@ -1,14 +1,14 @@
 {{define "main"}}
 <section class="admin-header-section">
-    <div class="container admin-header-content">
+    <div class="container admin-header-content" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
         <div>
-            <span class="section-tag">Fulfillment & Quality Audit</span>
-            <h1 class="page-title">Staff Speed, Countdown & Satisfaction Analytics</h1>
-            <p class="text-muted" style="margin-top:0.25rem;">Real-time tracking of staff order fulfillment speed, 20-minute SLA compliance, and customer star ratings.</p>
+            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Staff Quality & Speed Audit</span>
+            <h1 class="page-title" style="margin:0; font-size:2.2rem; font-weight:800; color:var(--text-main);">Staff Performance & Client Ratings</h1>
+            <p class="text-muted" style="margin-top:0.35rem; font-size:0.95rem;">Track staff preparation speed against custom estimated SLAs and client 5-star ratings.</p>
         </div>
-        <div class="admin-nav-btns">
+        <div class="admin-nav-btns" style="display:flex; gap:0.75rem;">
             <a href="/admin/orders" class="btn btn-secondary"><i class="fa-solid fa-receipt"></i> Orders Board</a>
-            <a href="/admin" class="btn btn-primary"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="/admin" class="btn btn-primary"><i class="fa-solid fa-gauge"></i> Executive Dashboard</a>
         </div>
     </div>
 </section>
@@ -22,23 +22,23 @@
                 <div class="metric-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user-gear"></i></div>
                 <div class="metric-info">
                     <span class="metric-label">Active Staff</span>
-                    <h3 class="metric-value">{{len .StaffPerformance}}</h3>
+                    <h3 class="metric-value">{{len .StaffPerformance}} Members</h3>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon icon-revenue"><i class="fa-solid fa-shield-check"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Target Prep SLA</span>
+                    <h3 class="metric-value">Staff Set (10-30m)</h3>
                 </div>
             </div>
 
             <div class="metric-card">
                 <div class="metric-icon icon-pending"><i class="fa-solid fa-stopwatch"></i></div>
                 <div class="metric-info">
-                    <span class="metric-label">Target Speed SLA</span>
-                    <h3 class="metric-value">20 Mins</h3>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon icon-revenue"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="metric-info">
-                    <span class="metric-label">On-Time Standard</span>
-                    <h3 class="metric-value">&le; 20m</h3>
+                    <span class="metric-label">Live SLA Tracking</span>
+                    <h3 class="metric-value">Internal Board</h3>
                 </div>
             </div>
 
@@ -54,19 +54,19 @@
         <!-- Staff Performance Leaderboard Table -->
         <div class="admin-table-card">
             <div class="table-card-header">
-                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0; display:flex; align-items:center; gap:0.5rem;">
                     <i class="fa-solid fa-award text-primary"></i> 
-                    Staff Speed & Customer Rating Leaderboard
+                    Staff Speed & Satisfaction Leaderboard
                 </h3>
                 <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:700;">
-                    <i class="fa-solid fa-clock"></i> 20-Min Countdown SLA
+                    <i class="fa-solid fa-user-check"></i> Staff-Defined SLA Audit
                 </span>
             </div>
 
             {{if not .StaffPerformance}}
             <div class="text-center p-5 text-muted">
                 <i class="fa-solid fa-user-clock p-3" style="font-size: 3rem; color:var(--border-color);"></i>
-                <h3>No Staff Metrics Recorded Yet</h3>
+                <h3 style="margin-top:0.5rem; font-weight:700;">No Staff Metrics Recorded Yet</h3>
                 <p>Metrics will update automatically as staff fulfill customer orders.</p>
             </div>
             {{else}}
@@ -75,58 +75,76 @@
                     <thead>
                         <tr>
                             <th>Staff Member</th>
-                            <th>Total Assigned</th>
-                            <th>Completed</th>
-                            <th>On-Time (&le;20m)</th>
-                            <th>Overdue (&gt;20m)</th>
-                            <th>On-Time Rate</th>
-                            <th>Avg Prep Time</th>
-                            <th>Customer Rating</th>
+                            <th>Assigned & Completed</th>
+                            <th>On-Time vs Overdue</th>
+                            <th>SLA Compliance Rate</th>
+                            <th>Avg Prep Speed</th>
+                            <th>Client Star Rating</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{range .StaffPerformance}}
                         <tr>
                             <td>
-                                <strong>{{.StaffName}}</strong><br>
-                                <small class="text-muted"><i class="fa-solid fa-envelope"></i> {{.StaffEmail}}</small>
-                            </td>
-                            <td><strong>{{.TotalAssignedOrders}}</strong> orders</td>
-                            <td><strong style="color:var(--text-main);">{{.CompletedOrders}}</strong> completed</td>
-                            <td>
-                                <span class="category-pill-sm" style="background:#d1fae5; color:#065f46; font-weight:800;">
-                                    <i class="fa-solid fa-check"></i> {{.OnTimeOrders}}
-                                </span>
-                            </td>
-                            <td>
-                                {{if gt .OverdueOrders 0}}
-                                <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800;">
-                                    <i class="fa-solid fa-triangle-exclamation"></i> {{.OverdueOrders}}
-                                </span>
-                                {{else}}
-                                <span class="category-pill-sm" style="background:#f3f4f6; color:#6b7280;">0</span>
-                                {{end}}
+                                <div style="display:flex; align-items:center; gap:0.85rem;">
+                                    <div class="staff-avatar">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <strong style="font-size:1rem; color:var(--text-main);">{{.StaffName}}</strong><br>
+                                        <small class="text-muted"><i class="fa-solid fa-envelope"></i> {{.StaffEmail}}</small>
+                                    </div>
+                                </div>
                             </td>
                             <td>
-                                {{if ge .OnTimeRate 85.0}}
-                                <strong style="color:#059669; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
-                                {{else if ge .OnTimeRate 60.0}}
-                                <strong style="color:#d97706; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
-                                {{else}}
-                                <strong style="color:#dc2626; font-weight:800;">{{printf "%.1f" .OnTimeRate}}%</strong>
-                                {{end}}
+                                <strong>{{.TotalAssignedOrders}}</strong> assigned<br>
+                                <small class="text-primary" style="font-weight:700;">{{.CompletedOrders}} completed</small>
                             </td>
                             <td>
-                                <strong>{{printf "%.1f" .AvgFulfillmentMinutes}} mins</strong>
+                                <div style="display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap;">
+                                    <span class="category-pill-sm" style="background:#d1fae5; color:#065f46; font-weight:800; padding:0.25rem 0.6rem;">
+                                        <i class="fa-solid fa-check"></i> {{.OnTimeOrders}} On-Time
+                                    </span>
+                                    {{if gt .OverdueOrders 0}}
+                                    <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800; padding:0.25rem 0.6rem;">
+                                        <i class="fa-solid fa-triangle-exclamation"></i> {{.OverdueOrders}} Overdue
+                                    </span>
+                                    {{else}}
+                                    <span class="category-pill-sm" style="background:#f3f4f6; color:#6b7280; padding:0.25rem 0.5rem;">0 Overdue</span>
+                                    {{end}}
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display:flex; flex-direction:column; gap:0.3rem; min-width:140px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        {{if ge .OnTimeRate 85.0}}
+                                        <strong style="color:#059669; font-weight:800; font-size:0.95rem;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                        {{else if ge .OnTimeRate 60.0}}
+                                        <strong style="color:#d97706; font-weight:800; font-size:0.95rem;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                        {{else}}
+                                        <strong style="color:#dc2626; font-weight:800; font-size:0.95rem;">{{printf "%.1f" .OnTimeRate}}%</strong>
+                                        {{end}}
+                                        <span class="text-muted" style="font-size:0.75rem;">SLA Score</span>
+                                    </div>
+                                    <div class="sla-progress-track">
+                                        <div class="sla-progress-fill {{if ge .OnTimeRate 85.0}}fill-success{{else if ge .OnTimeRate 60.0}}fill-warning{{else}}fill-danger{{end}}" style="width:{{.OnTimeRate}}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong style="font-size:1rem; color:var(--text-main);">{{printf "%.1f" .AvgFulfillmentMinutes}} mins</strong><br>
+                                <small class="text-muted">Average per order</small>
                             </td>
                             <td>
                                 {{if gt .TotalRatings 0}}
-                                <span class="rating-tag" style="background:#fef3c7; color:#b45309; padding:0.25rem 0.6rem; border-radius:var(--border-radius-full); font-weight:800; font-size:0.85rem;">
-                                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i> {{printf "%.1f" .AvgRating}} / 5.0
-                                </span>
-                                <br><small class="text-muted">({{.TotalRatings}} reviews)</small>
+                                <div style="display:flex; flex-direction:column; gap:0.2rem;">
+                                    <span class="rating-tag" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a; padding:0.3rem 0.75rem; border-radius:var(--border-radius-full); font-weight:800; font-size:0.88rem; display:inline-flex; align-items:center; gap:0.35rem;">
+                                        <i class="fa-solid fa-star" style="color:#f59e0b;"></i> {{printf "%.1f" .AvgRating}} / 5.0
+                                    </span>
+                                    <small class="text-muted">Based on {{.TotalRatings}} client reviews</small>
+                                </div>
                                 {{else}}
-                                <span class="text-muted" style="font-size:0.85rem;">No reviews yet</span>
+                                <span class="text-muted" style="font-size:0.85rem; font-style:italic;">No client reviews yet</span>
                                 {{end}}
                             </td>
                         </tr>
@@ -139,4 +157,37 @@
 
     </div>
 </section>
+
+<style>
+.staff-avatar {
+    width: 44px;
+    height: 44px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.sla-progress-track {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.sla-progress-fill {
+    height: 100%;
+    border-radius: var(--border-radius-full);
+    transition: width var(--transition-smooth);
+}
+
+.fill-success { background: #10b981; }
+.fill-warning { background: #f59e0b; }
+.fill-danger { background: #ef4444; }
+</style>
 {{end}}

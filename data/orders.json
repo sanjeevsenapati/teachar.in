@@ -1,5 +1,5 @@
 {
-  "next_order_id": 19,
+  "next_order_id": 22,
   "cancellation_reasons": [
     "Item out of stock",
     "Kitchen load exceeded / High volume",
@@ -759,6 +759,111 @@
         }
       ],
       "created_at": "2026-08-16T17:07:13.44643+05:30"
+    },
+    {
+      "id": 19,
+      "user_id": 0,
+      "customer_name": "Custom SLA Client",
+      "customer_phone": "9112233445",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN17868806693614",
+      "subtotal_price": 0,
+      "total_price": 0,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Super Admin",
+      "assigned_at": "2026-08-16T17:15:28.57048+05:30",
+      "completed_at": "2026-08-16T17:23:13.742251+05:30",
+      "estimated_minutes": 15,
+      "fulfillment_minutes": 8,
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 19,
+          "menu_item_id": 0,
+          "item_name": "",
+          "quantity": 1,
+          "price": 0
+        }
+      ],
+      "created_at": "2026-08-16T17:14:29.36148+05:30"
+    },
+    {
+      "id": 20,
+      "user_id": 7,
+      "customer_name": "Sanjeev Senapati",
+      "customer_phone": "8976546787",
+      "order_type": "Delivery",
+      "table_number": "",
+      "delivery_address": "Sendhatra, Bonth, Bhadrakh",
+      "status": "Completed",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN64006009",
+      "subtotal_price": 80,
+      "total_price": 84,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Super Admin",
+      "assigned_at": "2026-08-16T17:17:43.835975+05:30",
+      "completed_at": "2026-08-16T17:18:13.203296+05:30",
+      "estimated_minutes": 30,
+      "fulfillment_minutes": 1,
+      "cancellation_reason": "",
+      "rating": 3,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 20,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T17:17:18.787002+05:30"
+    },
+    {
+      "id": 21,
+      "user_id": 7,
+      "customer_name": "Sanjeev Senapati",
+      "customer_phone": "8976546787",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 9",
+      "delivery_address": "",
+      "status": "Ready",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN63473055",
+      "subtotal_price": 35,
+      "total_price": 36.75,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Self Claimed",
+      "assigned_at": "2026-08-16T17:19:41.771934+05:30",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 21,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        }
+      ],
+      "created_at": "2026-08-16T17:19:29.017774+05:30"
     }
   ]
 }

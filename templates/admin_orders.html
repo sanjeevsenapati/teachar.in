@@ -69,15 +69,15 @@
                                 <small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "15:04 • Jan 02"}}</small>
                                 {{if or (eq .Status "Pending") (eq .Status "Preparing") (eq .Status "Ready")}}
                                 <div style="margin-top:0.35rem;">
-                                    <span class="order-countdown-timer category-pill-sm" data-created="{{.CreatedAt.Format "2006-01-02T15:04:05Z07:00"}}" style="font-size:0.75rem;">
-                                        <i class="fa-solid fa-stopwatch"></i> 20m SLA
+                                    <span class="order-countdown-timer category-pill-sm" data-created="{{.CreatedAt.Format "2006-01-02T15:04:05Z07:00"}}" data-estimated="{{if gt .EstimatedMinutes 0}}{{.EstimatedMinutes}}{{else}}20{{end}}" style="font-size:0.75rem;">
+                                        <i class="fa-solid fa-stopwatch"></i> SLA: {{if gt .EstimatedMinutes 0}}{{.EstimatedMinutes}}{{else}}20{{end}}m
                                     </span>
                                 </div>
                                 {{else if eq .Status "Completed"}}
                                 {{if gt .FulfillmentMinutes 0}}
                                 <div style="margin-top:0.35rem;">
-                                    <span class="category-pill-sm {{if le .FulfillmentMinutes 20}}bg-success-light text-success{{else}}bg-danger-light text-danger{{end}}" style="font-size:0.75rem; font-weight:700;">
-                                        <i class="fa-solid fa-clock"></i> {{.FulfillmentMinutes}}m ({{if le .FulfillmentMinutes 20}}On-Time{{else}}Overdue{{end}})
+                                    <span class="category-pill-sm bg-success-light text-success" style="font-size:0.75rem; font-weight:700;">
+                                        <i class="fa-solid fa-clock"></i> {{.FulfillmentMinutes}}m (Est: {{if gt .EstimatedMinutes 0}}{{.EstimatedMinutes}}{{else}}20{{end}}m)
                                     </span>
                                 </div>
                                 {{end}}
@@ -108,27 +108,35 @@
                                         <i class="fa-solid fa-user-tie"></i> {{.AssignedStaffName}}
                                     </span>
                                     {{if .AssignedBy}}<br><small class="text-muted" style="font-size:0.7rem; font-weight:600;">Assigned by: {{.AssignedBy}}</small>{{end}}
+                                    {{if gt .EstimatedMinutes 0}}<br><small class="text-muted" style="font-size:0.72rem; font-weight:700; color:var(--primary);"><i class="fa-solid fa-stopwatch"></i> Target: {{.EstimatedMinutes}} Mins</small>{{end}}
                                 </div>
                                 {{else}}
                                 <div style="margin-bottom:0.4rem;">
                                     {{if or $.IsAdmin $.IsSuperadmin}}
                                     <form action="/admin/orders/assign" method="POST" style="margin-top:0.2rem;">
                                         <input type="hidden" name="order_id" value="{{.ID}}">
-                                        <div style="display:flex; gap:0.3rem; align-items:center; flex-wrap:wrap;">
+                                        <div style="display:flex; flex-direction:column; gap:0.3rem;">
                                             <select name="staff_id" class="status-select" style="padding:0.25rem 0.4rem; font-size:0.78rem; font-weight:700;" required>
                                                 <option value="">Assign Staff...</option>
                                                 {{range $.StaffList}}
                                                 <option value="{{.ID}}">{{.Name}}</option>
                                                 {{end}}
                                             </select>
+                                            <select name="estimated_minutes" class="status-select" style="padding:0.25rem 0.4rem; font-size:0.75rem; font-weight:600;">
+                                                <option value="10">Est. Time: 10 Mins</option>
+                                                <option value="15">Est. Time: 15 Mins</option>
+                                                <option value="20" selected>Est. Time: 20 Mins</option>
+                                                <option value="25">Est. Time: 25 Mins</option>
+                                                <option value="30">Est. Time: 30 Mins</option>
+                                            </select>
                                             <button type="submit" class="btn btn-primary btn-sm" style="padding:0.25rem 0.5rem; font-size:0.75rem; white-space:nowrap; font-weight:700;">
-                                                Assign
+                                                Assign & Start SLA
                                             </button>
                                         </div>
                                     </form>
                                     {{else}}
                                     <span class="category-pill-sm" style="background:#f3f4f6; color:#6b7280; font-weight:600; padding:0.25rem 0.5rem; font-size:0.75rem;">
-                                        <i class="fa-solid fa-user-clock"></i> Unclaimed (Pick Order)
+                                        <i class="fa-solid fa-user-clock"></i> Unclaimed
                                     </span>
                                     {{end}}
                                 </div>
@@ -485,9 +493,9 @@ function updateOrderCountdowns() {
         const createdStr = timer.getAttribute('data-created');
         if (!createdStr) return;
         
+        const estMins = parseInt(timer.getAttribute('data-estimated') || '20', 10);
         const created = new Date(createdStr);
-        // 20 minutes target limit = 1200 seconds
-        const targetTime = new Date(created.getTime() + 20 * 60 * 1000);
+        const targetTime = new Date(created.getTime() + estMins * 60 * 1000);
         const diffMs = targetTime - now;
         const totalSecs = Math.floor(diffMs / 1000);
         

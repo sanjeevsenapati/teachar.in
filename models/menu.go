@@ -79,7 +79,8 @@ type Order struct {
 	AssignedBy         string      `json:"assigned_by,omitempty"` // "Admin", "Super Admin", or "Self Claimed"
 	AssignedAt         *time.Time  `json:"assigned_at,omitempty"`
 	CompletedAt        *time.Time  `json:"completed_at,omitempty"`
-	FulfillmentMinutes int         `json:"fulfillment_minutes,omitempty"` // Duration in minutes to complete
+	EstimatedMinutes   int         `json:"estimated_minutes,omitempty"`   // Staff target prep time in minutes (e.g. 15, 20, 30)
+	FulfillmentMinutes int         `json:"fulfillment_minutes,omitempty"` // Actual duration in minutes to complete
 	CancellationReason string      `json:"cancellation_reason"`  // Staff cancellation explanation
 	Rating             int         `json:"rating"`               // 1 to 5 stars customer rating
 	Review             string      `json:"review"`               // Customer feedback comment

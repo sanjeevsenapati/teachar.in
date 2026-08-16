@@ -363,7 +363,12 @@ func (s *ReportService) GetStaffPerformanceReport(ctx context.Context) ([]models
 				}
 			}
 
-			if duration <= 20 {
+			targetMinutes := o.EstimatedMinutes
+			if targetMinutes <= 0 {
+				targetMinutes = 20
+			}
+
+			if duration <= targetMinutes {
 				rep.OnTimeOrders++
 			} else {
 				rep.OverdueOrders++
