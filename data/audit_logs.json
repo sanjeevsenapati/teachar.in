@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 63,
+  "next_audit_log_id": 88,
   "audit_logs": [
     {
       "id": 1,
@@ -620,6 +620,256 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "[::1]:53351"
+    },
+    {
+      "id": 63,
+      "timestamp": "2026-08-16T15:10:45.324518+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:53673"
+    },
+    {
+      "id": 64,
+      "timestamp": "2026-08-16T15:11:00.495723+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:53673"
+    },
+    {
+      "id": 65,
+      "timestamp": "2026-08-16T15:14:11.081069+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:53738"
+    },
+    {
+      "id": 66,
+      "timestamp": "2026-08-16T15:56:17.798677+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #12 (Dine-in, Total: ₹47.25)",
+      "ip_address": "[::1]:54661"
+    },
+    {
+      "id": 67,
+      "timestamp": "2026-08-16T15:56:23.762901+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:54661"
+    },
+    {
+      "id": 68,
+      "timestamp": "2026-08-16T15:56:44.452899+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #13 (Dine-in, Total: ₹47.25)",
+      "ip_address": "[::1]:54661"
+    },
+    {
+      "id": 69,
+      "timestamp": "2026-08-16T15:57:01.740891+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 70,
+      "timestamp": "2026-08-16T15:57:10.074322+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #13 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 71,
+      "timestamp": "2026-08-16T15:57:14.215039+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #13 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 72,
+      "timestamp": "2026-08-16T15:57:17.693261+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #13 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 73,
+      "timestamp": "2026-08-16T15:57:42.785715+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #12 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 74,
+      "timestamp": "2026-08-16T15:57:47.125041+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #12 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54679"
+    },
+    {
+      "id": 75,
+      "timestamp": "2026-08-16T15:58:05.836308+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #13",
+      "ip_address": "[::1]:54688"
+    },
+    {
+      "id": 76,
+      "timestamp": "2026-08-16T15:58:20.649074+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #10",
+      "ip_address": "[::1]:54688"
+    },
+    {
+      "id": 77,
+      "timestamp": "2026-08-16T15:59:00.952406+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #12 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54691"
+    },
+    {
+      "id": 78,
+      "timestamp": "2026-08-16T15:59:04.185176+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #12 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54691"
+    },
+    {
+      "id": 79,
+      "timestamp": "2026-08-16T16:05:06.648761+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:54745"
+    },
+    {
+      "id": 80,
+      "timestamp": "2026-08-16T16:07:15.942595+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #14 (Dine-in, Total: ₹126.00)",
+      "ip_address": "[::1]:54814"
+    },
+    {
+      "id": 81,
+      "timestamp": "2026-08-16T16:13:07.867181+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_CREATED",
+      "details": "Created single-use coupon 'TEACHAR10'",
+      "ip_address": "[::1]:54878"
+    },
+    {
+      "id": 82,
+      "timestamp": "2026-08-16T16:15:01.312842+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:54896"
+    },
+    {
+      "id": 83,
+      "timestamp": "2026-08-16T16:15:15.887084+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #14 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54896"
+    },
+    {
+      "id": 84,
+      "timestamp": "2026-08-16T16:16:25.467613+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #15 (Takeaway, Total: ₹126.00)",
+      "ip_address": "[::1]:54906"
+    },
+    {
+      "id": 85,
+      "timestamp": "2026-08-16T16:16:43.866183+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #15 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54916"
+    },
+    {
+      "id": 86,
+      "timestamp": "2026-08-16T16:16:48.913542+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #15 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:54916"
+    },
+    {
+      "id": 87,
+      "timestamp": "2026-08-16T16:18:21.539321+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #15",
+      "ip_address": "[::1]:54934"
     }
   ]
 }

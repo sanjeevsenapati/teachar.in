@@ -26,9 +26,10 @@ func setupTestApp(t *testing.T) http.Handler {
 		t.Fatalf("failed to create test repo: %v", err)
 	}
 
+	couponService := services.NewCouponService(repo)
 	menuService := services.NewMenuService(repo)
 	authService := services.NewAuthService(repo)
-	orderService := services.NewOrderService(repo)
+	orderService := services.NewOrderService(repo, couponService)
 	auditService := services.NewAuditService(repo)
 	reportService := services.NewReportService(repo, repo)
 
@@ -40,6 +41,7 @@ func setupTestApp(t *testing.T) http.Handler {
 		OrderService:  orderService,
 		AuditService:  auditService,
 		ReportService: reportService,
+		CouponService: couponService,
 	}
 
 	mux := http.NewServeMux()

@@ -23,6 +23,7 @@ type Application struct {
 	OrderService  *services.OrderService
 	AuditService  *services.AuditService
 	ReportService *services.ReportService
+	CouponService *services.CouponService
 }
 
 // RegisterRoutes sets up all the routes for the application.
@@ -53,6 +54,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("GET /account", app.clientAccountHandler)
 	router.HandleFunc("POST /api/orders", app.apiCreateOrderHandler)
 	router.HandleFunc("POST /api/orders/review", app.apiSubmitOrderReviewHandler)
+	router.HandleFunc("POST /api/coupons/validate", app.apiValidateCouponHandler)
 
 	// Admin / Staff / Superadmin handlers
 	router.Handle("GET /admin", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminDashboardHandler)))
@@ -71,6 +73,9 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
 	router.Handle("GET /admin/reports", mw.RequireSuperadmin(http.HandlerFunc(app.adminReportsHandler)))
+	router.Handle("GET /admin/coupons", mw.RequireSuperadmin(http.HandlerFunc(app.adminCouponsHandler)))
+	router.Handle("POST /admin/coupons/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateCouponHandler)))
+	router.Handle("POST /admin/coupons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCouponHandler)))
 
 	// API status endpoints
 	router.HandleFunc("GET /api/status", app.apiStatusHandler)

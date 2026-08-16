@@ -26,6 +26,8 @@ function initActiveNav() {
 let cart = JSON.parse(localStorage.getItem('teachar_cart') || '[]');
 let selectedPaymentMethod = 'UPI';
 let selectedOrderType = 'Dine-in';
+let appliedCouponCode = '';
+let discountAmount = 0;
 
 function saveCart() {
     localStorage.setItem('teachar_cart', JSON.stringify(cart));
@@ -98,8 +100,21 @@ function updateCartUI() {
 
     itemsContainer.innerHTML = itemsHTML;
 
-    const tax = Math.round(subtotal * 0.05);
-    const total = subtotal + tax;
+    let discountedSubtotal = Math.max(0, subtotal - discountAmount);
+    const tax = Math.round(discountedSubtotal * 0.05);
+    const total = Math.round((discountedSubtotal + tax) * 100) / 100;
+
+    const discountRow = document.getElementById('cart-discount-row');
+    const discountCodeEl = document.getElementById('coupon-applied-code');
+    const discountEl = document.getElementById('cart-discount');
+
+    if (appliedCouponCode && discountAmount > 0) {
+        if (discountRow) discountRow.style.display = 'flex';
+        if (discountCodeEl) discountCodeEl.textContent = appliedCouponCode;
+        if (discountEl) discountEl.textContent = `-₹${discountAmount.toFixed(2)}`;
+    } else {
+        if (discountRow) discountRow.style.display = 'none';
+    }
 
     if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
     if (taxEl) taxEl.textContent = `₹${tax}`;
@@ -219,6 +234,11 @@ function initCartDrawer() {
     if (closeBtn) closeBtn.addEventListener('click', closeCart);
     if (overlay) overlay.addEventListener('click', closeCart);
 
+    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    if (applyCouponBtn) {
+        applyCouponBtn.addEventListener('click', applyCoupon);
+    }
+
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
@@ -237,6 +257,57 @@ function initCartDrawer() {
     }
 
     updateCartUI();
+}
+
+async function applyCoupon() {
+    const input = document.getElementById('coupon-code-input');
+    const msgEl = document.getElementById('coupon-message');
+    if (!input || !msgEl) return;
+
+    const code = input.value.trim().toUpperCase();
+    if (!code) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#ef4444';
+        msgEl.textContent = 'Please enter a coupon code.';
+        return;
+    }
+
+    let subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+    if (subtotal <= 0) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#ef4444';
+        msgEl.textContent = 'Add items to cart before applying coupon.';
+        return;
+    }
+
+    try {
+        const resp = await fetch('/api/coupons/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: code, subtotal: subtotal })
+        });
+        const data = await resp.json();
+        if (data.valid) {
+            appliedCouponCode = data.code;
+            discountAmount = data.discount_amount;
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#10b981';
+            msgEl.textContent = `✓ Coupon '${data.code}' applied! Saved ₹${data.discount_amount.toFixed(2)}`;
+            updateCartUI();
+        } else {
+            appliedCouponCode = '';
+            discountAmount = 0;
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#ef4444';
+            msgEl.textContent = `✕ ${data.error || 'Invalid coupon code'}`;
+            updateCartUI();
+        }
+    } catch (err) {
+        console.error(err);
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#ef4444';
+        msgEl.textContent = 'Error validating coupon.';
+    }
 }
 
 async function executeOrderPlacement(paymentMethod, txnID) {
@@ -274,6 +345,7 @@ async function executeOrderPlacement(paymentMethod, txnID) {
                 payment_method: paymentMethod,
                 payment_status: paymentStatus,
                 transaction_id: generatedTxnID,
+                coupon_code: appliedCouponCode,
                 items: cart.map(item => ({
                     id: item.id,
                     name: item.name,

@@ -47,3 +47,12 @@ type AuditRepository interface {
 	CreateAuditLog(ctx context.Context, log models.AuditLog) (*models.AuditLog, error)
 	GetAllAuditLogs(ctx context.Context) ([]models.AuditLog, error)
 }
+
+// CouponRepository defines the interface for offer discount coupons.
+type CouponRepository interface {
+	CreateCoupon(ctx context.Context, coupon models.Coupon) (*models.Coupon, error)
+	GetCouponByCode(ctx context.Context, code string) (*models.Coupon, error)
+	GetAllCoupons(ctx context.Context) ([]models.Coupon, error)
+	MarkCouponUsed(ctx context.Context, code string, orderID int64) error
+	DeleteCoupon(ctx context.Context, id int64) error
+}

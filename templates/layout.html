@@ -47,6 +47,7 @@
                         <a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Artisanal Menu Items</a>
                         <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
                         <a href="/admin/reports" class="dropdown-item"><i class="fa-solid fa-chart-line"></i> Financial Reports</a>
+                        <a href="/admin/coupons" class="dropdown-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
                     </div>
                 </li>
                 {{else if or .IsAdmin .IsStaff}}
@@ -243,9 +244,25 @@
         </div>
 
         <div class="cart-footer">
+            <!-- Coupon / Offer Code Section -->
+            <div class="coupon-section mb-3" style="border-bottom: 1px dashed var(--border-color); padding-bottom: 0.85rem; margin-bottom: 0.85rem;">
+                <label for="coupon-code-input" style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">
+                    <i class="fa-solid fa-ticket text-primary"></i> Have a Coupon Code?
+                </label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="coupon-code-input" placeholder="e.g. WELCOME50" class="form-input" style="text-transform: uppercase; font-weight:700; flex:1; padding:0.4rem 0.6rem; font-size:0.9rem;" />
+                    <button type="button" id="apply-coupon-btn" class="btn btn-secondary btn-sm" style="white-space:nowrap; padding:0.4rem 0.8rem; font-weight:700;">Apply</button>
+                </div>
+                <div id="coupon-message" style="font-size: 0.82rem; margin-top: 0.4rem; display: none; font-weight: 600;"></div>
+            </div>
+
             <div class="cart-summary-row">
                 <span>Subtotal</span>
                 <span id="cart-subtotal">₹0</span>
+            </div>
+            <div class="cart-summary-row" id="cart-discount-row" style="display:none; color: var(--secondary-orange); font-weight: 700;">
+                <span>Discount Applied (<span id="coupon-applied-code"></span>)</span>
+                <span id="cart-discount">-₹0</span>
             </div>
             <div class="cart-summary-row">
                 <span>Taxes & Fees (5%)</span>

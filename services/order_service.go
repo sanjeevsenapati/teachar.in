@@ -12,10 +12,14 @@ import (
 
 type OrderService struct {
 	orderRepo repository.OrderRepository
+	couponSvc *CouponService
 }
 
-func NewOrderService(orderRepo repository.OrderRepository) *OrderService {
-	return &OrderService{orderRepo: orderRepo}
+func NewOrderService(orderRepo repository.OrderRepository, couponSvc *CouponService) *OrderService {
+	return &OrderService{
+		orderRepo: orderRepo,
+		couponSvc: couponSvc,
+	}
 }
 
 func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*models.Order, error) {
@@ -47,14 +51,31 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 		return nil, errors.New("invalid order type")
 	}
 
-	var calculatedTotal float64
+	var subtotal float64
 	for _, item := range order.Items {
-		calculatedTotal += item.Price * float64(item.Quantity)
+		subtotal += item.Price * float64(item.Quantity)
 	}
 
-	// 5% GST tax calculation
-	tax := calculatedTotal * 0.05
-	order.TotalPrice = calculatedTotal + tax
+	order.SubtotalPrice = subtotal
+	var discountAmount float64
+
+	if order.CouponCode != "" && s.couponSvc != nil {
+		_, disc, _, err := s.couponSvc.ValidateCoupon(ctx, order.CouponCode, subtotal)
+		if err != nil {
+			return nil, err
+		}
+		discountAmount = disc
+		order.DiscountAmount = discountAmount
+	}
+
+	discountedSubtotal := subtotal - discountAmount
+	if discountedSubtotal < 0 {
+		discountedSubtotal = 0
+	}
+
+	// 5% GST tax calculation on discounted amount
+	tax := discountedSubtotal * 0.05
+	order.TotalPrice = float64(int64((discountedSubtotal+tax)*100+0.5)) / 100
 
 	if order.PaymentMethod == "" {
 		order.PaymentMethod = "UPI"
@@ -70,7 +91,17 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 		order.PaymentStatus = "Paid"
 	}
 
-	return s.orderRepo.CreateOrder(ctx, order)
+	createdOrder, err := s.orderRepo.CreateOrder(ctx, order)
+	if err != nil {
+		return nil, err
+	}
+
+	// Mark single-use coupon as used
+	if order.CouponCode != "" && s.couponSvc != nil {
+		_ = s.couponSvc.MarkCouponUsed(ctx, order.CouponCode, createdOrder.ID)
+	}
+
+	return createdOrder, nil
 }
 
 func (s *OrderService) GetClientOrders(ctx context.Context, userID int64) ([]models.Order, error) {

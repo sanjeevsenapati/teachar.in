@@ -40,6 +40,11 @@ type auditLogsSchema struct {
 	AuditLogs      []models.AuditLog `json:"audit_logs"`
 }
 
+type couponsSchema struct {
+	NextCouponID int64           `json:"next_coupon_id"`
+	Coupons      []models.Coupon `json:"coupons"`
+}
+
 // MultiFileRepository provides domain-isolated, fine-grained locking, O(1) in-memory indexed storage using standard library packages.
 type MultiFileRepository struct {
 	dataDir string
@@ -50,6 +55,7 @@ type MultiFileRepository struct {
 	menuMu      sync.RWMutex
 	ordersMu    sync.RWMutex
 	auditLogsMu sync.RWMutex
+	couponsMu   sync.RWMutex
 
 	// Data File Paths
 	usersFile     string
@@ -57,6 +63,7 @@ type MultiFileRepository struct {
 	menuFile      string
 	ordersFile    string
 	auditLogsFile string
+	couponsFile   string
 
 	// O(1) In-Memory Fast Lookup Maps & Caches
 	usersByEmail    map[string]*models.User
@@ -64,6 +71,7 @@ type MultiFileRepository struct {
 	sessionsByToken map[string]*models.Session
 	menuItemsByID   map[int64]*models.MenuItem
 	ordersByID      map[int64]*models.Order
+	couponsByCode   map[string]*models.Coupon
 
 	// Domain Data Arrays
 	users               []models.User
@@ -71,6 +79,7 @@ type MultiFileRepository struct {
 	menuItems           []models.MenuItem
 	orders              []models.Order
 	auditLogs           []models.AuditLog
+	coupons             []models.Coupon
 	cancellationReasons []string
 
 	// Atomic Sequence Counters for High-Concurrency ID Generation
@@ -78,6 +87,7 @@ type MultiFileRepository struct {
 	nextMenuItemID atomic.Int64
 	nextOrderID    atomic.Int64
 	nextAuditLogID atomic.Int64
+	nextCouponID   atomic.Int64
 }
 
 // NewMultiFileRepository initializes and loads domain-isolated files, with automatic migration from old db.json if present.
@@ -93,11 +103,13 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 		menuFile:        filepath.Join(dataDir, "menu.json"),
 		ordersFile:      filepath.Join(dataDir, "orders.json"),
 		auditLogsFile:   filepath.Join(dataDir, "audit_logs.json"),
+		couponsFile:     filepath.Join(dataDir, "coupons.json"),
 		usersByEmail:    make(map[string]*models.User),
 		usersByID:       make(map[int64]*models.User),
 		sessionsByToken: make(map[string]*models.Session),
 		menuItemsByID:   make(map[int64]*models.MenuItem),
 		ordersByID:      make(map[int64]*models.Order),
+		couponsByCode:   make(map[string]*models.Coupon),
 	}
 
 	// Check if migration from legacy db.json is required
@@ -125,6 +137,9 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 	}
 	if err := repo.loadAuditLogs(); err != nil {
 		return nil, fmt.Errorf("failed loading audit logs storage: %w", err)
+	}
+	if err := repo.loadCoupons(); err != nil {
+		return nil, fmt.Errorf("failed loading coupons storage: %w", err)
 	}
 
 	return repo, nil
@@ -466,6 +481,7 @@ func GetDefaultMenuItems() []models.MenuItem {
 		{ID: 10, Name: "Popped Rice", Description: "Crispy roasted puffed rice tossed with peanuts, spices, and fresh herbs.", Category: "Snacks", Price: 30, Image: "/static/images/popped-rice.jpg", Available: true},
 		{ID: 11, Name: "Vanilla Popped Rice", Description: "Sweet and crunchy puffed rice delicately infused with vanilla bean and honey glaze.", Category: "Snacks", Price: 35, Image: "/static/images/vanilla-popped-rice.jpg", Available: true},
 		{ID: 12, Name: "Red Tea & Popped Rice Combo", Description: "A comforting cup of crimson Red Tea served with a separate small sachet of crispy Popped Rice to sprinkle on top.", Category: "Tea", Price: 50, Image: "/static/images/red-tea-combo.jpg", Available: true},
+		{ID: 13, Name: "Milk Tea with Overnight High fiber Roti", Description: "Traditional hot milk tea served alongside authentic overnight 1-day old fermented Basi Roti.", Category: "Tea", Price: 45, Image: "/static/images/milk-tea-basi-roti.jpg", Available: true},
 	}
 }
 
@@ -860,4 +876,144 @@ func (r *MultiFileRepository) GetAllAuditLogs(ctx context.Context) ([]models.Aud
 		result = append(result, r.auditLogs[i])
 	}
 	return result, nil
+}
+
+// --- Coupons Storage Operations ---
+
+func (r *MultiFileRepository) loadCoupons() error {
+	r.couponsMu.Lock()
+	defer r.couponsMu.Unlock()
+
+	if _, err := os.Stat(r.couponsFile); os.IsNotExist(err) {
+		r.coupons = []models.Coupon{}
+		r.nextCouponID.Store(1)
+		return r.saveCouponsLocked()
+	}
+
+	bytes, err := os.ReadFile(r.couponsFile)
+	if err != nil {
+		return err
+	}
+	var s couponsSchema
+	if err := json.Unmarshal(bytes, &s); err != nil {
+		return err
+	}
+
+	r.coupons = s.Coupons
+	r.nextCouponID.Store(s.NextCouponID)
+	if r.nextCouponID.Load() == 0 {
+		r.nextCouponID.Store(1)
+	}
+
+	r.couponsByCode = make(map[string]*models.Coupon)
+	for i := range r.coupons {
+		c := &r.coupons[i]
+		r.couponsByCode[strings.ToUpper(c.Code)] = c
+	}
+	return nil
+}
+
+func (r *MultiFileRepository) saveCouponsLocked() error {
+	s := couponsSchema{
+		NextCouponID: r.nextCouponID.Load(),
+		Coupons:      r.coupons,
+	}
+	return saveAtomic(r.couponsFile, s)
+}
+
+func (r *MultiFileRepository) CreateCoupon(ctx context.Context, coupon models.Coupon) (*models.Coupon, error) {
+	r.couponsMu.Lock()
+	defer r.couponsMu.Unlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(coupon.Code))
+	if codeUpper == "" {
+		return nil, errors.New("coupon code cannot be empty")
+	}
+	if _, exists := r.couponsByCode[codeUpper]; exists {
+		return nil, fmt.Errorf("coupon code '%s' already exists", codeUpper)
+	}
+
+	coupon.ID = r.nextCouponID.Add(1) - 1
+	coupon.Code = codeUpper
+	coupon.CreatedAt = time.Now()
+	coupon.IsUsed = false
+
+	r.coupons = append(r.coupons, coupon)
+	saved := &r.coupons[len(r.coupons)-1]
+	r.couponsByCode[codeUpper] = saved
+
+	if err := r.saveCouponsLocked(); err != nil {
+		return nil, err
+	}
+	return saved, nil
+}
+
+func (r *MultiFileRepository) GetCouponByCode(ctx context.Context, code string) (*models.Coupon, error) {
+	r.couponsMu.RLock()
+	defer r.couponsMu.RUnlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(code))
+	coupon, exists := r.couponsByCode[codeUpper]
+	if !exists {
+		return nil, errors.New("coupon not found")
+	}
+	cpy := *coupon
+	return &cpy, nil
+}
+
+func (r *MultiFileRepository) GetAllCoupons(ctx context.Context) ([]models.Coupon, error) {
+	r.couponsMu.RLock()
+	defer r.couponsMu.RUnlock()
+
+	result := make([]models.Coupon, len(r.coupons))
+	copy(result, r.coupons)
+	return result, nil
+}
+
+func (r *MultiFileRepository) MarkCouponUsed(ctx context.Context, code string, orderID int64) error {
+	r.couponsMu.Lock()
+	defer r.couponsMu.Unlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(code))
+	coupon, exists := r.couponsByCode[codeUpper]
+	if !exists {
+		return errors.New("coupon not found")
+	}
+
+	if coupon.IsUsed {
+		return errors.New("coupon has already been used")
+	}
+
+	now := time.Now()
+	coupon.IsUsed = true
+	coupon.UsedAt = &now
+	coupon.UsedByOrderID = orderID
+
+	return r.saveCouponsLocked()
+}
+
+func (r *MultiFileRepository) DeleteCoupon(ctx context.Context, id int64) error {
+	r.couponsMu.Lock()
+	defer r.couponsMu.Unlock()
+
+	var targetCode string
+	for _, c := range r.coupons {
+		if c.ID == id {
+			targetCode = strings.ToUpper(c.Code)
+			break
+		}
+	}
+	if targetCode == "" {
+		return errors.New("coupon not found")
+	}
+
+	delete(r.couponsByCode, targetCode)
+	var updated []models.Coupon
+	for _, c := range r.coupons {
+		if c.ID != id {
+			updated = append(updated, c)
+		}
+	}
+	r.coupons = updated
+	return r.saveCouponsLocked()
 }

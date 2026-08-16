@@ -19,6 +19,7 @@ type createOrderRequest struct {
 	PaymentMethod   string `json:"payment_method"`
 	PaymentStatus   string `json:"payment_status"`
 	TransactionID   string `json:"transaction_id"`
+	CouponCode      string `json:"coupon_code"`
 	Items           []struct {
 		ID       int64   `json:"id"`
 		Name     string  `json:"name"`
@@ -110,6 +111,7 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 		PaymentMethod:   req.PaymentMethod,
 		PaymentStatus:   req.PaymentStatus,
 		TransactionID:   req.TransactionID,
+		CouponCode:      req.CouponCode,
 		Items:           orderItems,
 	}
 

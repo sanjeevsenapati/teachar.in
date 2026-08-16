@@ -1,5 +1,5 @@
 {
-  "next_menu_item_id": 13,
+  "next_menu_item_id": 14,
   "menu_items": [
     {
       "id": 1,
@@ -107,6 +107,15 @@
       "category": "Tea",
       "price": 50,
       "image": "/static/images/red-tea-combo.jpg",
+      "available": true
+    },
+    {
+      "id": 13,
+      "name": "Milk Tea with Overnight High fiber Roti",
+      "description": "Traditional hot milk tea served alongside authentic overnight 1-day old fermented Basi Roti.",
+      "category": "Tea",
+      "price": 45,
+      "image": "/static/images/milk-tea-basi-roti.jpg",
       "available": true
     }
   ]

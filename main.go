@@ -36,9 +36,10 @@ func main() {
 	}
 
 	// Initialize services.
+	couponSvc := services.NewCouponService(dbRepo)
 	menuSvc := services.NewMenuService(dbRepo)
 	authSvc := services.NewAuthService(dbRepo)
-	orderSvc := services.NewOrderService(dbRepo)
+	orderSvc := services.NewOrderService(dbRepo, couponSvc)
 	auditSvc := services.NewAuditService(dbRepo)
 	reportSvc := services.NewReportService(dbRepo, dbRepo)
 
@@ -51,6 +52,7 @@ func main() {
 		OrderService:  orderSvc,
 		AuditService:  auditSvc,
 		ReportService: reportSvc,
+		CouponService: couponSvc,
 	}
 
 	// Initialize router.

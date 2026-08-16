@@ -1,0 +1,42 @@
+{
+  "next_coupon_id": 4,
+  "coupons": [
+    {
+      "id": 1,
+      "code": "WELCOME50",
+      "discount_type": "flat",
+      "discount_value": 50,
+      "min_order_amount": 100,
+      "expiry_date": "2027-12-31T23:59:59+05:30",
+      "is_used": true,
+      "used_at": "2026-08-16T16:07:15.94242+05:30",
+      "used_by_order_id": 14,
+      "created_by": "Super Admin",
+      "created_at": "2026-08-16T10:00:00+05:30"
+    },
+    {
+      "id": 2,
+      "code": "CHAI10",
+      "discount_type": "percentage",
+      "discount_value": 10,
+      "min_order_amount": 50,
+      "expiry_date": "2027-12-31T23:59:59+05:30",
+      "is_used": false,
+      "created_by": "Super Admin",
+      "created_at": "2026-08-16T10:00:00+05:30"
+    },
+    {
+      "id": 3,
+      "code": "TEACHAR10",
+      "discount_type": "percentage",
+      "discount_value": 10,
+      "min_order_amount": 100,
+      "expiry_date": "2026-08-30T10:42:00Z",
+      "is_used": true,
+      "used_at": "2026-08-16T16:16:25.466555+05:30",
+      "used_by_order_id": 15,
+      "created_by": "Super Admin",
+      "created_at": "2026-08-16T16:13:07.865839+05:30"
+    }
+  ]
+}

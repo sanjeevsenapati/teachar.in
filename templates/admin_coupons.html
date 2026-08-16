@@ -1,0 +1,198 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Promotions & Discounts</span>
+            <h1 class="page-title">Offers & Single-Use Coupons</h1>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            <button class="btn btn-primary" onclick="openCreateCouponModal()">
+                <i class="fa-solid fa-plus-circle"></i> Create Coupon
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section">
+    <div class="container">
+        {{if .Error}}
+        <div class="alert alert-danger mb-4" style="background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; padding:1rem; border-radius:8px; display:flex; align-items:center; gap:0.75rem;">
+            <i class="fa-solid fa-circle-exclamation" style="font-size:1.3rem;"></i>
+            <div><strong>Coupon Creation Error:</strong> {{.Error}}</div>
+        </div>
+        {{end}}
+
+        <!-- Coupons Table Card -->
+        <div class="admin-table-card">
+            <div class="table-card-header">
+                <h3><i class="fa-solid fa-ticket"></i> Active & Historical Coupons ({{len .Coupons}})</h3>
+                <button class="btn btn-primary btn-sm" onclick="openCreateCouponModal()">
+                    <i class="fa-solid fa-plus"></i> New Coupon
+                </button>
+            </div>
+            {{if not .Coupons}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-ticket-simple p-3" style="font-size: 3rem; color: var(--primary-gold);"></i>
+                <h3>No Discount Coupons Found</h3>
+                <p>Click "Create Coupon" above to issue a single-use discount code for your customers.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="white-space: nowrap;">ID</th>
+                            <th style="white-space: nowrap;">Coupon Code</th>
+                            <th style="white-space: nowrap;">Discount</th>
+                            <th style="white-space: nowrap;">Min Order</th>
+                            <th style="white-space: nowrap;">Expiry Date</th>
+                            <th style="white-space: nowrap;">Status</th>
+                            <th style="white-space: nowrap;">Created By</th>
+                            <th style="white-space: nowrap;">Redemption Info</th>
+                            <th style="white-space: nowrap;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Coupons}}
+                        <tr>
+                            <td style="white-space: nowrap;"><strong>#{{.ID}}</strong></td>
+                            <td style="white-space: nowrap;">
+                                <span class="coupon-badge-code">
+                                    <i class="fa-solid fa-ticket me-1"></i> {{.Code}}
+                                </span>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                <strong>
+                                    {{if eq .DiscountType "flat"}}
+                                    ₹{{printf "%.2f" .DiscountValue}} OFF
+                                    {{else}}
+                                    {{printf "%.0f" .DiscountValue}}% OFF
+                                    {{end}}
+                                </strong>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                {{if gt .MinOrderAmount 0.0}}
+                                ₹{{printf "%.2f" .MinOrderAmount}}
+                                {{else}}
+                                <span class="text-muted">No Minimum</span>
+                                {{end}}
+                            </td>
+                            <td style="white-space: nowrap;"><small class="text-muted"><i class="fa-solid fa-clock"></i> {{.ExpiryDate.Format "Jan 02, 2006 • 15:04"}}</small></td>
+                            <td style="white-space: nowrap;">
+                                {{if .IsUsed}}
+                                <span class="category-pill-sm bg-secondary text-white" style="white-space: nowrap;">
+                                    <i class="fa-solid fa-circle-check me-1"></i> Redeemed
+                                </span>
+                                {{else}}
+                                <span class="category-pill-sm bg-success text-white" style="background:#10b981 !important; white-space: nowrap;">
+                                    <i class="fa-solid fa-tag me-1"></i> Active
+                                </span>
+                                {{end}}
+                            </td>
+                            <td style="white-space: nowrap;"><small class="text-muted">{{.CreatedBy}}</small></td>
+                            <td style="white-space: nowrap;">
+                                {{if .IsUsed}}
+                                <small class="text-muted">Order #{{.UsedByOrderID}}</small>
+                                {{else}}
+                                <small class="text-muted">Available</small>
+                                {{end}}
+                            </td>
+                            <td>
+                                <form action="/admin/coupons/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete coupon {{.Code}}?');">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Coupon">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</section>
+
+<!-- Create Single-Use Coupon Modal -->
+<div class="modal-overlay" id="create-coupon-modal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-ticket-simple text-primary"></i> Create Single-Use Coupon</h3>
+            <button type="button" class="modal-close-btn" onclick="closeCreateCouponModal()">&times;</button>
+        </div>
+        <form action="/admin/coupons/create" method="POST" class="modal-body">
+            <div class="form-group">
+                <label for="coupon-code">Coupon Code <span class="text-danger">*</span></label>
+                <input type="text" id="coupon-code" name="code" placeholder="e.g. WELCOME50" style="text-transform: uppercase; font-weight:700;" required>
+                <small class="text-muted" style="display:block; margin-top:0.25rem;">Codes are automatically capitalized and uppercase.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="discount-type">Discount Type <span class="text-danger">*</span></label>
+                <select id="discount-type" name="discount_type" class="form-select" required>
+                    <option value="flat">Flat Discount Amount (₹)</option>
+                    <option value="percentage">Percentage Discount (%)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="discount-value">Discount Value <span class="text-danger">*</span></label>
+                <input type="number" id="discount-value" name="discount_value" step="0.01" min="0.01" placeholder="e.g. 50 (for ₹50 off) or 10 (for 10% off)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="min-order-amount">Minimum Order Subtotal (₹)</label>
+                <input type="number" id="min-order-amount" name="min_order_amount" step="0.01" min="0" placeholder="0 for no minimum subtotal requirement">
+            </div>
+
+            <div class="form-group">
+                <label for="expiry-date">Expiration Date & Time <span class="text-danger">*</span></label>
+                <input type="datetime-local" id="expiry-date" name="expiry_date" required>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeCreateCouponModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Create Coupon</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.coupon-badge-code {
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--primary-gold);
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+    letter-spacing: 0.5px;
+}
+</style>
+
+<script>
+function openCreateCouponModal() {
+    document.getElementById('create-coupon-modal').classList.add('active');
+}
+function closeCreateCouponModal() {
+    document.getElementById('create-coupon-modal').classList.remove('active');
+}
+
+// Default expiry date to 7 days from now
+document.addEventListener('DOMContentLoaded', () => {
+    const expiryInput = document.getElementById('expiry-date');
+    if (expiryInput && !expiryInput.value) {
+        const now = new Date();
+        now.setDate(now.getDate() + 7);
+        const isoString = now.toISOString().slice(0, 16);
+        expiryInput.value = isoString;
+    }
+});
+</script>
+{{end}}

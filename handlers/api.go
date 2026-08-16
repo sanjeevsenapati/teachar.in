@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 )
@@ -57,4 +58,39 @@ func (app *Application) apiGetMenuItemHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	app.writeJSON(w, r, http.StatusOK, item, nil)
+}
+
+// apiValidateCouponHandler validates a coupon code and calculates discounts asynchronously.
+func (app *Application) apiValidateCouponHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Code     string  `json:"code"`
+		Subtotal float64 `json:"subtotal"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		app.writeJSON(w, r, http.StatusBadRequest, map[string]interface{}{
+			"valid": false,
+			"error": "Invalid request body",
+		}, nil)
+		return
+	}
+
+	coupon, disc, finalTotal, err := app.CouponService.ValidateCoupon(r.Context(), input.Code, input.Subtotal)
+	if err != nil {
+		app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+			"valid": false,
+			"error": err.Error(),
+		}, nil)
+		return
+	}
+
+	app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+		"valid":           true,
+		"code":            coupon.Code,
+		"discount_type":   coupon.DiscountType,
+		"discount_value":  coupon.DiscountValue,
+		"discount_amount": disc,
+		"subtotal":        input.Subtotal,
+		"final_total":     finalTotal,
+	}, nil)
 }

@@ -8,6 +8,7 @@
         <div class="admin-nav-btns">
             <a href="/admin/menu" class="btn btn-secondary"><i class="fa-solid fa-utensils"></i> Manage Menu</a>
             <a href="/admin/orders" class="btn btn-secondary"><i class="fa-solid fa-receipt"></i> All Orders</a>
+            {{if .IsSuperadmin}}<a href="/admin/coupons" class="btn btn-secondary"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>{{end}}
         </div>
     </div>
 </section>

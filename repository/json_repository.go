@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -21,11 +22,13 @@ type dbSchema struct {
 	NextMenuItemID      int64             `json:"next_menu_item_id"`
 	NextOrderID         int64             `json:"next_order_id"`
 	NextAuditLogID      int64             `json:"next_audit_log_id"`
+	NextCouponID        int64             `json:"next_coupon_id"`
 	Users               []models.User     `json:"users"`
 	Sessions            []models.Session  `json:"sessions"`
 	MenuItems           []models.MenuItem `json:"menu_items"`
 	Orders              []models.Order    `json:"orders"`
 	AuditLogs           []models.AuditLog `json:"audit_logs"`
+	Coupons             []models.Coupon   `json:"coupons"`
 	CancellationReasons []string          `json:"cancellation_reasons"`
 }
 
@@ -102,9 +105,10 @@ func (r *JSONRepository) seedDefaultData() {
 
 	r.data = dbSchema{
 		NextUserID:     5,
-		NextMenuItemID: 13,
+		NextMenuItemID: 14,
 		NextOrderID:    1,
 		NextAuditLogID: 2,
+		NextCouponID:   1,
 		Users: []models.User{
 			{
 				ID:           1,
@@ -161,6 +165,7 @@ func (r *JSONRepository) seedDefaultData() {
 			{ID: 10, Name: "Popped Rice", Description: "Crispy roasted puffed rice tossed with peanuts, spices, and fresh herbs.", Category: "Snacks", Price: 30, Image: "/static/images/popped-rice.jpg", Available: true},
 			{ID: 11, Name: "Vanilla Popped Rice", Description: "Sweet and crunchy puffed rice delicately infused with vanilla bean and honey glaze.", Category: "Snacks", Price: 35, Image: "/static/images/vanilla-popped-rice.jpg", Available: true},
 			{ID: 12, Name: "Red Tea & Popped Rice Combo", Description: "A comforting cup of crimson Red Tea served with a separate small sachet of crispy Popped Rice to sprinkle on top.", Category: "Tea", Price: 50, Image: "/static/images/red-tea-combo.jpg", Available: true},
+			{ID: 13, Name: "Milk Tea with Overnight High fiber Roti", Description: "Traditional hot milk tea served alongside authentic overnight 1-day old fermented Basi Roti.", Category: "Tea", Price: 45, Image: "/static/images/milk-tea-basi-roti.jpg", Available: true},
 		},
 		Orders: []models.Order{},
 		AuditLogs: []models.AuditLog{
@@ -596,5 +601,101 @@ func (r *JSONRepository) SaveOrderReview(ctx context.Context, id int64, rating i
 	if !found {
 		return fmt.Errorf("order not found")
 	}
+	return r.save()
+}
+
+// --- CouponRepository Implementation ---
+
+func (r *JSONRepository) CreateCoupon(ctx context.Context, coupon models.Coupon) (*models.Coupon, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(coupon.Code))
+	if codeUpper == "" {
+		return nil, errors.New("coupon code cannot be empty")
+	}
+	for _, c := range r.data.Coupons {
+		if strings.ToUpper(c.Code) == codeUpper {
+			return nil, fmt.Errorf("coupon code '%s' already exists", codeUpper)
+		}
+	}
+
+	coupon.ID = r.data.NextCouponID
+	r.data.NextCouponID++
+	coupon.Code = codeUpper
+	coupon.CreatedAt = time.Now()
+	coupon.IsUsed = false
+
+	r.data.Coupons = append(r.data.Coupons, coupon)
+	if err := r.save(); err != nil {
+		return nil, err
+	}
+	return &coupon, nil
+}
+
+func (r *JSONRepository) GetCouponByCode(ctx context.Context, code string) (*models.Coupon, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(code))
+	for _, c := range r.data.Coupons {
+		if strings.ToUpper(c.Code) == codeUpper {
+			return &c, nil
+		}
+	}
+	return nil, errors.New("coupon not found")
+}
+
+func (r *JSONRepository) GetAllCoupons(ctx context.Context) ([]models.Coupon, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	result := make([]models.Coupon, len(r.data.Coupons))
+	copy(result, r.data.Coupons)
+	return result, nil
+}
+
+func (r *JSONRepository) MarkCouponUsed(ctx context.Context, code string, orderID int64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	codeUpper := strings.ToUpper(strings.TrimSpace(code))
+	found := false
+	for i, c := range r.data.Coupons {
+		if strings.ToUpper(c.Code) == codeUpper {
+			if c.IsUsed {
+				return errors.New("coupon has already been used")
+			}
+			now := time.Now()
+			r.data.Coupons[i].IsUsed = true
+			r.data.Coupons[i].UsedAt = &now
+			r.data.Coupons[i].UsedByOrderID = orderID
+			found = true
+			break
+		}
+	}
+	if !found {
+		return errors.New("coupon not found")
+	}
+	return r.save()
+}
+
+func (r *JSONRepository) DeleteCoupon(ctx context.Context, id int64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	var updated []models.Coupon
+	found := false
+	for _, c := range r.data.Coupons {
+		if c.ID == id {
+			found = true
+			continue
+		}
+		updated = append(updated, c)
+	}
+	if !found {
+		return errors.New("coupon not found")
+	}
+	r.data.Coupons = updated
 	return r.save()
 }

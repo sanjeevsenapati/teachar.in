@@ -42,6 +42,21 @@ type OrderItem struct {
 	Price      float64 `json:"price"`
 }
 
+// Coupon represents a single-use offer discount coupon.
+type Coupon struct {
+	ID             int64      `json:"id"`
+	Code           string     `json:"code"`             // Unique coupon code, e.g. "WELCOME50"
+	DiscountType   string     `json:"discount_type"`    // "flat" or "percentage"
+	DiscountValue  float64    `json:"discount_value"`   // Amount in ₹ or % percentage value
+	MinOrderAmount float64    `json:"min_order_amount"` // Optional minimum order subtotal
+	ExpiryDate     time.Time  `json:"expiry_date"`      // Expiration timestamp
+	IsUsed         bool       `json:"is_used"`          // Single-use flag
+	UsedAt         *time.Time `json:"used_at,omitempty"`
+	UsedByOrderID  int64      `json:"used_by_order_id,omitempty"`
+	CreatedBy      string     `json:"created_by"`
+	CreatedAt      time.Time  `json:"created_at"`
+}
+
 // Order represents a customer order.
 type Order struct {
 	ID                 int64       `json:"id"`
@@ -55,6 +70,9 @@ type Order struct {
 	PaymentMethod      string      `json:"payment_method"`        // "UPI", "Card", "NetBanking", "COD"
 	PaymentStatus      string      `json:"payment_status"`        // "Paid", "Pending", "Failed"
 	TransactionID      string      `json:"transaction_id"`
+	SubtotalPrice      float64     `json:"subtotal_price"`
+	CouponCode         string      `json:"coupon_code,omitempty"`
+	DiscountAmount     float64     `json:"discount_amount,omitempty"`
 	TotalPrice         float64     `json:"total_price"`
 	AssignedStaffID    int64       `json:"assigned_staff_id"`    // Staff member who claimed/handled this order
 	AssignedStaffName  string      `json:"assigned_staff_name"`  // Staff member's name

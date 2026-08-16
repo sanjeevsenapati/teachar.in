@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"teachar.in/middleware"
 	"teachar.in/models"
@@ -330,4 +332,108 @@ func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Reque
 		"Report": report,
 	}
 	app.render(w, r, http.StatusOK, "admin_reports.html", data)
+}
+
+func (app *Application) adminCouponsHandler(w http.ResponseWriter, r *http.Request) {
+	coupons, err := app.CouponService.GetAllCoupons(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := models.PageData{
+		"Title":   "Offers & Single-Use Coupons",
+		"Coupons": coupons,
+	}
+	app.render(w, r, http.StatusOK, "admin_coupons.html", data)
+}
+
+func (app *Application) adminCreateCouponHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	code := r.FormValue("code")
+	discountType := r.FormValue("discount_type")
+	discountValueStr := r.FormValue("discount_value")
+	minOrderStr := r.FormValue("min_order_amount")
+	expiryStr := r.FormValue("expiry_date")
+
+	var discountValue float64
+	fmt.Sscanf(discountValueStr, "%f", &discountValue)
+
+	var minOrder float64
+	if minOrderStr != "" {
+		fmt.Sscanf(minOrderStr, "%f", &minOrder)
+	}
+
+	var expiryDate time.Time
+	if expiryStr != "" {
+		var err error
+		// Try HTML datetime-local format "2006-01-02T15:04" or date format "2006-01-02"
+		expiryDate, err = time.Parse("2006-01-02T15:04", expiryStr)
+		if err != nil {
+			expiryDate, err = time.Parse("2006-01-02", expiryStr)
+		}
+		if err != nil {
+			expiryDate = time.Now().Add(24 * time.Hour)
+		}
+	} else {
+		expiryDate = time.Now().Add(24 * time.Hour)
+	}
+
+	actor := middleware.GetUserFromContext(r)
+	actorName := "Superadmin"
+	if actor != nil {
+		actorName = actor.Name
+	}
+
+	coupon := models.Coupon{
+		Code:           code,
+		DiscountType:   discountType,
+		DiscountValue:  discountValue,
+		MinOrderAmount: minOrder,
+		ExpiryDate:     expiryDate,
+	}
+
+	_, err := app.CouponService.CreateCoupon(r.Context(), coupon, actorName)
+	if err != nil {
+		coupons, _ := app.CouponService.GetAllCoupons(r.Context())
+		data := models.PageData{
+			"Title":   "Offers & Single-Use Coupons",
+			"Error":   err.Error(),
+			"Coupons": coupons,
+		}
+		app.render(w, r, http.StatusBadRequest, "admin_coupons.html", data)
+		return
+	}
+
+	if app.AuditService != nil {
+		app.AuditService.LogEvent(r.Context(), actor, "COUPON_CREATED", "Created single-use coupon '"+code+"'", services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/coupons", http.StatusSeeOther)
+}
+
+func (app *Application) adminDeleteCouponHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	var id int64
+	fmt.Sscanf(r.FormValue("id"), "%d", &id)
+
+	if err := app.CouponService.DeleteCoupon(r.Context(), id); err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		app.AuditService.LogEvent(r.Context(), actor, "COUPON_DELETED", fmt.Sprintf("Deleted coupon ID #%d", id), services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/coupons", http.StatusSeeOther)
 }
