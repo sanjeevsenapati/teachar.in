@@ -39,14 +39,18 @@ func main() {
 	menuSvc := services.NewMenuService(dbRepo)
 	authSvc := services.NewAuthService(dbRepo)
 	orderSvc := services.NewOrderService(dbRepo)
+	auditSvc := services.NewAuditService(dbRepo)
+	reportSvc := services.NewReportService(dbRepo, dbRepo)
 
 	// Create application dependencies container.
 	app := &handlers.Application{
-		Logger:       logger,
-		Config:       cfg,
-		MenuService:  menuSvc,
-		AuthService:  authSvc,
-		OrderService: orderSvc,
+		Logger:        logger,
+		Config:        cfg,
+		MenuService:   menuSvc,
+		AuthService:   authSvc,
+		OrderService:  orderSvc,
+		AuditService:  auditSvc,
+		ReportService: reportSvc,
 	}
 
 	// Initialize router.

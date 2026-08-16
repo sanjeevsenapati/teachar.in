@@ -35,8 +35,31 @@
                 <li><a href="/" class="nav-link">Home</a></li>
                 <li><a href="/menu" class="nav-link">Menu</a></li>
                 <li><a href="/about" class="nav-link">About Us</a></li>
-                {{if .IsAdmin}}
-                <li><a href="/admin" class="nav-link nav-admin-highlight"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a></li>
+                {{if .IsSuperadmin}}
+                <li class="nav-dropdown-wrapper">
+                    <button class="nav-link nav-dropdown-btn nav-admin-highlight" aria-haspopup="true">
+                        <i class="fa-solid fa-crown"></i> Superadmin Portal <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="/admin" class="dropdown-item"><i class="fa-solid fa-gauge"></i> Executive Dashboard</a>
+                        <a href="/admin/users" class="dropdown-item"><i class="fa-solid fa-users-gear"></i> Users & Staff Accounts</a>
+                        <a href="/admin/orders" class="dropdown-item"><i class="fa-solid fa-receipt"></i> Order Fulfillment</a>
+                        <a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Artisanal Menu Items</a>
+                        <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
+                        <a href="/admin/reports" class="dropdown-item"><i class="fa-solid fa-chart-line"></i> Financial Reports</a>
+                    </div>
+                </li>
+                {{else if or .IsAdmin .IsStaff}}
+                <li class="nav-dropdown-wrapper">
+                    <button class="nav-link nav-dropdown-btn nav-admin-highlight" aria-haspopup="true">
+                        <i class="fa-solid fa-shield-halved"></i> {{if .IsStaff}}Staff Portal{{else}}Admin Portal{{end}} <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="/admin" class="dropdown-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                        <a href="/admin/orders" class="dropdown-item"><i class="fa-solid fa-receipt"></i> Manage Orders</a>
+                        {{if .IsAdmin}}<a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Manage Menu</a>{{end}}
+                    </div>
+                </li>
                 {{else if .IsAuthenticated}}
                 <li><a href="/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> My Orders</a></li>
                 {{end}}

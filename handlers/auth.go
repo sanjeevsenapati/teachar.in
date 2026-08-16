@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"teachar.in/models"
+	"teachar.in/services"
 )
 
 func (app *Application) loginPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +45,10 @@ func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	if app.AuditService != nil {
+		app.AuditService.LogEvent(r.Context(), user, "USER_LOGIN", "User logged in successfully.", services.GetClientIP(r))
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    session.ID,
@@ -53,7 +58,7 @@ func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Reques
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	if user.Role == "admin" {
+	if user.Role == "admin" || user.Role == "superadmin" || user.Role == "staff" {
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		return
 	}
@@ -99,6 +104,10 @@ func (app *Application) registerSubmitHandler(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		app.serverError(w, r, err)
 		return
+	}
+
+	if app.AuditService != nil {
+		app.AuditService.LogEvent(r.Context(), user, "USER_REGISTER", "Client registered new account: "+user.Email, services.GetClientIP(r))
 	}
 
 	http.SetCookie(w, &http.Cookie{

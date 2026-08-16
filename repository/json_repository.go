@@ -19,10 +19,12 @@ type dbSchema struct {
 	NextUserID     int64             `json:"next_user_id"`
 	NextMenuItemID int64             `json:"next_menu_item_id"`
 	NextOrderID    int64             `json:"next_order_id"`
+	NextAuditLogID int64             `json:"next_audit_log_id"`
 	Users          []models.User     `json:"users"`
 	Sessions       []models.Session  `json:"sessions"`
 	MenuItems      []models.MenuItem `json:"menu_items"`
 	Orders         []models.Order    `json:"orders"`
+	AuditLogs      []models.AuditLog `json:"audit_logs"`
 }
 
 // JSONRepository is a thread-safe, file-backed database using only standard library packages.
@@ -91,16 +93,29 @@ func (r *JSONRepository) save() error {
 }
 
 func (r *JSONRepository) seedDefaultData() {
+	superAdminSalt := GenerateSalt()
 	adminSalt := GenerateSalt()
 	clientSalt := GenerateSalt()
+	staffSalt := GenerateSalt()
 
 	r.data = dbSchema{
-		NextUserID:     3,
+		NextUserID:     5,
 		NextMenuItemID: 13,
 		NextOrderID:    1,
+		NextAuditLogID: 2,
 		Users: []models.User{
 			{
 				ID:           1,
+				Name:         "Super Admin",
+				Email:        "superadmin@teachar.in",
+				MobileNumber: "9000000000",
+				PasswordHash: HashPassword("SuperAdmin@123", superAdminSalt),
+				Salt:         superAdminSalt,
+				Role:         "superadmin",
+				CreatedAt:    time.Now(),
+			},
+			{
+				ID:           2,
 				Name:         "TEACHAR Admin",
 				Email:        "admin@teachar.in",
 				MobileNumber: "9876543210",
@@ -110,13 +125,23 @@ func (r *JSONRepository) seedDefaultData() {
 				CreatedAt:    time.Now(),
 			},
 			{
-				ID:           2,
+				ID:           3,
 				Name:         "Sample Client",
 				Email:        "client@teachar.in",
 				MobileNumber: "9123456789",
 				PasswordHash: HashPassword("Client@123", clientSalt),
 				Salt:         clientSalt,
 				Role:         "client",
+				CreatedAt:    time.Now(),
+			},
+			{
+				ID:           4,
+				Name:         "Counter Staff",
+				Email:        "staff@teachar.in",
+				MobileNumber: "9555544444",
+				PasswordHash: HashPassword("Staff@123", staffSalt),
+				Salt:         staffSalt,
+				Role:         "staff",
 				CreatedAt:    time.Now(),
 			},
 		},
@@ -136,6 +161,18 @@ func (r *JSONRepository) seedDefaultData() {
 			{ID: 12, Name: "Red Tea & Popped Rice Combo", Description: "A comforting cup of crimson Red Tea served with a separate small sachet of crispy Popped Rice to sprinkle on top.", Category: "Tea", Price: 50, Image: "/static/images/red-tea-combo.jpg", Available: true},
 		},
 		Orders: []models.Order{},
+		AuditLogs: []models.AuditLog{
+			{
+				ID:        1,
+				Timestamp: time.Now(),
+				ActorID:   1,
+				ActorName: "Super Admin",
+				ActorRole: "superadmin",
+				Action:    "SYSTEM_INIT",
+				Details:   "Initialized system with default Superadmin, Admin, Staff, and Client accounts.",
+				IPAddress: "127.0.0.1",
+			},
+		},
 	}
 }
 
@@ -409,4 +446,45 @@ func (r *JSONRepository) UpdateOrderStatus(ctx context.Context, id int64, status
 		return fmt.Errorf("order not found")
 	}
 	return r.save()
+}
+
+func (r *JSONRepository) GetAllUsers(ctx context.Context) ([]models.User, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	var result []models.User
+	for i := len(r.data.Users) - 1; i >= 0; i-- {
+		result = append(result, r.data.Users[i])
+	}
+	return result, nil
+}
+
+// --- AuditRepository Implementation ---
+
+func (r *JSONRepository) CreateAuditLog(ctx context.Context, log models.AuditLog) (*models.AuditLog, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	log.ID = r.data.NextAuditLogID
+	r.data.NextAuditLogID++
+	if log.Timestamp.IsZero() {
+		log.Timestamp = time.Now()
+	}
+
+	r.data.AuditLogs = append(r.data.AuditLogs, log)
+	if err := r.save(); err != nil {
+		return nil, err
+	}
+	return &log, nil
+}
+
+func (r *JSONRepository) GetAllAuditLogs(ctx context.Context) ([]models.AuditLog, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	var result []models.AuditLog
+	for i := len(r.data.AuditLogs) - 1; i >= 0; i-- {
+		result = append(result, r.data.AuditLogs[i])
+	}
+	return result, nil
 }

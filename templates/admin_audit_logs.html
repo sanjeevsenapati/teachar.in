@@ -1,0 +1,67 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Auditing & Security</span>
+            <h1 class="page-title">System Audit Logs</h1>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section">
+    <div class="container">
+        <div class="admin-table-card">
+            <div class="table-card-header">
+                <h3><i class="fa-solid fa-shield-cat"></i> Audit Trail History ({{len .AuditLogs}} logs)</h3>
+            </div>
+            {{if not .AuditLogs}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-file-shield p-3" style="font-size: 3rem;"></i>
+                <h3>No Audit Logs Recorded</h3>
+                <p>System activities like logins, order creation, and status updates will be logged here.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Timestamp</th>
+                            <th>Actor / User</th>
+                            <th>Role</th>
+                            <th>Action Type</th>
+                            <th>Details</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .AuditLogs}}
+                        <tr>
+                            <td><strong>#{{.ID}}</strong></td>
+                            <td><small class="text-muted"><i class="fa-solid fa-clock"></i> {{.Timestamp.Format "Jan 02, 2006 • 15:04:05"}}</small></td>
+                            <td><strong>{{.ActorName}}</strong> <small class="text-muted">(ID: {{.ActorID}})</small></td>
+                            <td>
+                                <span class="category-pill-sm {{if eq .ActorRole "superadmin"}}bg-danger text-white{{else if eq .ActorRole "admin"}}bg-primary text-white{{else if eq .ActorRole "staff"}}bg-warning text-dark{{else}}bg-secondary{{end}}">
+                                    {{.ActorRole}}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge" style="font-size:0.78rem; padding:0.3rem 0.6rem; border-radius:4px; font-weight:700; background:#e0f2fe; color:#0284c7;">
+                                    {{.Action}}
+                                </span>
+                            </td>
+                            <td>{{.Details}}</td>
+                            <td><code>{{.IPAddress}}</code></td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</section>
+{{end}}

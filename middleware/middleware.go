@@ -67,11 +67,35 @@ func (m *Manager) RequireAuth(next http.Handler) http.Handler {
 	})
 }
 
-// RequireAdmin blocks non-admin users.
+// RequireAdmin blocks non-admin users (allows "admin" and "superadmin").
 func (m *Manager) RequireAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := GetUserFromContext(r)
-		if user == nil || user.Role != "admin" {
+		if user == nil || (user.Role != "admin" && user.Role != "superadmin") {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// RequireSuperadmin strictly requires the "superadmin" role.
+func (m *Manager) RequireSuperadmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := GetUserFromContext(r)
+		if user == nil || user.Role != "superadmin" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// RequireStaffOrAdmin allows staff, admin, and superadmin users.
+func (m *Manager) RequireStaffOrAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := GetUserFromContext(r)
+		if user == nil || (user.Role != "staff" && user.Role != "admin" && user.Role != "superadmin") {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}

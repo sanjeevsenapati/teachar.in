@@ -3,9 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"teachar.in/middleware"
 	"teachar.in/models"
+	"teachar.in/services"
 )
 
 type createOrderRequest struct {
@@ -115,6 +117,11 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		app.badRequestError(w, r, err)
 		return
+	}
+
+	if app.AuditService != nil {
+		details := "Placed Order #" + strconv.FormatInt(createdOrder.ID, 10) + " (" + createdOrder.OrderType + ", Total: ₹" + strconv.FormatFloat(createdOrder.TotalPrice, 'f', 2, 64) + ")"
+		app.AuditService.LogEvent(r.Context(), user, "ORDER_CREATED", details, services.GetClientIP(r))
 	}
 
 	app.writeJSON(w, r, http.StatusCreated, createdOrder, nil)

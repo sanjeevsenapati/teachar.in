@@ -63,3 +63,62 @@ type Order struct {
 // PageData holds the data to be passed to HTML templates.
 type PageData map[string]interface{}
 
+// AuditLog represents an auditable system event.
+type AuditLog struct {
+	ID        int64     `json:"id"`
+	Timestamp time.Time `json:"timestamp"`
+	ActorID   int64     `json:"actor_id"`
+	ActorName string    `json:"actor_name"`
+	ActorRole string    `json:"actor_role"`
+	Action    string    `json:"action"` // e.g. "USER_REGISTER", "USER_LOGIN", "STAFF_CREATED", "ORDER_CREATED", "ORDER_STATUS_UPDATED", "MENU_ITEM_ADDED"
+	Details   string    `json:"details"`
+	IPAddress string    `json:"ip_address"`
+}
+
+// PaymentMethodReport holds aggregated financials for a payment method.
+type PaymentMethodReport struct {
+	Method      string  `json:"method"`
+	OrderCount  int     `json:"order_count"`
+	TotalAmount float64 `json:"total_amount"`
+}
+
+// OrderTypeReport holds aggregated financials for an order type.
+type OrderTypeReport struct {
+	Type        string  `json:"type"`
+	OrderCount  int     `json:"order_count"`
+	TotalAmount float64 `json:"total_amount"`
+}
+
+// CategoryReport holds aggregated sales by menu category.
+type CategoryReport struct {
+	Category    string  `json:"category"`
+	ItemsSold   int     `json:"items_sold"`
+	TotalAmount float64 `json:"total_amount"`
+}
+
+// TopItemReport holds sales statistics for individual menu items.
+type TopItemReport struct {
+	ItemName    string  `json:"item_name"`
+	Category    string  `json:"category"`
+	Quantity    int     `json:"quantity"`
+	TotalRevenue float64 `json:"total_revenue"`
+}
+
+// FinancialReportData holds complete auditing and revenue metrics.
+type FinancialReportData struct {
+	GrossRevenue      float64               `json:"gross_revenue"`
+	TotalTax          float64               `json:"total_tax"`
+	NetRevenue        float64               `json:"net_revenue"`
+	TotalOrders       int                   `json:"total_orders"`
+	CompletedOrders   int                   `json:"completed_orders"`
+	PendingOrders     int                   `json:"pending_orders"`
+	CancelledOrders   int                   `json:"cancelled_orders"`
+	AverageOrderValue float64               `json:"average_order_value"`
+	PaidAmount        float64               `json:"paid_amount"`
+	PendingPayment    float64               `json:"pending_payment"`
+	PaymentMethods    []PaymentMethodReport `json:"payment_methods"`
+	OrderTypes        []OrderTypeReport     `json:"order_types"`
+	CategorySales     []CategoryReport      `json:"category_sales"`
+	TopSellingItems   []TopItemReport       `json:"top_selling_items"`
+}
+

@@ -22,6 +22,7 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user models.User) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByID(ctx context.Context, id int64) (*models.User, error)
+	GetAllUsers(ctx context.Context) ([]models.User, error)
 	CreateSession(ctx context.Context, session models.Session) error
 	GetSession(ctx context.Context, token string) (*models.Session, error)
 	DeleteSession(ctx context.Context, token string) error
@@ -34,4 +35,10 @@ type OrderRepository interface {
 	GetAllOrders(ctx context.Context) ([]models.Order, error)
 	GetOrderByID(ctx context.Context, id int64) (*models.Order, error)
 	UpdateOrderStatus(ctx context.Context, id int64, status string) error
+}
+
+// AuditRepository defines the interface for audit trail logs.
+type AuditRepository interface {
+	CreateAuditLog(ctx context.Context, log models.AuditLog) (*models.AuditLog, error)
+	GetAllAuditLogs(ctx context.Context) ([]models.AuditLog, error)
 }

@@ -29,13 +29,17 @@ func setupTestApp(t *testing.T) http.Handler {
 	menuService := services.NewMenuService(repo)
 	authService := services.NewAuthService(repo)
 	orderService := services.NewOrderService(repo)
+	auditService := services.NewAuditService(repo)
+	reportService := services.NewReportService(repo, repo)
 
 	app := &handlers.Application{
-		Logger:       logger,
-		Config:       cfg,
-		MenuService:  menuService,
-		AuthService:  authService,
-		OrderService: orderService,
+		Logger:        logger,
+		Config:        cfg,
+		MenuService:   menuService,
+		AuthService:   authService,
+		OrderService:  orderService,
+		AuditService:  auditService,
+		ReportService: reportService,
 	}
 
 	mux := http.NewServeMux()

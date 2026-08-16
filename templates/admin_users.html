@@ -1,0 +1,106 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Superadmin Control</span>
+            <h1 class="page-title">Registered Users & Staff Accounts</h1>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            <button class="btn btn-primary" onclick="document.getElementById('create-staff-modal').classList.add('active')">
+                <i class="fa-solid fa-user-plus"></i> Add Staff / Admin
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section">
+    <div class="container">
+        {{if .Error}}
+        <div class="alert alert-danger mb-4">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{.Error}}
+        </div>
+        {{end}}
+
+        <div class="admin-table-card">
+            <div class="table-card-header">
+                <h3><i class="fa-solid fa-users"></i> All User Accounts ({{len .Users}})</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Mobile Number</th>
+                            <th>Role</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Users}}
+                        <tr>
+                            <td><strong>#{{.ID}}</strong></td>
+                            <td>
+                                <strong>{{.Name}}</strong>
+                            </td>
+                            <td><i class="fa-solid fa-envelope text-muted"></i> {{.Email}}</td>
+                            <td><i class="fa-solid fa-phone text-muted"></i> {{if .MobileNumber}}{{.MobileNumber}}{{else}}N/A{{end}}</td>
+                            <td>
+                                <span class="category-pill-sm {{if eq .Role "superadmin"}}bg-danger text-white{{else if eq .Role "admin"}}bg-primary text-white{{else if eq .Role "staff"}}bg-warning text-dark{{else}}bg-secondary{{end}}">
+                                    <i class="fa-solid {{if eq .Role "superadmin"}}fa-crown{{else if eq .Role "admin"}}fa-shield-halved{{else if eq .Role "staff"}}fa-user-tie{{else}}fa-user{{end}}"></i>
+                                    {{.Role}}
+                                </span>
+                            </td>
+                            <td><small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "Jan 02, 2006 • 15:04"}}</small></td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Create Staff Account Modal -->
+<div class="modal-overlay" id="create-staff-modal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-plus text-primary"></i> Create Staff / Admin Account</h3>
+            <button class="modal-close-btn" onclick="document.getElementById('create-staff-modal').classList.remove('active')">&times;</button>
+        </div>
+        <form action="/admin/users/create" method="POST">
+            <div class="modal-body">
+                <div>
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="e.g. staff@teachar.in" required>
+                </div>
+                <div>
+                    <label for="mobile">Mobile Number</label>
+                    <input type="tel" id="mobile" name="mobile" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                </div>
+                <div>
+                    <label for="password">Initial Password</label>
+                    <input type="password" id="password" name="password" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                <div>
+                    <label for="role">Account Role</label>
+                    <select id="role" name="role" required style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--border-radius-md);">
+                        <option value="staff" selected>Counter Staff (Takes & Recieves Orders)</option>
+                        <option value="admin">Manager Admin (Full Menu & Order Management)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('create-staff-modal').classList.remove('active')">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-check"></i> Create Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}

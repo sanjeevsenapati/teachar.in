@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"teachar.in/middleware"
 	"teachar.in/models"
+	"teachar.in/services"
 )
 
 func (app *Application) adminDashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -177,9 +179,94 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 		return
 	}
 
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		details := "Updated Order #" + strconv.FormatInt(id, 10) + " status to '" + status + "'"
+		app.AuditService.LogEvent(r.Context(), actor, "ORDER_STATUS_UPDATED", details, services.GetClientIP(r))
+	}
+
 	referer := r.Header.Get("Referer")
 	if referer == "" {
 		referer = "/admin"
 	}
 	http.Redirect(w, r, referer, http.StatusSeeOther)
+}
+
+func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request) {
+	users, err := app.AuthService.GetAllUsers(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := models.PageData{
+		"Title": "Staff & Registered Users",
+		"Users": users,
+	}
+	app.render(w, r, http.StatusOK, "admin_users.html", data)
+}
+
+func (app *Application) adminCreateStaffHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	mobile := r.FormValue("mobile")
+	password := r.FormValue("password")
+	role := r.FormValue("role")
+
+	if role != "staff" && role != "admin" {
+		role = "staff"
+	}
+
+	createdUser, err := app.AuthService.CreateUserWithRole(r.Context(), name, email, mobile, password, role)
+	if err != nil {
+		users, _ := app.AuthService.GetAllUsers(r.Context())
+		data := models.PageData{
+			"Title": "Staff & Registered Users",
+			"Error": err.Error(),
+			"Users": users,
+		}
+		app.render(w, r, http.StatusBadRequest, "admin_users.html", data)
+		return
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		details := "Created " + role + " account for " + createdUser.Name + " (" + createdUser.Email + ")"
+		app.AuditService.LogEvent(r.Context(), actor, "STAFF_CREATED", details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app *Application) adminAuditLogsHandler(w http.ResponseWriter, r *http.Request) {
+	logs, err := app.AuditService.GetAllLogs(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := models.PageData{
+		"Title":     "System Audit Logs",
+		"AuditLogs": logs,
+	}
+	app.render(w, r, http.StatusOK, "admin_audit_logs.html", data)
+}
+
+func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Request) {
+	report, err := app.ReportService.GenerateFinancialReport(r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := models.PageData{
+		"Title":  "Financial & Auditing Reports",
+		"Report": report,
+	}
+	app.render(w, r, http.StatusOK, "admin_reports.html", data)
 }

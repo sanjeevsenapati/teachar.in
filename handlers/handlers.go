@@ -16,11 +16,13 @@ import (
 
 // Application holds the application-wide dependencies.
 type Application struct {
-	Logger       *slog.Logger
-	Config       *config.Config
-	MenuService  *services.MenuService
-	AuthService  *services.AuthService
-	OrderService *services.OrderService
+	Logger        *slog.Logger
+	Config        *config.Config
+	MenuService   *services.MenuService
+	AuthService   *services.AuthService
+	OrderService  *services.OrderService
+	AuditService  *services.AuditService
+	ReportService *services.ReportService
 }
 
 // RegisterRoutes sets up all the routes for the application.
@@ -51,15 +53,21 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("GET /account", app.clientAccountHandler)
 	router.HandleFunc("POST /api/orders", app.apiCreateOrderHandler)
 
-	// Admin handlers (protected by RequireAdmin)
-	router.Handle("GET /admin", mw.RequireAdmin(http.HandlerFunc(app.adminDashboardHandler)))
+	// Admin / Staff / Superadmin handlers
+	router.Handle("GET /admin", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminDashboardHandler)))
 	router.Handle("GET /admin/menu", mw.RequireAdmin(http.HandlerFunc(app.adminMenuHandler)))
 	router.Handle("POST /admin/menu/add", mw.RequireAdmin(http.HandlerFunc(app.adminAddMenuItemHandler)))
 	router.Handle("POST /admin/menu/edit", mw.RequireAdmin(http.HandlerFunc(app.adminEditMenuItemHandler)))
 	router.Handle("POST /admin/menu/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteMenuItemHandler)))
 	router.Handle("POST /admin/menu/toggle", mw.RequireAdmin(http.HandlerFunc(app.adminToggleMenuItemHandler)))
-	router.Handle("GET /admin/orders", mw.RequireAdmin(http.HandlerFunc(app.adminOrdersHandler)))
-	router.Handle("POST /admin/orders/status", mw.RequireAdmin(http.HandlerFunc(app.adminUpdateOrderStatusHandler)))
+	router.Handle("GET /admin/orders", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminOrdersHandler)))
+	router.Handle("POST /admin/orders/status", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminUpdateOrderStatusHandler)))
+
+	// Superadmin specific handlers
+	router.Handle("GET /admin/users", mw.RequireSuperadmin(http.HandlerFunc(app.adminUsersHandler)))
+	router.Handle("POST /admin/users/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateStaffHandler)))
+	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
+	router.Handle("GET /admin/reports", mw.RequireSuperadmin(http.HandlerFunc(app.adminReportsHandler)))
 
 	// API status endpoints
 	router.HandleFunc("GET /api/status", app.apiStatusHandler)
@@ -92,10 +100,16 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, status in
 	if user := middleware.GetUserFromContext(r); user != nil {
 		data["User"] = user
 		data["IsAuthenticated"] = true
-		data["IsAdmin"] = (user.Role == "admin")
+		data["IsSuperadmin"] = (user.Role == "superadmin")
+		data["IsAdmin"] = (user.Role == "admin" || user.Role == "superadmin")
+		data["IsStaff"] = (user.Role == "staff")
+		data["CanManageOrders"] = (user.Role == "staff" || user.Role == "admin" || user.Role == "superadmin")
 	} else {
 		data["IsAuthenticated"] = false
+		data["IsSuperadmin"] = false
 		data["IsAdmin"] = false
+		data["IsStaff"] = false
+		data["CanManageOrders"] = false
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

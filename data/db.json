@@ -1,10 +1,21 @@
 {
-  "next_user_id": 4,
+  "next_user_id": 7,
   "next_menu_item_id": 13,
   "next_order_id": 5,
+  "next_audit_log_id": 9,
   "users": [
     {
       "id": 1,
+      "name": "Super Admin",
+      "email": "superadmin@teachar.in",
+      "mobile_number": "9000000000",
+      "password_hash": "7531f4ee48a71c86a706bfbb4b81b0c5786a08316f6b850cc35059e1fb676a28",
+      "salt": "a1b2c3d4e5f67890a1b2c3d4e5f67890",
+      "role": "superadmin",
+      "created_at": "2026-08-16T10:00:00+05:30"
+    },
+    {
+      "id": 2,
       "name": "TEACHAR Admin",
       "email": "admin@teachar.in",
       "mobile_number": "9876543210",
@@ -14,7 +25,7 @@
       "created_at": "2026-08-16T10:16:07.585081+05:30"
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "Sample Client",
       "email": "client@teachar.in",
       "mobile_number": "9123456789",
@@ -24,7 +35,17 @@
       "created_at": "2026-08-16T10:16:07.585082+05:30"
     },
     {
-      "id": 3,
+      "id": 4,
+      "name": "Counter Staff",
+      "email": "staff@teachar.in",
+      "mobile_number": "9555544444",
+      "password_hash": "20eb1aa7c13b8cbfdf5e7d071c403a9c9d5eccad7d45957064898ae54cf4993f",
+      "salt": "b2c3d4e5f67890a1b2c3d4e5f67890a1",
+      "role": "staff",
+      "created_at": "2026-08-16T11:00:00+05:30"
+    },
+    {
+      "id": 5,
       "name": "John Doe",
       "email": "john@example.com",
       "mobile_number": "9988776655",
@@ -32,6 +53,16 @@
       "salt": "ce313f32c8d06b4b77e41259530a177e",
       "role": "client",
       "created_at": "2026-08-16T13:12:37.712213+05:30"
+    },
+    {
+      "id": 6,
+      "name": "Order Staff 1",
+      "email": "orderstaff1@teachar.in",
+      "mobile_number": "9876500000",
+      "password_hash": "f8b64daee26cfe2354c7b4d5690a13ddb56230a17e28b5ead992e49c58b9a95f",
+      "salt": "efacf6616fc977f572a5bf0c8e617170",
+      "role": "staff",
+      "created_at": "2026-08-16T13:23:31.323249+05:30"
     }
   ],
   "sessions": [
@@ -41,9 +72,14 @@
       "expires_at": "2026-08-17T13:12:37.712807+05:30"
     },
     {
-      "id": "bfd69d16de765935876dd311bcb14c92e31ad89f6790b91f661ce233f1ac0a88",
+      "id": "a9d1e8b61fdffa7a8c605e2ec04be31b47ce5fe528f8f4c9d38675c58eeaf015",
       "user_id": 1,
-      "expires_at": "2026-08-17T13:13:32.996328+05:30"
+      "expires_at": "2026-08-17T13:23:23.550685+05:30"
+    },
+    {
+      "id": "baf65285494dd92af56ebc781e816f250d857914df772dd92ce3a36bb1468846",
+      "user_id": 1,
+      "expires_at": "2026-08-17T13:36:07.909577+05:30"
     }
   ],
   "menu_items": [
@@ -272,6 +308,88 @@
         }
       ],
       "created_at": "2026-08-16T13:12:15.653858+05:30"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": 1,
+      "timestamp": "2026-08-16T10:00:00+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "SYSTEM_INIT",
+      "details": "Initialized system with default Superadmin, Admin, Staff, and Client accounts.",
+      "ip_address": "127.0.0.1"
+    },
+    {
+      "id": 2,
+      "timestamp": "2026-08-16T13:23:23.551352+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52200"
+    },
+    {
+      "id": 3,
+      "timestamp": "2026-08-16T13:23:31.323726+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "STAFF_CREATED",
+      "details": "Created staff account for Order Staff 1 (orderstaff1@teachar.in)",
+      "ip_address": "[::1]:52203"
+    },
+    {
+      "id": 4,
+      "timestamp": "2026-08-16T13:24:51.971647+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52212"
+    },
+    {
+      "id": 5,
+      "timestamp": "2026-08-16T13:29:28.727152+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52261"
+    },
+    {
+      "id": 6,
+      "timestamp": "2026-08-16T13:32:57.590316+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52297"
+    },
+    {
+      "id": 7,
+      "timestamp": "2026-08-16T13:33:20.056748+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52297"
+    },
+    {
+      "id": 8,
+      "timestamp": "2026-08-16T13:36:07.910183+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52325"
     }
   ]
 }
