@@ -2,7 +2,7 @@
   "next_user_id": 7,
   "next_menu_item_id": 13,
   "next_order_id": 12,
-  "next_audit_log_id": 56,
+  "next_audit_log_id": 58,
   "users": [
     {
       "id": 1,
@@ -150,6 +150,11 @@
       "id": "04076589f2d4827f8ce31fa5b72ac31a4b64dff0cac6941e5bb92268db943b43",
       "user_id": 4,
       "expires_at": "2026-08-17T14:15:15.693621+05:30"
+    },
+    {
+      "id": "6f3d453e21fb2d4d266c13d588a137e8df8e4a476daea45390822965be4fbeef",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:35:29.169467+05:30"
     }
   ],
   "menu_items": [
@@ -659,8 +664,8 @@
       "assigned_staff_id": 4,
       "assigned_staff_name": "Counter Staff",
       "cancellation_reason": "",
-      "rating": 0,
-      "review": "",
+      "rating": 5,
+      "review": "Mudhi and Chai is the best experience  We had. ",
       "items": [
         {
           "id": 1,
@@ -1312,6 +1317,26 @@
       "action": "ORDER_STATUS_UPDATED",
       "details": "Updated Order #11 status to 'Completed' (Handled by: Counter Staff)",
       "ip_address": "[::1]:53099"
+    },
+    {
+      "id": 56,
+      "timestamp": "2026-08-16T14:29:27.859193+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #11",
+      "ip_address": "[::1]:53115"
+    },
+    {
+      "id": 57,
+      "timestamp": "2026-08-16T14:35:29.170455+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:53165"
     }
   ],
   "cancellation_reasons": [
