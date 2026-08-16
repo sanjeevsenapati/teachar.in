@@ -64,6 +64,14 @@
                         </div>
                         {{end}}
                     </div>
+                    {{if eq .Status "Cancelled"}}
+                    <div style="margin-top:0.75rem; padding:0.6rem 0.85rem; background:#fee2e2; border:1px solid #fca5a5; border-radius:6px; color:#991b1b; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size:1.1rem; color:#dc2626;"></i>
+                        <div>
+                            <strong>Order Cancelled:</strong> {{if .CancellationReason}}{{.CancellationReason}}{{else}}Cancelled by restaurant staff{{end}}
+                        </div>
+                    </div>
+                    {{end}}
                 </div>
                 <div class="order-card-footer">
                     <div class="payment-info">

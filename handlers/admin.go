@@ -173,9 +173,10 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 
 	id, _ := strconv.ParseInt(r.FormValue("id"), 10, 64)
 	status := r.FormValue("status")
+	cancellationReason := r.FormValue("cancellation_reason")
 	actor := middleware.GetUserFromContext(r)
 
-	if err := app.OrderService.UpdateOrderStatusWithStaff(r.Context(), id, status, actor); err != nil {
+	if err := app.OrderService.UpdateOrderStatusWithStaff(r.Context(), id, status, cancellationReason, actor); err != nil {
 		orders, _ := app.OrderService.GetAllOrders(r.Context())
 		data := models.PageData{
 			"Title":  "Manage Orders",
@@ -188,6 +189,9 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 
 	if app.AuditService != nil {
 		details := "Updated Order #" + strconv.FormatInt(id, 10) + " status to '" + status + "'"
+		if cancellationReason != "" {
+			details += " [Reason: " + cancellationReason + "]"
+		}
 		if actor != nil {
 			details += " (Handled by: " + actor.Name + ")"
 		}

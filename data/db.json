@@ -1,8 +1,8 @@
 {
   "next_user_id": 7,
   "next_menu_item_id": 13,
-  "next_order_id": 5,
-  "next_audit_log_id": 16,
+  "next_order_id": 8,
+  "next_audit_log_id": 34,
   "users": [
     {
       "id": 1,
@@ -100,6 +100,26 @@
       "id": "2b6164abcfcf116273c86f71999f5d618ac9f73c3e1abc46ffd577a364a0fc18",
       "user_id": 6,
       "expires_at": "2026-08-17T13:45:03.537458+05:30"
+    },
+    {
+      "id": "a70caf35514c6c0593722b65a693b903a68a33a27f111a667c6fc9a6973b096f",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:46:36.099649+05:30"
+    },
+    {
+      "id": "935738596d438ba27d47437df55a14ee18a23879c6ec2ef715a3aaf0973eefcc",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:52:40.936779+05:30"
+    },
+    {
+      "id": "34f1c2202ad2438daec8cd50980feefe21d88307cb4b631d26a7a0c5f1627cd3",
+      "user_id": 3,
+      "expires_at": "2026-08-17T13:52:53.604563+05:30"
+    },
+    {
+      "id": "a0d5edeabe3226d19a64befd7e173d9aff7e5ac362b288e36ca8c795cbe7a961",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:54:57.552239+05:30"
     }
   ],
   "menu_items": [
@@ -228,6 +248,7 @@
       "total_price": 162.75,
       "assigned_staff_id": 0,
       "assigned_staff_name": "",
+      "cancellation_reason": "",
       "items": [
         {
           "id": 1,
@@ -271,6 +292,7 @@
       "total_price": 63,
       "assigned_staff_id": 4,
       "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
       "items": [
         {
           "id": 1,
@@ -291,13 +313,14 @@
       "order_type": "Takeaway",
       "table_number": "",
       "delivery_address": "",
-      "status": "Pending",
+      "status": "Cancelled",
       "payment_method": "UPI",
       "payment_status": "Paid",
       "transaction_id": "TXN17868661299408",
       "total_price": 31.5,
-      "assigned_staff_id": 0,
-      "assigned_staff_name": "",
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Out of fresh mint leaves",
       "items": [
         {
           "id": 1,
@@ -325,6 +348,7 @@
       "total_price": 84,
       "assigned_staff_id": 0,
       "assigned_staff_name": "",
+      "cancellation_reason": "",
       "items": [
         {
           "id": 1,
@@ -336,6 +360,90 @@
         }
       ],
       "created_at": "2026-08-16T13:12:15.653858+05:30"
+    },
+    {
+      "id": 5,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN94418022",
+      "total_price": 42,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 5,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T13:46:07.141469+05:30"
+    },
+    {
+      "id": 6,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN23566276",
+      "total_price": 84,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 6,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        }
+      ],
+      "created_at": "2026-08-16T13:48:56.215971+05:30"
+    },
+    {
+      "id": 7,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Dine-in",
+      "table_number": "TABLE 7",
+      "delivery_address": "",
+      "status": "Cancelled",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN42486056",
+      "total_price": 42,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Item not availble",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 7,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T13:53:41.592435+05:30"
     }
   ],
   "audit_logs": [
@@ -488,6 +596,186 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "[::1]:52440"
+    },
+    {
+      "id": 16,
+      "timestamp": "2026-08-16T13:45:45.468258+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52455"
+    },
+    {
+      "id": 17,
+      "timestamp": "2026-08-16T13:46:07.143406+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #5 (Dine-in, Total: ₹42.00)",
+      "ip_address": "[::1]:52455"
+    },
+    {
+      "id": 18,
+      "timestamp": "2026-08-16T13:46:36.101195+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52469"
+    },
+    {
+      "id": 19,
+      "timestamp": "2026-08-16T13:46:56.974253+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52455"
+    },
+    {
+      "id": 20,
+      "timestamp": "2026-08-16T13:47:05.940525+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #5 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52455"
+    },
+    {
+      "id": 21,
+      "timestamp": "2026-08-16T13:47:55.874784+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #5 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52543"
+    },
+    {
+      "id": 22,
+      "timestamp": "2026-08-16T13:48:15.382724+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #5 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52556"
+    },
+    {
+      "id": 23,
+      "timestamp": "2026-08-16T13:48:56.21789+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #6 (Dine-in, Total: ₹84.00)",
+      "ip_address": "[::1]:52469"
+    },
+    {
+      "id": 24,
+      "timestamp": "2026-08-16T13:49:38.398854+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #6 status to 'Cancelled' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52567"
+    },
+    {
+      "id": 25,
+      "timestamp": "2026-08-16T13:52:40.937396+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52653"
+    },
+    {
+      "id": 26,
+      "timestamp": "2026-08-16T13:52:40.949988+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #3 status to 'Cancelled' [Reason: Out of fresh mint leaves] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52654"
+    },
+    {
+      "id": 27,
+      "timestamp": "2026-08-16T13:52:53.605067+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52660"
+    },
+    {
+      "id": 28,
+      "timestamp": "2026-08-16T13:53:41.593912+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #7 (Dine-in, Total: ₹42.00)",
+      "ip_address": "[::1]:52668"
+    },
+    {
+      "id": 29,
+      "timestamp": "2026-08-16T13:54:15.948122+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #7 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52665"
+    },
+    {
+      "id": 30,
+      "timestamp": "2026-08-16T13:54:40.684741+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #7 status to 'Cancelled' [Reason: Item not availble] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52665"
+    },
+    {
+      "id": 31,
+      "timestamp": "2026-08-16T13:54:57.553957+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52665"
+    },
+    {
+      "id": 32,
+      "timestamp": "2026-08-16T13:55:03.791134+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #7 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52665"
+    },
+    {
+      "id": 33,
+      "timestamp": "2026-08-16T13:55:41.725833+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #7 status to 'Cancelled' [Reason: Item not availble] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52665"
     }
   ]
 }

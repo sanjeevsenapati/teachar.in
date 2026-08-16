@@ -82,10 +82,10 @@ func (s *OrderService) GetAllOrders(ctx context.Context) ([]models.Order, error)
 }
 
 func (s *OrderService) UpdateOrderStatus(ctx context.Context, id int64, status string) error {
-	return s.UpdateOrderStatusWithStaff(ctx, id, status, nil)
+	return s.UpdateOrderStatusWithStaff(ctx, id, status, "", nil)
 }
 
-func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staff *models.User) error {
+func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, cancellationReason string, staff *models.User) error {
 	validStatuses := map[string]bool{
 		"Pending":   true,
 		"Preparing": true,
@@ -96,6 +96,10 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 
 	if !validStatuses[status] {
 		return errors.New("invalid status value")
+	}
+
+	if status == "Cancelled" && cancellationReason == "" {
+		return errors.New("a reason is required when cancelling an order")
 	}
 
 	order, err := s.orderRepo.GetOrderByID(ctx, id)
@@ -122,5 +126,5 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 		}
 	}
 
-	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName)
+	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName, cancellationReason)
 }

@@ -431,10 +431,10 @@ func (r *JSONRepository) GetOrderByID(ctx context.Context, id int64) (*models.Or
 }
 
 func (r *JSONRepository) UpdateOrderStatus(ctx context.Context, id int64, status string) error {
-	return r.UpdateOrderStatusWithStaff(ctx, id, status, 0, "")
+	return r.UpdateOrderStatusWithStaff(ctx, id, status, 0, "", "")
 }
 
-func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staffID int64, staffName string) error {
+func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staffID int64, staffName string, cancellationReason string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -445,6 +445,9 @@ func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int6
 			if staffID != 0 {
 				r.data.Orders[i].AssignedStaffID = staffID
 				r.data.Orders[i].AssignedStaffName = staffName
+			}
+			if cancellationReason != "" {
+				r.data.Orders[i].CancellationReason = cancellationReason
 			}
 			found = true
 			break

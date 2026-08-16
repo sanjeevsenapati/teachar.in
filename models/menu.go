@@ -44,22 +44,23 @@ type OrderItem struct {
 
 // Order represents a customer order.
 type Order struct {
-	ID                int64       `json:"id"`
-	UserID            int64       `json:"user_id"`
-	CustomerName      string      `json:"customer_name"`
-	CustomerPhone     string      `json:"customer_phone"`
-	OrderType         string      `json:"order_type"`          // "Dine-in", "Takeaway", "Delivery"
-	TableNumber       string      `json:"table_number"`        // Required for Dine-in
-	DeliveryAddress   string      `json:"delivery_address"`     // Required for Delivery
-	Status            string      `json:"status"`               // "Pending", "Preparing", "Ready", "Completed", "Cancelled"
-	PaymentMethod     string      `json:"payment_method"`       // "UPI", "Card", "NetBanking", "COD"
-	PaymentStatus     string      `json:"payment_status"`       // "Paid", "Pending", "Failed"
-	TransactionID     string      `json:"transaction_id"`
-	TotalPrice        float64     `json:"total_price"`
-	AssignedStaffID   int64       `json:"assigned_staff_id"`   // Staff member who claimed/handled this order
-	AssignedStaffName string      `json:"assigned_staff_name"` // Staff member's name
-	Items             []OrderItem `json:"items"`
-	CreatedAt         time.Time   `json:"created_at"`
+	ID                 int64       `json:"id"`
+	UserID             int64       `json:"user_id"`
+	CustomerName       string      `json:"customer_name"`
+	CustomerPhone      string      `json:"customer_phone"`
+	OrderType          string      `json:"order_type"`           // "Dine-in", "Takeaway", "Delivery"
+	TableNumber        string      `json:"table_number"`         // Required for Dine-in
+	DeliveryAddress    string      `json:"delivery_address"`      // Required for Delivery
+	Status             string      `json:"status"`                // "Pending", "Preparing", "Ready", "Completed", "Cancelled"
+	PaymentMethod      string      `json:"payment_method"`        // "UPI", "Card", "NetBanking", "COD"
+	PaymentStatus      string      `json:"payment_status"`        // "Paid", "Pending", "Failed"
+	TransactionID      string      `json:"transaction_id"`
+	TotalPrice         float64     `json:"total_price"`
+	AssignedStaffID    int64       `json:"assigned_staff_id"`    // Staff member who claimed/handled this order
+	AssignedStaffName  string      `json:"assigned_staff_name"`  // Staff member's name
+	CancellationReason string      `json:"cancellation_reason"`  // Staff cancellation explanation
+	Items              []OrderItem `json:"items"`
+	CreatedAt          time.Time   `json:"created_at"`
 }
 
 // PageData holds the data to be passed to HTML templates.
