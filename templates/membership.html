@@ -5,10 +5,10 @@
     
     <div class="container" style="position:relative; z-index:2;">
         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(251,191,36,0.12); color:#fbbf24; border:1px dashed #d97706; padding:0.4rem 1rem; border-radius:var(--border-radius-full); font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:1rem;">
-            <i class="fa-solid fa-ticket-simple"></i> Official TEACHAR.in Club Pass & Subscriptions
+            <i class="fa-solid fa-crown"></i> Official TEACHAR.in VIP Membership & Subscriptions
         </div>
         <h1 class="hero-title" style="color:#ffffff; font-size: 3rem; font-weight: 900; margin: 0.5rem 0 0.75rem; font-family: var(--font-heading); letter-spacing:-0.02em;">
-            Get Your Daily Coffee & Chai Pass
+            Get Your Cafe VIP Membership
         </h1>
         <p class="hero-subtitle" style="color: #fef3c7; max-width: 680px; margin: 0 auto; font-size: 1.15rem; line-height:1.6; opacity:0.95;">
             Enjoy 1 to 2 free artisanal teas or coffees every single day, automatic 10%–20% member discounts on all cafe orders, and VIP lounge privileges.
@@ -33,7 +33,7 @@
                         </div>
                         <div>
                             <span style="background:#d97706; color:#ffffff; font-size:0.75rem; font-weight:800; padding:0.2rem 0.65rem; border-radius:var(--border-radius-full); text-transform:uppercase; letter-spacing:0.05em; display:inline-block; margin-bottom:0.25rem;">
-                                <i class="fa-solid fa-certificate"></i> Verified Active Member Pass
+                                <i class="fa-solid fa-certificate"></i> Verified Active VIP Membership
                             </span>
                             <h2 style="color:#ffffff; font-family:var(--font-heading); font-size:1.8rem; font-weight:800; margin:0;">
                                 {{.ActiveSubscription.TierName}}
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <span style="color:#fef3c7; font-size:0.85rem; display:block;"><i class="fa-solid fa-barcode"></i> Pass ID: <strong style="font-family:monospace; color:#fbbf24;">{{.ActiveSubscription.TransactionID}}</strong></span>
+                        <span style="color:#fef3c7; font-size:0.85rem; display:block;"><i class="fa-solid fa-barcode"></i> Membership ID: <strong style="font-family:monospace; color:#fbbf24;">{{.ActiveSubscription.TransactionID}}</strong></span>
                         <span style="color:rgba(255,255,255,0.7); font-size:0.82rem; margin-top:0.2rem; display:block;"><i class="fa-solid fa-calendar-check"></i> Valid until {{.ActiveSubscription.EndDate.Format "Jan 02, 2006"}}</span>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
                     <div style="flex:1; min-width:280px;">
                         <div style="font-size:0.88rem; color:#fef3c7; margin-bottom:0.5rem;">
-                            <strong style="color:#ffffff; font-size:1.1rem;">Passholder: {{.ActiveSubscription.UserName}}</strong> ({{.ActiveSubscription.UserEmail}})
+                            <strong style="color:#ffffff; font-size:1.1rem;">Member: {{.ActiveSubscription.UserName}}</strong> ({{.ActiveSubscription.UserEmail}})
                         </div>
                         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.75rem;">
                             <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); padding:0.6rem 1rem; border-radius:var(--border-radius-md);">
@@ -85,40 +85,159 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Warm Thank You & Best Wishes Banner -->
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: var(--border-radius-lg); padding: 1.75rem 2rem; margin-top: 1.5rem; text-align: center; box-shadow: var(--shadow-sm);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">✨☕✨</div>
+                <h3 style="font-family: var(--font-heading); color: #78350f; font-size: 1.5rem; font-weight: 900; margin: 0 0 0.5rem;">
+                    Thank You for Being a Valued TEACHAR VIP Member!
+                </h3>
+                <p style="color: #92400e; font-size: 1.02rem; line-height: 1.6; max-width: 680px; margin: 0 auto;">
+                    We wish you great health, delightful tea conversations, and wonderful moments ahead. You are currently enjoying active <strong>{{.ActiveSubscription.TierName}}</strong> privileges with <strong>{{printf "%.0f" .ActiveSubscription.DiscountPercent}}% OFF</strong> every order and <strong>{{.ActiveSubscription.DailyFreeCupLimit}} free daily beverage credit(s)</strong>!
+                </p>
+            </div>
+
+            {{if .ShowRenewalReminder}}
+            <!-- 3-Day Expiry Renewal / Upgrade Alert Banner -->
+            <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: var(--border-radius-lg); padding: 1.5rem 2rem; margin-top: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);" id="renewal-banner">
+                <div style="display: flex; align-items: center; gap: 1.25rem;">
+                    <div style="width: 52px; height: 52px; background: #ef4444; color: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(239,68,68,0.3);">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #991b1b;">
+                            ⌛ Membership Expiring Soon! ({{.DaysRemaining}} Day{{if ne .DaysRemaining 1}}s{{end}} Left)
+                        </h4>
+                        <p style="margin: 0.25rem 0 0; font-size: 0.95rem; color: #7f1d1d;">
+                            Your <strong>{{.ActiveSubscription.TierName}}</strong> expires on <strong>{{.ActiveSubscription.EndDate.Format "Jan 02, 2006"}}</strong>. Renew or upgrade now to keep your daily free beverages & discounts active without interruption!
+                        </p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="scrollToPlans()" style="background: #ef4444; border: none; font-weight: 800; padding: 0.75rem 1.5rem; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                    <i class="fa-solid fa-rotate-right me-1"></i> Renew / Upgrade Plan
+                </button>
+            </div>
+            {{end}}
+
         </div>
         {{end}}
 
-        <!-- Section Heading -->
-        <div style="text-align:center; max-width:650px; margin:0 auto;">
-            <span class="section-tag" style="background:var(--primary-light); color:var(--primary); padding:0.3rem 0.75rem; border-radius:var(--border-radius-full); font-size:0.8rem; font-weight:800; text-transform:uppercase;">Select Your Pass</span>
+        {{if .AvailableCoupons}}
+        <!-- Adhoc & One-Time Coupons Section -->
+        <div style="max-width:900px; margin:0 auto; width:100%;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
+                <div>
+                    <span class="section-tag" style="background: rgba(217,119,6,0.15); color: #d97706; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-full); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;">
+                        <i class="fa-solid fa-ticket-simple me-1"></i> Special Offers & Vouchers
+                    </span>
+                    <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 0.3rem 0 0;">
+                        Your Exclusive Promo Vouchers & Coupons
+                    </h2>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 340px)); gap: 1.1rem; justify-content: center;">
+                {{range .AvailableCoupons}}
+                <!-- Premium Compact Solid Voucher Card -->
+                <div class="coupon-voucher-card" style="background: #ffffff; border: 1.5px solid #d97706; border-radius: 12px; box-shadow: 0 4px 16px rgba(217, 119, 6, 0.08); display: flex; flex-direction: row; overflow: hidden; position: relative; transition: all 0.2s ease; max-width: 340px; margin: 0 auto; width: 100%;">
+                    
+                    <!-- Left Stub Badge (Solid TEACHAR Amber Brand Color) -->
+                    <div style="width: 92px; background: #d97706; color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.75rem 0.5rem; text-align: center; position: relative; flex-shrink: 0;">
+                        <div style="width: 32px; height: 32px; background: #ffffff; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 0.35rem;">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <span style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 900; color: #ffffff; line-height: 1.1;">
+                            {{if eq .DiscountType "percentage"}}{{.DiscountValue}}%{{else}}₹{{printf "%.0f" .DiscountValue}}{{end}}
+                        </span>
+                        <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: #fef3c7; letter-spacing: 0.05em; margin-top: 0.1rem;">
+                            OFF
+                        </span>
+                    </div>
+
+                    <!-- Perforated Cutout Divider Line -->
+                    <div style="width: 1px; background: #d97706; opacity: 0.3; border-left: 1px dashed #d97706;"></div>
+
+                    <!-- Right Details Segment (Solid White Background) -->
+                    <div style="flex: 1; padding: 0.85rem 1rem; display: flex; flex-direction: column; justify-content: space-between; background: #ffffff;">
+                        <div>
+                            <!-- Header Tags -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; margin-bottom: 0.45rem; flex-wrap: wrap;">
+                                {{if .TargetUserID}}
+                                <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: var(--border-radius-full); text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <i class="fa-solid fa-crown text-warning"></i> VIP Offer
+                                </span>
+                                {{else}}
+                                <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: var(--border-radius-full); text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <i class="fa-solid fa-tags"></i> Promo
+                                </span>
+                                {{end}}
+
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">
+                                    Min ₹{{printf "%.0f" .MinOrderAmount}}
+                                </span>
+                            </div>
+
+                            <!-- Coupon Code & Copy Action -->
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.55rem;">
+                                <div style="flex: 1; background: #fffbeb; border: 1px dashed #d97706; border-radius: 6px; padding: 0.3rem 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span style="font-family: monospace; font-size: 1.05rem; font-weight: 900; color: #b45309; letter-spacing: 0.04em;">
+                                        {{.Code}}
+                                    </span>
+                                    <button type="button" class="btn-copy-code" onclick="copyCouponCode('{{.Code}}', this)" title="Copy Code" style="background: none; border: none; color: #d97706; cursor: pointer; font-size: 0.82rem; padding: 0.15rem 0.3rem; transition: transform 0.15s ease;">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solid Apply Button (TEACHAR Amber Color) -->
+                        <a href="/menu?apply_coupon={{.Code}}" class="btn btn-primary btn-sm" style="width: 100%; font-weight: 800; background: #d97706; color: #ffffff; border: none; padding: 0.48rem 0.6rem; font-size: 0.82rem; text-align: center; border-radius: 6px;">
+                            <i class="fa-solid fa-bolt me-1"></i> Apply & Order
+                        </a>
+                    </div>
+
+                </div>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+
+        {{if or (not .ActiveSubscription) .ShowRenewalReminder}}
+        <!-- Section Heading for Membership Plans -->
+        <div style="text-align:center; max-width:650px; margin:0 auto;" id="plans-section">
+            <span class="section-tag" style="background:var(--primary-light); color:var(--primary); padding:0.3rem 0.75rem; border-radius:var(--border-radius-full); font-size:0.8rem; font-weight:800; text-transform:uppercase;">
+                {{if .ShowRenewalReminder}}Renew or Upgrade Membership{{else}}Select Your Membership{{end}}
+            </span>
             <h2 style="font-family:var(--font-heading); font-size:2.2rem; font-weight:800; color:var(--text-main); margin:0.5rem 0 0.5rem;">
-                Official Cafe Passes & Subscription Tickets
+                Official Cafe VIP Membership Plans
             </h2>
-            <p class="text-muted" style="font-size:1rem;">Pick a monthly pass below to unlock free daily chai/coffee and automatic member discount codes.</p>
+            <p class="text-muted" style="font-size:1rem;">
+                {{if .ShowRenewalReminder}}Select a tier below to extend or upgrade your VIP privileges.{{else}}Pick a monthly membership below to unlock free daily chai/coffee and automatic member discount codes.{{end}}
+            </p>
         </div>
 
-        <!-- Pass Tickets Grid -->
+        <!-- Membership Plans Grid -->
         <div style="display:flex; flex-direction:column; gap:2.5rem; max-width:1050px; margin:0 auto; width:100%;">
             
             {{range .Tiers}}
-            <!-- Physical Ticket Component -->
+            <!-- Physical Membership Card Component -->
             <div class="pass-ticket-card" style="background:#ffffff; border:{{if eq .ID "gold"}}2px solid #d97706{{else}}1px solid var(--border-color){{end}}; border-radius:var(--border-radius-lg); box-shadow:var(--shadow-md); display:flex; flex-direction:row; flex-wrap:wrap; overflow:hidden; position:relative; transition:transform 0.2s ease, box-shadow 0.2s ease;">
                 
                 {{if eq .ID "gold"}}
                 <div style="position:absolute; top:12px; right:12px; background:linear-gradient(135deg, #fbbf24, #d97706); color:#1c1917; font-size:0.75rem; font-weight:900; padding:0.25rem 0.75rem; border-radius:var(--border-radius-full); text-transform:uppercase; letter-spacing:0.05em; z-index:5; box-shadow:0 2px 6px rgba(217,119,6,0.3);">
-                    <i class="fa-solid fa-fire"></i> Best Value Pass
+                    <i class="fa-solid fa-fire"></i> Best Value Plan
                 </div>
                 {{end}}
 
-                <!-- Ticket Left Segment (Pass Info & Perks) -->
+                <!-- Ticket Left Segment (Membership Info & Perks) -->
                 <div style="flex:2; min-width:320px; padding:2rem; display:flex; flex-direction:column; justify-content:space-between; background:linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);">
                     <div>
                         <!-- Ticket Header -->
                         <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
                             <span class="coupon-badge-code" style="background:{{if eq .ID "silver"}}#f1f5f9; color:#334155; border:1px dashed #64748b;{{else if eq .ID "gold"}}#fef3c7; color:#92400e; border:1px dashed #d97706;{{else}}#1c1917; color:#fbbf24; border:1px dashed #fbbf24;{{end}} font-size:0.9rem;">
-                                <i class="fa-solid fa-ticket-simple"></i> {{if eq .ID "silver"}}SILVER-PASS{{else if eq .ID "gold"}}GOLD-COFFEE-PASS{{else}}PLATINUM-VIP-PASS{{end}}
+                                <i class="fa-solid fa-crown"></i> {{if eq .ID "silver"}}SILVER-VIP{{else if eq .ID "gold"}}GOLD-VIP{{else}}PLATINUM-VIP{{end}}
                             </span>
-                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">30-Day Pass Ticket</span>
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">30-Day VIP Membership</span>
                         </div>
 
                         <h3 style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--text-main); margin:0 0 0.5rem;">
@@ -158,7 +277,7 @@
                 <!-- Ticket Right Stub Segment (Price & Buy Button) -->
                 <div style="flex:1; min-width:260px; padding:2rem; background:{{if eq .ID "gold"}}#fffdfa{{else}}#fafafa{{end}}; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
                     
-                    <span style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Pass Price</span>
+                    <span style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Membership Fee</span>
                     <div style="display:flex; align-items:baseline; gap:0.2rem; margin-bottom:0.5rem;">
                         <span style="font-family:var(--font-heading); font-size:2.4rem; font-weight:900; color:var(--primary);">₹{{printf "%.0f" .PriceMonthly}}</span>
                         <span class="text-muted" style="font-size:0.9rem; font-weight:600;">/ Month</span>
@@ -169,16 +288,16 @@
                         <div style="font-family:monospace; font-size:1.4rem; font-weight:900; letter-spacing:0.2em; color:var(--text-main); line-height:1;">
                             ||| | |||| | ||||| ||
                         </div>
-                        <span style="font-size:0.72rem; font-family:monospace; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em;">TCH-PASS-{{.ID}}</span>
+                        <span style="font-size:0.72rem; font-family:monospace; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em;">TCH-MEMBERSHIP-{{.ID}}</span>
                     </div>
 
                     {{if $.User}}
                     <button class="btn btn-primary" style="width:100%; font-weight:800; padding:0.8rem; background:{{if eq .ID "gold"}}linear-gradient(135deg, #fbbf24, #d97706); color:#1c1917; border:none;{{else}}var(--primary){{end}};" onclick="openSubscribeModal('{{.ID}}', '{{.Name}}', '{{.PriceMonthly}}')">
-                        <i class="fa-solid fa-ticket-simple"></i> Activate {{.Name}}
+                        <i class="fa-solid fa-crown"></i> {{if $.ShowRenewalReminder}}Renew / Upgrade to {{.Name}}{{else}}Join {{.Name}}{{end}}
                     </button>
                     {{else}}
                     <a href="/login?redirect=/membership" class="btn btn-secondary" style="width:100%; font-weight:800; text-align:center; padding:0.75rem;">
-                        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Get Pass
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Join Membership
                     </a>
                     {{end}}
 
@@ -188,6 +307,10 @@
             {{end}}
 
         </div>
+        {{end}}
+
+    </div>
+</section>
 
     </div>
 </section>
@@ -196,15 +319,15 @@
 <div class="modal-overlay" id="subscribe-modal">
     <div class="modal-card" style="max-width:480px; border-radius:var(--border-radius-lg); overflow:hidden;">
         <div class="modal-header" style="background:linear-gradient(135deg, #1c1917, #3b1604); color:#ffffff;">
-            <h3 style="color:#ffffff; margin:0;"><i class="fa-solid fa-ticket-simple text-warning"></i> Activate Cafe Pass Ticket</h3>
+            <h3 style="color:#ffffff; margin:0;"><i class="fa-solid fa-crown text-warning"></i> Activate Cafe VIP Membership</h3>
             <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeSubscribeModal()">&times;</button>
         </div>
         <form action="/api/membership/subscribe" method="POST" class="modal-body" style="padding:1.75rem; display:flex; flex-direction:column; gap:1.25rem;">
             <input type="hidden" id="modal-tier-id" name="tier_id">
 
             <div style="background:#fef3c7; border:1px dashed #d97706; padding:1.25rem; border-radius:var(--border-radius-md);">
-                <span class="text-muted" style="font-size:0.78rem; font-weight:800; text-transform:uppercase; color:#92400e; display:block;">Selected Membership Ticket</span>
-                <h3 id="modal-tier-name" style="margin:0.25rem 0 0; color:#78350f; font-size:1.3rem; font-weight:900;">Pass Name</h3>
+                <span class="text-muted" style="font-size:0.78rem; font-weight:800; text-transform:uppercase; color:#92400e; display:block;">Selected Membership Plan</span>
+                <h3 id="modal-tier-name" style="margin:0.25rem 0 0; color:#78350f; font-size:1.3rem; font-weight:900;">Membership Name</h3>
                 <span id="modal-tier-price" style="color:#d97706; font-weight:900; font-size:1.2rem; display:block; margin-top:0.25rem;">₹0.00 / month</span>
             </div>
 
@@ -227,6 +350,17 @@
     </div>
 </div>
 
+<style>
+.coupon-voucher-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15) !important;
+    border-color: #b45309 !important;
+}
+.btn-copy-code:hover {
+    transform: scale(1.15);
+}
+</style>
+
 <script>
 function openSubscribeModal(id, name, price) {
     document.getElementById('modal-tier-id').value = id;
@@ -236,6 +370,20 @@ function openSubscribeModal(id, name, price) {
 }
 function closeSubscribeModal() {
     document.getElementById('subscribe-modal').classList.remove('active');
+}
+function scrollToPlans() {
+    const plansSec = document.getElementById('plans-section');
+    if (plansSec) plansSec.scrollIntoView({ behavior: 'smooth' });
+}
+function copyCouponCode(code, btn) {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(code).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check text-success"></i>';
+        setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy code: ', err);
+    });
 }
 </script>
 {{end}}

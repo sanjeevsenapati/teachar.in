@@ -2,14 +2,14 @@
 <section class="admin-header-section">
     <div class="container admin-header-content">
         <div>
-            <span class="section-tag"><i class="fa-solid fa-crown me-1"></i> Membership & Pass Management</span>
-            <h1 class="page-title">Subscriber Pass & Membership Register</h1>
+            <span class="section-tag"><i class="fa-solid fa-crown me-1"></i> Membership Management</span>
+            <h1 class="page-title">VIP Membership Register</h1>
             <p style="margin:0.25rem 0 0; font-size:0.95rem; color:#fef3c7; opacity:0.95;">Track active subscriber accounts, monthly recurring revenue (MRR), and grant member privileges.</p>
         </div>
         <div class="admin-nav-btns">
             <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
             <button class="btn btn-primary" onclick="openGrantMembershipModal()">
-                <i class="fa-solid fa-user-shield me-1"></i> Grant Membership Pass
+                <i class="fa-solid fa-user-shield me-1"></i> Grant VIP Membership
             </button>
         </div>
     </div>
@@ -33,7 +33,7 @@
                     </div>
 
                     <button class="btn btn-primary btn-sm" onclick="openGrantMembershipModal()" style="font-weight:800; white-space:nowrap;">
-                        <i class="fa-solid fa-plus me-1"></i> Grant Pass
+                        <i class="fa-solid fa-plus me-1"></i> Grant Membership
                     </button>
                 </div>
             </div>
@@ -42,16 +42,16 @@
             <div class="text-center p-5 text-muted">
                 <i class="fa-solid fa-id-card p-3" style="font-size: 3rem; color: var(--border-color);"></i>
                 <h3 style="margin-top:0.5rem; font-weight:700;">No Subscriptions Found</h3>
-                <p>Click "Grant Pass" above to grant a pass to an existing user, or customers can purchase passes online.</p>
+                <p>Click "Grant Membership" above to grant a membership to an existing user, or customers can purchase memberships online.</p>
             </div>
             {{else}}
             <div class="table-responsive" style="overflow-x:hidden;">
                 <table class="admin-table" style="width:100%; border-collapse:collapse; table-layout:auto;">
                     <thead>
                         <tr>
-                            <th style="padding:0.85rem 0.6rem;">Pass ID</th>
+                            <th style="padding:0.85rem 0.6rem;">Membership ID</th>
                             <th style="padding:0.85rem 0.6rem;">Subscriber Profile</th>
-                            <th style="padding:0.85rem 0.6rem;">Pass Tier</th>
+                            <th style="padding:0.85rem 0.6rem;">Membership Tier</th>
                             <th style="padding:0.85rem 0.6rem;">Price & Channel</th>
                             <th style="padding:0.85rem 0.6rem;">Discount</th>
                             <th style="padding:0.85rem 0.6rem;">Free Daily Cups</th>
@@ -193,7 +193,7 @@
     <div class="modal-card" style="max-width:520px; border-radius:var(--border-radius-lg); overflow:hidden; box-shadow:var(--shadow-xl);">
         <div class="modal-header" style="background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color:#ffffff; padding:1.1rem 1.5rem;">
             <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.55rem;">
-                <i class="fa-solid fa-user-shield text-warning"></i> Grant User Membership Pass
+                <i class="fa-solid fa-user-shield text-warning"></i> Grant User VIP Membership
             </h3>
             <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeGrantMembershipModal()">&times;</button>
         </div>
@@ -225,10 +225,10 @@
                 </select>
             </div>
 
-            <!-- Pass Tier Selector -->
+            <!-- Membership Tier Selector -->
             <div class="form-group">
                 <label style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
-                    <i class="fa-solid fa-crown text-primary me-1"></i> Select Pass Tier <span class="text-danger">*</span>
+                    <i class="fa-solid fa-crown text-primary me-1"></i> Select Membership Tier <span class="text-danger">*</span>
                 </label>
                 <select name="tier_id" class="form-select" required style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     {{range .Tiers}}
@@ -240,19 +240,19 @@
             <!-- Validity Duration -->
             <div class="form-group">
                 <label style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
-                    <i class="fa-solid fa-calendar-days text-primary me-1"></i> Pass Validity Duration <span class="text-danger">*</span>
+                    <i class="fa-solid fa-calendar-days text-primary me-1"></i> Membership Validity Duration <span class="text-danger">*</span>
                 </label>
                 <select name="duration_months" class="form-select" required style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     <option value="1" selected>1 Month (30 Days)</option>
-                    <option value="3">3 Months (Quarterly Pass)</option>
-                    <option value="6">6 Months (Half-Yearly Pass)</option>
-                    <option value="12">12 Months (1 Full Year VIP Pass)</option>
+                    <option value="3">3 Months (Quarterly Membership)</option>
+                    <option value="6">6 Months (Half-Yearly Membership)</option>
+                    <option value="12">12 Months (1 Full Year VIP Membership)</option>
                 </select>
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:0.5rem; padding-top:0.85rem; border-top:1px dashed var(--border-color);">
                 <button type="button" class="btn btn-secondary" onclick="closeGrantMembershipModal()" style="font-weight:700; padding:0.55rem 1.1rem;">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="font-weight:800; padding:0.55rem 1.25rem;"><i class="fa-solid fa-crown me-1"></i> Issue & Grant Pass</button>
+                <button type="submit" class="btn btn-primary" style="font-weight:800; padding:0.55rem 1.25rem;"><i class="fa-solid fa-crown me-1"></i> Issue & Grant Membership</button>
             </div>
         </form>
     </div>

@@ -54,6 +54,8 @@ type Coupon struct {
 	DiscountValue  float64    `json:"discount_value"`   // Amount in ₹ or % percentage value
 	MinOrderAmount float64    `json:"min_order_amount"` // Optional minimum order subtotal
 	ExpiryDate     time.Time  `json:"expiry_date"`      // Expiration timestamp
+	TargetUserID   int64      `json:"target_user_id,omitempty"`   // Optional targeted user ID (0 = all users)
+	TargetUserName string     `json:"target_user_name,omitempty"` // Optional targeted user name
 	IsUsed         bool       `json:"is_used"`          // Single-use flag
 	UsedAt         *time.Time `json:"used_at,omitempty"`
 	UsedByOrderID  int64      `json:"used_by_order_id,omitempty"`

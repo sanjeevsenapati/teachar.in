@@ -90,6 +90,7 @@ func main() {
 		InventoryService:  inventorySvc,
 		SecurityService:   securitySvc,
 		MembershipService: membershipSvc,
+		SettingsRepo:      dbRepo,
 	}
 
 	// Initialize router.

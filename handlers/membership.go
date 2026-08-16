@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"teachar.in/middleware"
 	"teachar.in/models"
@@ -16,15 +17,41 @@ func (app *Application) clientMembershipHandler(w http.ResponseWriter, r *http.R
 	tiers := app.MembershipService.GetMembershipTiers()
 
 	var activeSub *models.UserSubscription
+	var daysRemaining int = 0
+	var showRenewalReminder bool = false
+
 	if user != nil {
 		activeSub, _ = app.MembershipService.GetUserSubscription(r.Context(), user.ID)
+		if activeSub != nil && activeSub.Status == "Active" {
+			hoursLeft := time.Until(activeSub.EndDate).Hours()
+			if hoursLeft < 0 {
+				daysRemaining = 0
+			} else {
+				daysRemaining = int(hoursLeft / 24)
+			}
+			if daysRemaining <= 3 {
+				showRenewalReminder = true
+			}
+		}
+	}
+
+	var availableCoupons []models.Coupon
+	if app.CouponService != nil {
+		var userID int64 = 0
+		if user != nil {
+			userID = user.ID
+		}
+		availableCoupons, _ = app.CouponService.GetAvailableCouponsForUser(r.Context(), userID)
 	}
 
 	data := models.PageData{
-		"Title":              "Cafe Membership & Coffee Pass Subscriptions",
-		"Tiers":              tiers,
-		"ActiveSubscription": activeSub,
-		"User":               user,
+		"Title":               "Cafe VIP Membership Subscriptions",
+		"Tiers":               tiers,
+		"ActiveSubscription":  activeSub,
+		"DaysRemaining":       daysRemaining,
+		"ShowRenewalReminder": showRenewalReminder,
+		"AvailableCoupons":    availableCoupons,
+		"User":                user,
 	}
 	app.render(w, r, http.StatusOK, "membership.html", data)
 }

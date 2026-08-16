@@ -474,16 +474,80 @@ func (app *Application) adminDeleteCancellationReasonHandler(w http.ResponseWrit
 func (app *Application) adminCafeSettingsHandler(w http.ResponseWriter, r *http.Request) {
 	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
 
+	var settings *models.CafeSettings
+	if app.SettingsRepo != nil {
+		settings, _ = app.SettingsRepo.GetCafeSettings(r.Context())
+	}
+	if settings == nil {
+		settings = &models.CafeSettings{
+			StoreName:           "TEACHAR Flagship Cafe Sanctuary",
+			StoreAddress:        "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001",
+			BrewingHours:        "6:00 AM – 11:30 PM",
+			StorePhone:          "+91 98765 43210",
+			CurrencySymbol:      "₹",
+			AnnouncementEnabled: true,
+			AnnouncementText:    "Get 20% OFF your first order! Use code FRESHTEA",
+			AnnouncementPhone:   "+91 98765 43210",
+		}
+	}
+
 	data := models.PageData{
 		"Title":               "Daily Cafe Settings",
 		"CancellationReasons": reasons,
-		"StoreName":           "TEACHAR Flagship Cafe Sanctuary",
-		"StoreAddress":        "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001",
-		"BrewingHours":        "6:00 AM – 11:30 PM",
-		"StorePhone":          "+91 98765 43210",
-		"CurrencySymbol":      "₹",
+		"CafeSettings":        settings,
+		"StoreName":           settings.StoreName,
+		"StoreAddress":        settings.StoreAddress,
+		"BrewingHours":        settings.BrewingHours,
+		"StorePhone":          settings.StorePhone,
+		"CurrencySymbol":      settings.CurrencySymbol,
+		"AnnouncementEnabled": settings.AnnouncementEnabled,
+		"AnnouncementText":    settings.AnnouncementText,
+		"AnnouncementPhone":   settings.AnnouncementPhone,
+		"Saved":               r.URL.Query().Get("saved") == "true",
 	}
 	app.render(w, r, http.StatusOK, "admin_cafe_settings.html", data)
+}
+
+func (app *Application) adminUpdateCafeSettingsHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	storeName := r.FormValue("store_name")
+	storeAddress := r.FormValue("store_address")
+	brewingHours := r.FormValue("brewing_hours")
+	storePhone := r.FormValue("store_phone")
+	announcementEnabled := r.FormValue("announcement_enabled") == "on" || r.FormValue("announcement_enabled") == "true" || r.FormValue("announcement_enabled") == "1"
+	announcementText := r.FormValue("announcement_text")
+	announcementPhone := r.FormValue("announcement_phone")
+
+	settings := models.CafeSettings{
+		StoreName:           storeName,
+		StoreAddress:        storeAddress,
+		BrewingHours:        brewingHours,
+		StorePhone:          storePhone,
+		CurrencySymbol:      "₹",
+		AnnouncementEnabled: announcementEnabled,
+		AnnouncementText:    announcementText,
+		AnnouncementPhone:   announcementPhone,
+	}
+
+	if app.SettingsRepo != nil {
+		_ = app.SettingsRepo.UpdateCafeSettings(r.Context(), settings)
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		statusStr := "OFF"
+		if announcementEnabled {
+			statusStr = "ON"
+		}
+		details := "Updated Cafe Settings (Announcement Bar: " + statusStr + ", Message: '" + announcementText + "')"
+		app.AuditService.LogEvent(r.Context(), actor, "CAFE_SETTINGS_UPDATED", details, services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/cafe-settings?saved=true", http.StatusSeeOther)
 }
 
 func (app *Application) adminCreateStaffHandler(w http.ResponseWriter, r *http.Request) {
@@ -553,7 +617,7 @@ func (app *Application) apiCreateStaffHandler(w http.ResponseWriter, r *http.Req
 		role = r.FormValue("role")
 	}
 
-	if role != "staff" && role != "admin" {
+	if role != "staff" && role != "admin" && role != "customer" {
 		role = "staff"
 	}
 
@@ -692,6 +756,81 @@ func (app *Application) adminDeleteUserHandler(w http.ResponseWriter, r *http.Re
 	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
 }
 
+func (app *Application) adminGrantCouponHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	userID, err := strconv.ParseInt(r.FormValue("target_user_id"), 10, 64)
+	if err != nil || userID <= 0 {
+		app.badRequestError(w, r, fmt.Errorf("invalid target user ID"))
+		return
+	}
+
+	targetUser, err := app.AuthService.GetUserByID(r.Context(), userID)
+	if err != nil {
+		app.badRequestError(w, r, fmt.Errorf("target user account not found"))
+		return
+	}
+
+	code := strings.ToUpper(strings.TrimSpace(r.FormValue("code")))
+	if code == "" {
+		code = fmt.Sprintf("GIFT%d%s", userID, strings.ToUpper(strconv.FormatInt(time.Now().UnixNano()%10000, 10)))
+	}
+
+	discType := r.FormValue("discount_type")
+	if discType != "flat" && discType != "percentage" {
+		discType = "flat"
+	}
+
+	discVal, _ := strconv.ParseFloat(r.FormValue("discount_value"), 64)
+	if discVal <= 0 {
+		discVal = 50.0 // Default ₹50 gift
+	}
+
+	minOrder, _ := strconv.ParseFloat(r.FormValue("min_order_amount"), 64)
+	validityDays, _ := strconv.Atoi(r.FormValue("validity_days"))
+	if validityDays <= 0 {
+		validityDays = 30
+	}
+
+	actor := middleware.GetUserFromContext(r)
+	actorName := "Admin"
+	if actor != nil {
+		actorName = actor.Name
+	}
+
+	coupon := models.Coupon{
+		Code:           code,
+		DiscountType:   discType,
+		DiscountValue:  discVal,
+		MinOrderAmount: minOrder,
+		ExpiryDate:     time.Now().AddDate(0, 0, validityDays),
+		TargetUserID:   targetUser.ID,
+		TargetUserName: targetUser.Name,
+		CreatedBy:      actorName,
+	}
+
+	created, err := app.CouponService.CreateCoupon(r.Context(), coupon, actorName)
+	if err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		details := fmt.Sprintf("Granted exclusive coupon '%s' (₹%.2f %s) to %s (User #%d)", created.Code, created.DiscountValue, created.DiscountType, targetUser.Name, targetUser.ID)
+		app.AuditService.LogEvent(r.Context(), actor, "COUPON_GRANTED_TO_CUSTOMER", details, services.GetClientIP(r))
+	}
+
+	redirectURL := r.FormValue("redirect_url")
+	if redirectURL == "" {
+		redirectURL = "/admin/users?tab=customers"
+	}
+
+	http.Redirect(w, r, redirectURL, http.StatusSeeOther)
+}
+
 func (app *Application) adminAuditLogsHandler(w http.ResponseWriter, r *http.Request) {
 	logs, err := app.AuditService.GetAllLogs(r.Context())
 	if err != nil {
@@ -811,6 +950,14 @@ func (app *Application) adminCouponsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	allUsers, _ := app.AuthService.GetAllUsers(r.Context())
+	var customers []models.User
+	for _, u := range allUsers {
+		if u.Role == "customer" {
+			customers = append(customers, u)
+		}
+	}
+
 	now := time.Now()
 	var activeCount, redeemedCount, expiredCount int
 	for _, c := range coupons {
@@ -826,6 +973,8 @@ func (app *Application) adminCouponsHandler(w http.ResponseWriter, r *http.Reque
 	data := models.PageData{
 		"Title":         "Offers & Single-Use Coupons",
 		"Coupons":       coupons,
+		"Customers":     customers,
+		"AllUsers":      allUsers,
 		"ActiveCount":   activeCount,
 		"RedeemedCount": redeemedCount,
 		"ExpiredCount":  expiredCount,
@@ -844,6 +993,14 @@ func (app *Application) adminCreateCouponHandler(w http.ResponseWriter, r *http.
 	discountValueStr := r.FormValue("discount_value")
 	minOrderStr := r.FormValue("min_order_amount")
 	expiryStr := r.FormValue("expiry_date")
+	targetUserID, _ := strconv.ParseInt(r.FormValue("target_user_id"), 10, 64)
+
+	var targetUserName string
+	if targetUserID > 0 {
+		if targetUser, err := app.AuthService.GetUserByID(r.Context(), targetUserID); err == nil && targetUser != nil {
+			targetUserName = targetUser.Name
+		}
+	}
 
 	var discountValue float64
 	fmt.Sscanf(discountValueStr, "%f", &discountValue)
@@ -856,7 +1013,6 @@ func (app *Application) adminCreateCouponHandler(w http.ResponseWriter, r *http.
 	var expiryDate time.Time
 	if expiryStr != "" {
 		var err error
-		// Try HTML datetime-local format "2006-01-02T15:04" or date format "2006-01-02"
 		expiryDate, err = time.Parse("2006-01-02T15:04", expiryStr)
 		if err != nil {
 			expiryDate, err = time.Parse("2006-01-02", expiryStr)
@@ -880,6 +1036,8 @@ func (app *Application) adminCreateCouponHandler(w http.ResponseWriter, r *http.
 		DiscountValue:  discountValue,
 		MinOrderAmount: minOrder,
 		ExpiryDate:     expiryDate,
+		TargetUserID:   targetUserID,
+		TargetUserName: targetUserName,
 	}
 
 	_, err := app.CouponService.CreateCoupon(r.Context(), coupon, actorName)

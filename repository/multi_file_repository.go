@@ -80,6 +80,7 @@ type MultiFileRepository struct {
 	expensesMu    sync.RWMutex
 	apiKeysMu     sync.RWMutex
 	membershipsMu sync.RWMutex
+	settingsMu    sync.RWMutex
 
 	// Data File Paths
 	usersFile       string
@@ -92,6 +93,7 @@ type MultiFileRepository struct {
 	expensesFile    string
 	apiKeysFile     string
 	membershipsFile string
+	settingsFile    string
 
 	// O(1) In-Memory Fast Lookup Maps & Caches
 	usersByEmail          map[string]*models.User
@@ -103,6 +105,7 @@ type MultiFileRepository struct {
 	inventoryItemsByID    map[int64]*models.InventoryItem
 	apiKeysByHash         map[string]*models.APIKey
 	subscriptionsByUserID map[int64]*models.UserSubscription
+	cafeSettings          *models.CafeSettings
 
 	// Domain Data Arrays
 	users               []models.User
@@ -147,6 +150,7 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 		expensesFile:          filepath.Join(dataDir, "expenses.json"),
 		apiKeysFile:           filepath.Join(dataDir, "api_keys.json"),
 		membershipsFile:       filepath.Join(dataDir, "memberships.json"),
+		settingsFile:          filepath.Join(dataDir, "settings.json"),
 		usersByEmail:          make(map[string]*models.User),
 		usersByID:             make(map[int64]*models.User),
 		sessionsByToken:       make(map[string]*models.Session),
@@ -1744,4 +1748,40 @@ func (r *MultiFileRepository) CancelSubscription(ctx context.Context, subscripti
 		}
 	}
 	return errors.New("subscription not found")
+}
+
+func (r *MultiFileRepository) GetCafeSettings(ctx context.Context) (*models.CafeSettings, error) {
+	r.settingsMu.Lock()
+	defer r.settingsMu.Unlock()
+
+	if r.cafeSettings == nil {
+		var s models.CafeSettings
+		if bytes, err := os.ReadFile(r.settingsFile); err == nil {
+			_ = json.Unmarshal(bytes, &s)
+		}
+		if s.StoreName == "" {
+			r.cafeSettings = &models.CafeSettings{
+				StoreName:           "TEACHAR Flagship Cafe Sanctuary",
+				StoreAddress:        "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001",
+				BrewingHours:        "6:00 AM – 11:30 PM",
+				StorePhone:          "+91 98765 43210",
+				CurrencySymbol:      "₹",
+				AnnouncementEnabled: true,
+				AnnouncementText:    "Get 20% OFF your first order! Use code FRESHTEA",
+				AnnouncementPhone:   "+91 98765 43210",
+			}
+		} else {
+			r.cafeSettings = &s
+		}
+	}
+	res := *r.cafeSettings
+	return &res, nil
+}
+
+func (r *MultiFileRepository) UpdateCafeSettings(ctx context.Context, settings models.CafeSettings) error {
+	r.settingsMu.Lock()
+	defer r.settingsMu.Unlock()
+
+	r.cafeSettings = &settings
+	return saveAtomic(r.settingsFile, settings)
 }

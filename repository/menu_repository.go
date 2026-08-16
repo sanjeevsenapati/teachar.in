@@ -59,3 +59,9 @@ type CouponRepository interface {
 	MarkCouponUsed(ctx context.Context, code string, orderID int64) error
 	DeleteCoupon(ctx context.Context, id int64) error
 }
+
+// CafeSettingsRepository defines the interface for store & announcement bar settings.
+type CafeSettingsRepository interface {
+	GetCafeSettings(ctx context.Context) (*models.CafeSettings, error)
+	UpdateCafeSettings(ctx context.Context, settings models.CafeSettings) error
+}

@@ -13,6 +13,7 @@ import (
 	"teachar.in/config"
 	"teachar.in/middleware"
 	"teachar.in/models"
+	"teachar.in/repository"
 	"teachar.in/services"
 )
 
@@ -29,6 +30,7 @@ type Application struct {
 	InventoryService  *services.InventoryService
 	SecurityService   *services.SecurityService
 	MembershipService *services.MembershipService
+	SettingsRepo      repository.CafeSettingsRepository
 }
 
 // RegisterRoutes sets up all the routes for the application.
@@ -102,6 +104,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/expenses/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteExpenseHandler)))
 	router.Handle("GET /admin/inventory/export", mw.RequireAdmin(http.HandlerFunc(app.adminExportInventoryHandler)))
 	router.Handle("GET /admin/cafe-settings", mw.RequireAdmin(http.HandlerFunc(app.adminCafeSettingsHandler)))
+	router.Handle("POST /admin/cafe-settings/update", mw.RequireAdmin(http.HandlerFunc(app.adminUpdateCafeSettingsHandler)))
 
 	// Superadmin & Admin membership handlers
 	router.Handle("GET /admin/users", mw.RequireAdmin(http.HandlerFunc(app.adminUsersHandler)))
@@ -111,7 +114,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/users/toggle-lock", mw.RequireAdmin(http.HandlerFunc(app.adminToggleLockHandler)))
 	router.Handle("POST /admin/users/set-status", mw.RequireAdmin(http.HandlerFunc(app.adminSetStatusHandler)))
 	router.Handle("POST /admin/users/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteUserHandler)))
-	router.Handle("POST /api/staff/create", mw.RequireAdmin(http.HandlerFunc(app.apiCreateStaffHandler)))
+	router.HandleFunc("POST /api/staff/create", app.apiCreateStaffHandler)
 	router.Handle("POST /admin/cancellation-reasons/add", mw.RequireSuperadmin(http.HandlerFunc(app.adminAddCancellationReasonHandler)))
 	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
@@ -119,6 +122,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("GET /admin/reports/export", mw.RequireAdmin(http.HandlerFunc(app.adminReportsExportHandler)))
 	router.Handle("GET /admin/coupons", mw.RequireAdmin(http.HandlerFunc(app.adminCouponsHandler)))
 	router.Handle("POST /admin/coupons/create", mw.RequireAdmin(http.HandlerFunc(app.adminCreateCouponHandler)))
+	router.Handle("POST /admin/coupons/grant", mw.RequireAdmin(http.HandlerFunc(app.adminGrantCouponHandler)))
 	router.Handle("POST /admin/coupons/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteCouponHandler)))
 	router.Handle("GET /admin/api-keys", mw.RequireSuperadmin(http.HandlerFunc(app.adminAPIKeysHandler)))
 	router.Handle("POST /admin/api-keys/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateAPIKeyHandler)))
@@ -132,6 +136,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("GET /health", app.healthCheckHandler)
 	router.HandleFunc("GET /api/menu", app.apiGetMenuHandler)
 	router.HandleFunc("GET /api/menu/{id}", app.apiGetMenuItemHandler)
+	router.HandleFunc("GET /api/coupons/my-coupons", app.apiGetMyCouponsHandler)
 
 	mux.Handle("/", chainedHandler(router))
 }
@@ -155,6 +160,27 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, status in
 	}
 
 	data["CurrentYear"] = 2026
+
+	if app.SettingsRepo != nil {
+		if settings, err := app.SettingsRepo.GetCafeSettings(r.Context()); err == nil && settings != nil {
+			data["AnnouncementEnabled"] = settings.AnnouncementEnabled
+			data["AnnouncementText"] = settings.AnnouncementText
+			data["AnnouncementPhone"] = settings.AnnouncementPhone
+			data["StoreName"] = settings.StoreName
+			data["StoreAddress"] = settings.StoreAddress
+			data["BrewingHours"] = settings.BrewingHours
+			data["StorePhone"] = settings.StorePhone
+		}
+	}
+	if _, ok := data["AnnouncementEnabled"]; !ok {
+		data["AnnouncementEnabled"] = true
+		data["AnnouncementText"] = "Get 20% OFF your first order! Use code FRESHTEA"
+		data["AnnouncementPhone"] = "+91 98765 43210"
+		data["StoreName"] = "TEACHAR Flagship Cafe Sanctuary"
+		data["StoreAddress"] = "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001"
+		data["BrewingHours"] = "6:00 AM – 11:30 PM"
+		data["StorePhone"] = "+91 98765 43210"
+	}
 	if user := middleware.GetUserFromContext(r); user != nil {
 		data["User"] = user
 		data["IsAuthenticated"] = true
@@ -165,6 +191,11 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, status in
 		if app.MembershipService != nil {
 			if activeSub, err := app.MembershipService.GetUserSubscription(r.Context(), user.ID); err == nil && activeSub != nil {
 				data["ActiveSubscription"] = activeSub
+			}
+		}
+		if app.CouponService != nil {
+			if availableCoupons, err := app.CouponService.GetAvailableCouponsForUser(r.Context(), user.ID); err == nil {
+				data["AvailableCoupons"] = availableCoupons
 			}
 		}
 	} else {

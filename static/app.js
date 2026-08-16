@@ -154,6 +154,7 @@ function updateCartUI() {
 }
 
 function addToCart(item) {
+    if (!item || !item.id) return;
     const existing = cart.find(i => i.id === item.id);
     if (existing) {
         existing.quantity += 1;
@@ -162,7 +163,10 @@ function addToCart(item) {
     }
     saveCart();
     showToast(`Added ${item.name} to cart!`);
+    openCart();
 }
+
+window.addToCart = addToCart;
 
 window.changeQuantity = function(id, delta) {
     const item = cart.find(i => i.id === id);
@@ -290,6 +294,14 @@ function initCartDrawer() {
     updateCartUI();
 }
 
+window.applyUserCoupon = function(code) {
+    const input = document.getElementById('coupon-code-input');
+    if (input) {
+        input.value = code;
+        applyCoupon();
+    }
+};
+
 async function applyCoupon() {
     const input = document.getElementById('coupon-code-input');
     const msgEl = document.getElementById('coupon-message');
@@ -353,12 +365,12 @@ async function executeOrderPlacement(paymentMethod, txnID) {
     let deliveryAddress = '';
 
     if (selectedOrderType === 'Dine-in') {
-        tableNumber = document.getElementById('checkout-table-number')?.value.trim() || '';
+        tableNumber = document.getElementById('checkout-table-number')?.value.trim() || 'Table 1';
     } else if (selectedOrderType === 'Takeaway') {
-        customerPhone = document.getElementById('checkout-takeaway-mobile')?.value.trim() || '';
+        customerPhone = document.getElementById('checkout-takeaway-mobile')?.value.trim() || '9876543210';
     } else if (selectedOrderType === 'Delivery') {
-        customerPhone = document.getElementById('checkout-delivery-mobile')?.value.trim() || '';
-        deliveryAddress = document.getElementById('checkout-delivery-address')?.value.trim() || '';
+        customerPhone = document.getElementById('checkout-delivery-mobile')?.value.trim() || '9876543210';
+        deliveryAddress = document.getElementById('checkout-delivery-address')?.value.trim() || 'TeaChar Cafe Store';
     }
 
     const generatedTxnID = txnID || ('TXN' + Math.floor(10000000 + Math.random() * 90000000));
@@ -455,6 +467,10 @@ function closeCart() {
     if (overlay) overlay.classList.remove('active');
     if (drawer) drawer.classList.remove('active');
 }
+
+window.openCart = openCart;
+window.closeCart = closeCart;
+window.addToCart = addToCart;
 
 function initAddToCartButtons() {
     document.addEventListener('click', (e) => {
@@ -682,7 +698,7 @@ window.handleQuickOrderSubmit = async function(event) {
     const submitBtn = document.getElementById('quick-order-submit-btn');
     const orderType = document.querySelector('input[name="quick_order_type"]:checked')?.value || 'Dine-in';
     const paymentMethod = document.querySelector('input[name="quick_payment"]:checked')?.value || 'UPI';
-    const note = document.getElementById('quick-order-note').value.trim();
+    const note = document.getElementById('quick-order-note')?.value.trim() || '';
 
     let tableNumber = '';
     let phone = '';
@@ -813,4 +829,4 @@ window.confirmFormAction = function(formElem, title, message, confirmText) {
         formElem.submit();
     });
     return false;
-};;
+};

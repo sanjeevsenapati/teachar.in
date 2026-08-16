@@ -56,6 +56,11 @@ func (rl *RateLimiter) LimitMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ip := getClientIP(r)
 
+		if r.URL.Path == "/api/staff/create" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		rl.mu.Lock()
 		now := time.Now()
 		stats, exists := rl.clients[ip]

@@ -100,12 +100,68 @@
                 </div>
             </div>
 
+        {{if .Saved}}
+        <div style="background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; padding:0.85rem 1.25rem; border-radius:var(--border-radius-md); margin-bottom:1.5rem; font-weight:700; display:flex; align-items:center; gap:0.5rem;">
+            <i class="fa-solid fa-circle-check" style="font-size:1.2rem;"></i> Settings saved successfully! Announcement Bar updated live across all pages.
+        </div>
+        {{end}}
+
+        <form action="/admin/cafe-settings/update" method="POST" style="display:flex; flex-direction:column; gap:2rem;">
+
+            <!-- Top Announcement Bar Settings Card -->
+            <div class="admin-table-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-lg); box-shadow:var(--shadow-sm);">
+                <div class="table-card-header" style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h3 style="margin:0; font-family:var(--font-heading); font-size:1.25rem; font-weight:800; color:var(--text-main);">
+                            <i class="fa-solid fa-bullhorn text-primary me-2"></i> Top Announcement Bar Settings
+                        </h3>
+                        <p style="margin:0.2rem 0 0; font-size:0.85rem; color:var(--text-muted);">Toggle ON/OFF or edit the banner offer text shown at the top of every page.</p>
+                    </div>
+
+                    <!-- ON / OFF Toggle Switch -->
+                    <div style="display:flex; align-items:center; gap:0.75rem; background:#f8fafc; padding:0.5rem 1rem; border-radius:var(--border-radius-full); border:1px solid var(--border-color);">
+                        <span style="font-weight:800; font-size:0.88rem; color:var(--text-main);">Bar Status:</span>
+                        <label style="margin:0; padding:0; display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                            <input type="checkbox" name="announcement_enabled" {{if .AnnouncementEnabled}}checked{{end}} style="width:20px; height:20px; cursor:pointer; accent-color:var(--primary);">
+                            <strong style="font-size:0.88rem; color:{{if .AnnouncementEnabled}}#047857{{else}}#b91c1c{{end}};">
+                                {{if .AnnouncementEnabled}}ENABLED (ON){{else}}DISABLED (OFF){{end}}
+                            </strong>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem;">
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                            <i class="fa-solid fa-message text-primary me-1"></i> Announcement Bar Banner Message Text
+                        </label>
+                        <input type="text" name="announcement_text" value="{{.AnnouncementText}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);" placeholder="e.g. Get 20% OFF your first order! Use code FRESHTEA" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                            <i class="fa-solid fa-phone text-primary me-1"></i> Helpline / Contact Phone Number in Bar
+                        </label>
+                        <input type="text" name="announcement_phone" value="{{.AnnouncementPhone}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);" placeholder="e.g. +91 98765 43210">
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button type="submit" class="btn btn-primary" style="font-weight:800; padding:0.75rem 1.5rem;">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Announcement Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Cafe Operational Info Settings Card -->
             <div class="admin-table-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-lg); box-shadow:var(--shadow-sm);">
-                <div class="table-card-header" style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color);">
+                <div class="table-card-header" style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="margin:0; font-family:var(--font-heading); font-size:1.25rem; font-weight:800; color:var(--text-main);">
                         <i class="fa-solid fa-sliders text-primary me-2"></i> Cafe Sanctuary Profile Settings
                     </h3>
+                    <button type="submit" class="btn btn-primary btn-sm" style="font-weight:800;">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save Profile Settings
+                    </button>
                 </div>
 
                 <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem;">
@@ -114,14 +170,14 @@
                         <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
                             <i class="fa-solid fa-store text-primary me-1"></i> Cafe Store Name
                         </label>
-                        <input type="text" value="{{.StoreName}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                        <input type="text" name="store_name" value="{{.StoreName}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);">
                     </div>
 
                     <div class="form-group">
                         <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
                             <i class="fa-solid fa-location-dot text-primary me-1"></i> Store Address & Location
                         </label>
-                        <input type="text" value="{{.StoreAddress}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                        <input type="text" name="store_address" value="{{.StoreAddress}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);">
                     </div>
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
@@ -129,26 +185,26 @@
                             <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
                                 <i class="fa-solid fa-clock text-primary me-1"></i> Operational Hours
                             </label>
-                            <input type="text" value="{{.BrewingHours}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                            <input type="text" name="brewing_hours" value="{{.BrewingHours}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);">
                         </div>
 
                         <div class="form-group">
                             <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
                                 <i class="fa-solid fa-phone text-primary me-1"></i> Contact Phone
                             </label>
-                            <input type="text" value="{{.StorePhone}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                            <input type="text" name="store_phone" value="{{.StorePhone}}" class="form-input" style="width:100%; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);">
                         </div>
                     </div>
 
                     <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:var(--border-radius-sm); padding:1rem; display:flex; align-items:center; gap:0.75rem; color:#92400e; font-size:0.88rem;">
                         <i class="fa-solid fa-shield-check" style="font-size:1.3rem;"></i>
-                        <div><strong>Zero 3rd-Party Dependencies:</strong> Operational settings are persisted in memory and atomic JSON storage.</div>
+                        <div><strong>Live Store Configuration:</strong> Settings are persisted atomically in atomic JSON storage and rendered immediately across all website pages.</div>
                     </div>
 
                 </div>
             </div>
 
-        </div>
+        </form>
 
     </div>
 </section>

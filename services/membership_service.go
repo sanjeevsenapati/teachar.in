@@ -24,7 +24,7 @@ func (s *MembershipService) GetMembershipTiers() []models.MembershipTier {
 	return []models.MembershipTier{
 		{
 			ID:                 "silver",
-			Name:               "Silver Chai Pass",
+			Name:               "Silver VIP Membership",
 			PriceMonthly:       499.00,
 			DiscountPercentage: 10,
 			DailyFreeCupLimit:  1,
@@ -37,7 +37,7 @@ func (s *MembershipService) GetMembershipTiers() []models.MembershipTier {
 		},
 		{
 			ID:                 "gold",
-			Name:               "Gold Coffee Pass",
+			Name:               "Gold VIP Membership",
 			PriceMonthly:       999.00,
 			DiscountPercentage: 15,
 			DailyFreeCupLimit:  1,
@@ -51,7 +51,7 @@ func (s *MembershipService) GetMembershipTiers() []models.MembershipTier {
 		},
 		{
 			ID:                 "platinum",
-			Name:               "Platinum Executive VIP Pass",
+			Name:               "Platinum Executive Membership",
 			PriceMonthly:       1999.00,
 			DiscountPercentage: 20,
 			DailyFreeCupLimit:  2,

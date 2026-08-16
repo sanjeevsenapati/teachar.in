@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 249,
+  "next_audit_log_id": 380,
   "audit_logs": [
     {
       "id": 1,
@@ -2480,6 +2480,1316 @@
       "action": "STAFF_STATUS_UPDATED",
       "details": "Updated account status of User #10 to Disabled",
       "ip_address": "127.0.0.1:61236"
+    },
+    {
+      "id": 249,
+      "timestamp": "2026-08-17T03:03:08.646863+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_CREATED",
+      "details": "Created single-use coupon 'WELCO2027'",
+      "ip_address": "127.0.0.1:61322"
+    },
+    {
+      "id": 250,
+      "timestamp": "2026-08-17T03:10:44.363014+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Reema Menon (reema.menon101@teachar.in)",
+      "ip_address": "127.0.0.1:61707"
+    },
+    {
+      "id": 251,
+      "timestamp": "2026-08-17T03:10:44.706916+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Meera Agarwal (meera.agarwal102@teachar.in)",
+      "ip_address": "127.0.0.1:61709"
+    },
+    {
+      "id": 252,
+      "timestamp": "2026-08-17T03:10:44.718937+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pankaj Dubey (pankaj.dubey103@teachar.in)",
+      "ip_address": "127.0.0.1:61710"
+    },
+    {
+      "id": 253,
+      "timestamp": "2026-08-17T03:10:44.730593+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rajesh Nair (rajesh.nair104@teachar.in)",
+      "ip_address": "127.0.0.1:61711"
+    },
+    {
+      "id": 254,
+      "timestamp": "2026-08-17T03:10:44.742482+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Harish Mukherjee (harish.mukherjee105@teachar.in)",
+      "ip_address": "127.0.0.1:61712"
+    },
+    {
+      "id": 255,
+      "timestamp": "2026-08-17T03:10:44.753881+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pankaj Reddy (pankaj.reddy106@teachar.in)",
+      "ip_address": "127.0.0.1:61713"
+    },
+    {
+      "id": 256,
+      "timestamp": "2026-08-17T03:10:44.765101+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Amit Patel (amit.patel107@teachar.in)",
+      "ip_address": "127.0.0.1:61714"
+    },
+    {
+      "id": 257,
+      "timestamp": "2026-08-17T03:10:44.777113+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Swati Roy (swati.roy108@teachar.in)",
+      "ip_address": "127.0.0.1:61715"
+    },
+    {
+      "id": 258,
+      "timestamp": "2026-08-17T03:10:44.789832+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Manoj Bhatia (manoj.bhatia109@teachar.in)",
+      "ip_address": "127.0.0.1:61716"
+    },
+    {
+      "id": 259,
+      "timestamp": "2026-08-17T03:10:44.80158+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Amit Rao (amit.rao110@teachar.in)",
+      "ip_address": "127.0.0.1:61717"
+    },
+    {
+      "id": 260,
+      "timestamp": "2026-08-17T03:10:44.813593+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Neha Dubey (neha.dubey111@teachar.in)",
+      "ip_address": "127.0.0.1:61718"
+    },
+    {
+      "id": 261,
+      "timestamp": "2026-08-17T03:10:44.826093+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Nitin Bhatia (nitin.bhatia112@teachar.in)",
+      "ip_address": "127.0.0.1:61719"
+    },
+    {
+      "id": 262,
+      "timestamp": "2026-08-17T03:10:44.83758+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rahul Mehta (rahul.mehta113@teachar.in)",
+      "ip_address": "127.0.0.1:61720"
+    },
+    {
+      "id": 263,
+      "timestamp": "2026-08-17T03:10:44.849354+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Meera Mukherjee (meera.mukherjee114@teachar.in)",
+      "ip_address": "127.0.0.1:61721"
+    },
+    {
+      "id": 264,
+      "timestamp": "2026-08-17T03:10:44.861063+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sunil Rao (sunil.rao115@teachar.in)",
+      "ip_address": "127.0.0.1:61722"
+    },
+    {
+      "id": 265,
+      "timestamp": "2026-08-17T03:10:44.872949+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pankaj Gupta (pankaj.gupta116@teachar.in)",
+      "ip_address": "127.0.0.1:61723"
+    },
+    {
+      "id": 266,
+      "timestamp": "2026-08-17T03:10:44.889022+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sachin Mukherjee (sachin.mukherjee117@teachar.in)",
+      "ip_address": "127.0.0.1:61724"
+    },
+    {
+      "id": 267,
+      "timestamp": "2026-08-17T03:10:44.901636+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rashmi Reddy (rashmi.reddy118@teachar.in)",
+      "ip_address": "127.0.0.1:61725"
+    },
+    {
+      "id": 268,
+      "timestamp": "2026-08-17T03:10:44.91394+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Simran Bhatia (simran.bhatia119@teachar.in)",
+      "ip_address": "127.0.0.1:61726"
+    },
+    {
+      "id": 269,
+      "timestamp": "2026-08-17T03:10:44.926451+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Nitin Dubey (nitin.dubey120@teachar.in)",
+      "ip_address": "127.0.0.1:61727"
+    },
+    {
+      "id": 270,
+      "timestamp": "2026-08-17T03:10:44.93881+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Anjali Roy (anjali.roy121@teachar.in)",
+      "ip_address": "127.0.0.1:61728"
+    },
+    {
+      "id": 271,
+      "timestamp": "2026-08-17T03:10:44.951468+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Vandana Shetty (vandana.shetty122@teachar.in)",
+      "ip_address": "127.0.0.1:61729"
+    },
+    {
+      "id": 272,
+      "timestamp": "2026-08-17T03:10:44.964525+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Neha Gupta (neha.gupta123@teachar.in)",
+      "ip_address": "127.0.0.1:61730"
+    },
+    {
+      "id": 273,
+      "timestamp": "2026-08-17T03:10:44.978166+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Shweta Dutta (shweta.dutta124@teachar.in)",
+      "ip_address": "127.0.0.1:61731"
+    },
+    {
+      "id": 274,
+      "timestamp": "2026-08-17T03:10:44.992704+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rajesh Kamath (rajesh.kamath125@teachar.in)",
+      "ip_address": "127.0.0.1:61732"
+    },
+    {
+      "id": 275,
+      "timestamp": "2026-08-17T03:10:45.005994+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sonal Dubey (sonal.dubey126@teachar.in)",
+      "ip_address": "127.0.0.1:61733"
+    },
+    {
+      "id": 276,
+      "timestamp": "2026-08-17T03:10:45.020501+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Ritu Pai (ritu.pai127@teachar.in)",
+      "ip_address": "127.0.0.1:61734"
+    },
+    {
+      "id": 277,
+      "timestamp": "2026-08-17T03:10:45.068278+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Varun Banerjee (varun.banerjee128@teachar.in)",
+      "ip_address": "127.0.0.1:61735"
+    },
+    {
+      "id": 278,
+      "timestamp": "2026-08-17T03:10:45.099834+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Nitin Rao (nitin.rao129@teachar.in)",
+      "ip_address": "127.0.0.1:61736"
+    },
+    {
+      "id": 279,
+      "timestamp": "2026-08-17T03:10:45.127179+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Divya Shenoy (divya.shenoy130@teachar.in)",
+      "ip_address": "127.0.0.1:61737"
+    },
+    {
+      "id": 280,
+      "timestamp": "2026-08-17T03:10:45.156887+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Prashant Dwivedi (prashant.dwivedi131@teachar.in)",
+      "ip_address": "127.0.0.1:61738"
+    },
+    {
+      "id": 281,
+      "timestamp": "2026-08-17T03:10:45.189843+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sanjay Das (sanjay.das132@teachar.in)",
+      "ip_address": "127.0.0.1:61739"
+    },
+    {
+      "id": 282,
+      "timestamp": "2026-08-17T03:10:45.218487+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sonal Das (sonal.das133@teachar.in)",
+      "ip_address": "127.0.0.1:61740"
+    },
+    {
+      "id": 283,
+      "timestamp": "2026-08-17T03:10:45.246594+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Prashant Agarwal (prashant.agarwal134@teachar.in)",
+      "ip_address": "127.0.0.1:61741"
+    },
+    {
+      "id": 284,
+      "timestamp": "2026-08-17T03:10:45.263936+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Divya Trivedi (divya.trivedi135@teachar.in)",
+      "ip_address": "127.0.0.1:61742"
+    },
+    {
+      "id": 285,
+      "timestamp": "2026-08-17T03:10:45.288728+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Neha Kurup (neha.kurup136@teachar.in)",
+      "ip_address": "127.0.0.1:61743"
+    },
+    {
+      "id": 286,
+      "timestamp": "2026-08-17T03:10:45.314984+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Simran Mehta (simran.mehta137@teachar.in)",
+      "ip_address": "127.0.0.1:61744"
+    },
+    {
+      "id": 287,
+      "timestamp": "2026-08-17T03:10:45.336208+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Swati Sharma (swati.sharma138@teachar.in)",
+      "ip_address": "127.0.0.1:61745"
+    },
+    {
+      "id": 288,
+      "timestamp": "2026-08-17T03:10:45.351919+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Varun Iyer (varun.iyer139@teachar.in)",
+      "ip_address": "127.0.0.1:61746"
+    },
+    {
+      "id": 289,
+      "timestamp": "2026-08-17T03:10:45.368492+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Aarti Mukherjee (aarti.mukherjee140@teachar.in)",
+      "ip_address": "127.0.0.1:61747"
+    },
+    {
+      "id": 290,
+      "timestamp": "2026-08-17T03:10:45.384292+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Bhavna Mukherjee (bhavna.mukherjee141@teachar.in)",
+      "ip_address": "127.0.0.1:61748"
+    },
+    {
+      "id": 291,
+      "timestamp": "2026-08-17T03:10:45.399005+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Swati Rao (swati.rao142@teachar.in)",
+      "ip_address": "127.0.0.1:61749"
+    },
+    {
+      "id": 292,
+      "timestamp": "2026-08-17T03:10:45.413501+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pooja Patel (pooja.patel143@teachar.in)",
+      "ip_address": "127.0.0.1:61750"
+    },
+    {
+      "id": 293,
+      "timestamp": "2026-08-17T03:10:45.427644+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Deepak Rao (deepak.rao144@teachar.in)",
+      "ip_address": "127.0.0.1:61751"
+    },
+    {
+      "id": 294,
+      "timestamp": "2026-08-17T03:10:45.440571+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Vandana Bhatia (vandana.bhatia145@teachar.in)",
+      "ip_address": "127.0.0.1:61752"
+    },
+    {
+      "id": 295,
+      "timestamp": "2026-08-17T03:10:45.452494+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Nisha Nair (nisha.nair146@teachar.in)",
+      "ip_address": "127.0.0.1:61753"
+    },
+    {
+      "id": 296,
+      "timestamp": "2026-08-17T03:10:45.464829+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Varun Heghde (varun.heghde147@teachar.in)",
+      "ip_address": "127.0.0.1:61754"
+    },
+    {
+      "id": 297,
+      "timestamp": "2026-08-17T03:10:45.477828+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Kavita Bhatia (kavita.bhatia148@teachar.in)",
+      "ip_address": "127.0.0.1:61755"
+    },
+    {
+      "id": 298,
+      "timestamp": "2026-08-17T03:10:45.490622+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Ananya Kulkarni (ananya.kulkarni149@teachar.in)",
+      "ip_address": "127.0.0.1:61756"
+    },
+    {
+      "id": 299,
+      "timestamp": "2026-08-17T03:10:45.502643+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Alok Mishra (alok.mishra150@teachar.in)",
+      "ip_address": "127.0.0.1:61757"
+    },
+    {
+      "id": 300,
+      "timestamp": "2026-08-17T03:10:45.515362+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Meera Heghde (meera.heghde151@teachar.in)",
+      "ip_address": "127.0.0.1:61758"
+    },
+    {
+      "id": 301,
+      "timestamp": "2026-08-17T03:10:45.526826+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Bhavna Kurup (bhavna.kurup152@teachar.in)",
+      "ip_address": "127.0.0.1:61759"
+    },
+    {
+      "id": 302,
+      "timestamp": "2026-08-17T03:10:45.539544+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Harish Pillai (harish.pillai153@teachar.in)",
+      "ip_address": "127.0.0.1:61760"
+    },
+    {
+      "id": 303,
+      "timestamp": "2026-08-17T03:10:45.551882+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Ashok Dubey (ashok.dubey154@teachar.in)",
+      "ip_address": "127.0.0.1:61761"
+    },
+    {
+      "id": 304,
+      "timestamp": "2026-08-17T03:10:45.564656+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Deepak Dubey (deepak.dubey155@teachar.in)",
+      "ip_address": "127.0.0.1:61762"
+    },
+    {
+      "id": 305,
+      "timestamp": "2026-08-17T03:10:45.57742+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Varun Dutta (varun.dutta156@teachar.in)",
+      "ip_address": "127.0.0.1:61763"
+    },
+    {
+      "id": 306,
+      "timestamp": "2026-08-17T03:10:45.590325+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sachin Das (sachin.das157@teachar.in)",
+      "ip_address": "127.0.0.1:61764"
+    },
+    {
+      "id": 307,
+      "timestamp": "2026-08-17T03:10:45.602215+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rajesh Pandey (rajesh.pandey158@teachar.in)",
+      "ip_address": "127.0.0.1:61765"
+    },
+    {
+      "id": 308,
+      "timestamp": "2026-08-17T03:10:45.615319+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sunil Nambiar (sunil.nambiar159@teachar.in)",
+      "ip_address": "127.0.0.1:61766"
+    },
+    {
+      "id": 309,
+      "timestamp": "2026-08-17T03:10:45.627059+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Bhavna Nambiar (bhavna.nambiar160@teachar.in)",
+      "ip_address": "127.0.0.1:61767"
+    },
+    {
+      "id": 310,
+      "timestamp": "2026-08-17T03:10:45.639647+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Deepak Mishra (deepak.mishra161@teachar.in)",
+      "ip_address": "127.0.0.1:61768"
+    },
+    {
+      "id": 311,
+      "timestamp": "2026-08-17T03:10:45.65212+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Ashok Roy (ashok.roy162@teachar.in)",
+      "ip_address": "127.0.0.1:61769"
+    },
+    {
+      "id": 312,
+      "timestamp": "2026-08-17T03:10:45.665522+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Simran Rao (simran.rao163@teachar.in)",
+      "ip_address": "127.0.0.1:61770"
+    },
+    {
+      "id": 313,
+      "timestamp": "2026-08-17T03:10:45.677907+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Meera Heghde (meera.heghde164@teachar.in)",
+      "ip_address": "127.0.0.1:61771"
+    },
+    {
+      "id": 314,
+      "timestamp": "2026-08-17T03:10:45.690793+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Divya Dutta (divya.dutta165@teachar.in)",
+      "ip_address": "127.0.0.1:61772"
+    },
+    {
+      "id": 315,
+      "timestamp": "2026-08-17T03:10:45.704725+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Manish Trivedi (manish.trivedi166@teachar.in)",
+      "ip_address": "127.0.0.1:61773"
+    },
+    {
+      "id": 316,
+      "timestamp": "2026-08-17T03:10:45.716976+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Deepak Bhatia (deepak.bhatia167@teachar.in)",
+      "ip_address": "127.0.0.1:61774"
+    },
+    {
+      "id": 317,
+      "timestamp": "2026-08-17T03:10:45.728935+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Varun Shetty (varun.shetty168@teachar.in)",
+      "ip_address": "127.0.0.1:61775"
+    },
+    {
+      "id": 318,
+      "timestamp": "2026-08-17T03:10:45.74162+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Rahul Reddy (rahul.reddy169@teachar.in)",
+      "ip_address": "127.0.0.1:61776"
+    },
+    {
+      "id": 319,
+      "timestamp": "2026-08-17T03:10:45.755195+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Alok Shetty (alok.shetty170@teachar.in)",
+      "ip_address": "127.0.0.1:61777"
+    },
+    {
+      "id": 320,
+      "timestamp": "2026-08-17T03:10:45.767271+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Nitin Trivedi (nitin.trivedi171@teachar.in)",
+      "ip_address": "127.0.0.1:61778"
+    },
+    {
+      "id": 321,
+      "timestamp": "2026-08-17T03:10:45.779813+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sunil Shenoy (sunil.shenoy172@teachar.in)",
+      "ip_address": "127.0.0.1:61779"
+    },
+    {
+      "id": 322,
+      "timestamp": "2026-08-17T03:10:45.792658+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Harish Deshmukh (harish.deshmukh173@teachar.in)",
+      "ip_address": "127.0.0.1:61780"
+    },
+    {
+      "id": 323,
+      "timestamp": "2026-08-17T03:10:45.805502+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Neha Singh (neha.singh174@teachar.in)",
+      "ip_address": "127.0.0.1:61781"
+    },
+    {
+      "id": 324,
+      "timestamp": "2026-08-17T03:10:45.818641+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Suresh Gupta (suresh.gupta175@teachar.in)",
+      "ip_address": "127.0.0.1:61782"
+    },
+    {
+      "id": 325,
+      "timestamp": "2026-08-17T03:10:45.831182+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Aditya Chawla (aditya.chawla176@teachar.in)",
+      "ip_address": "127.0.0.1:61783"
+    },
+    {
+      "id": 326,
+      "timestamp": "2026-08-17T03:10:45.843778+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Harish Chowdhury (harish.chowdhury177@teachar.in)",
+      "ip_address": "127.0.0.1:61784"
+    },
+    {
+      "id": 327,
+      "timestamp": "2026-08-17T03:10:45.857627+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Aarav Nair (aarav.nair178@teachar.in)",
+      "ip_address": "127.0.0.1:61785"
+    },
+    {
+      "id": 328,
+      "timestamp": "2026-08-17T03:10:45.869584+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sneha Trivedi (sneha.trivedi179@teachar.in)",
+      "ip_address": "127.0.0.1:61786"
+    },
+    {
+      "id": 329,
+      "timestamp": "2026-08-17T03:10:45.882481+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Gaurav Shetty (gaurav.shetty180@teachar.in)",
+      "ip_address": "127.0.0.1:61787"
+    },
+    {
+      "id": 330,
+      "timestamp": "2026-08-17T03:10:45.89452+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Neha Kumar (neha.kumar181@teachar.in)",
+      "ip_address": "127.0.0.1:61788"
+    },
+    {
+      "id": 331,
+      "timestamp": "2026-08-17T03:10:45.907173+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Anjali Iyer (anjali.iyer182@teachar.in)",
+      "ip_address": "127.0.0.1:61789"
+    },
+    {
+      "id": 332,
+      "timestamp": "2026-08-17T03:10:45.920966+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Harish Mishra (harish.mishra183@teachar.in)",
+      "ip_address": "127.0.0.1:61790"
+    },
+    {
+      "id": 333,
+      "timestamp": "2026-08-17T03:10:45.933657+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Kavita Chawla (kavita.chawla184@teachar.in)",
+      "ip_address": "127.0.0.1:61791"
+    },
+    {
+      "id": 334,
+      "timestamp": "2026-08-17T03:10:45.946929+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pooja Menon (pooja.menon185@teachar.in)",
+      "ip_address": "127.0.0.1:61792"
+    },
+    {
+      "id": 335,
+      "timestamp": "2026-08-17T03:10:45.960569+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Jyoti Kurup (jyoti.kurup186@teachar.in)",
+      "ip_address": "127.0.0.1:61793"
+    },
+    {
+      "id": 336,
+      "timestamp": "2026-08-17T03:10:45.97385+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Alok Das (alok.das187@teachar.in)",
+      "ip_address": "127.0.0.1:61794"
+    },
+    {
+      "id": 337,
+      "timestamp": "2026-08-17T03:10:45.986665+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Suresh Banerjee (suresh.banerjee188@teachar.in)",
+      "ip_address": "127.0.0.1:61795"
+    },
+    {
+      "id": 338,
+      "timestamp": "2026-08-17T03:10:45.999635+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Kiran Sen (kiran.sen189@teachar.in)",
+      "ip_address": "127.0.0.1:61796"
+    },
+    {
+      "id": 339,
+      "timestamp": "2026-08-17T03:10:46.012954+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Aditya Trivedi (aditya.trivedi190@teachar.in)",
+      "ip_address": "127.0.0.1:61797"
+    },
+    {
+      "id": 340,
+      "timestamp": "2026-08-17T03:10:46.025579+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Pooja Iyer (pooja.iyer191@teachar.in)",
+      "ip_address": "127.0.0.1:61798"
+    },
+    {
+      "id": 341,
+      "timestamp": "2026-08-17T03:10:46.039147+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Tarun Nair (tarun.nair192@teachar.in)",
+      "ip_address": "127.0.0.1:61799"
+    },
+    {
+      "id": 342,
+      "timestamp": "2026-08-17T03:10:46.05364+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Amit Trivedi (amit.trivedi193@teachar.in)",
+      "ip_address": "127.0.0.1:61800"
+    },
+    {
+      "id": 343,
+      "timestamp": "2026-08-17T03:10:46.066291+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Sonal Iyer (sonal.iyer194@teachar.in)",
+      "ip_address": "127.0.0.1:61801"
+    },
+    {
+      "id": 344,
+      "timestamp": "2026-08-17T03:10:46.078361+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Vandana Gupta (vandana.gupta195@teachar.in)",
+      "ip_address": "127.0.0.1:61802"
+    },
+    {
+      "id": 345,
+      "timestamp": "2026-08-17T03:10:46.090943+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Simran Dwivedi (simran.dwivedi196@teachar.in)",
+      "ip_address": "127.0.0.1:61803"
+    },
+    {
+      "id": 346,
+      "timestamp": "2026-08-17T03:10:46.104375+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Kavya Kumar (kavya.kumar197@teachar.in)",
+      "ip_address": "127.0.0.1:61804"
+    },
+    {
+      "id": 347,
+      "timestamp": "2026-08-17T03:10:46.119444+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Manoj Trivedi (manoj.trivedi198@teachar.in)",
+      "ip_address": "127.0.0.1:61805"
+    },
+    {
+      "id": 348,
+      "timestamp": "2026-08-17T03:10:46.137075+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created customer account via API for Alok Kulkarni (alok.kulkarni199@teachar.in)",
+      "ip_address": "127.0.0.1:61806"
+    },
+    {
+      "id": 349,
+      "timestamp": "2026-08-17T03:10:46.154184+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "STAFF_CREATED_API",
+      "details": "Created staff account via API for Anjali Sen (anjali.sen200@teachar.in)",
+      "ip_address": "127.0.0.1:61807"
+    },
+    {
+      "id": 350,
+      "timestamp": "2026-08-17T03:11:55.981435+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_GRANTED_TO_CUSTOMER",
+      "details": "Granted exclusive coupon 'SANJEEV20' (₹50.00 flat) to Alok Das (User #102)",
+      "ip_address": "127.0.0.1:61706"
+    },
+    {
+      "id": 351,
+      "timestamp": "2026-08-17T03:12:52.916184+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_GRANTED_TO_CUSTOMER",
+      "details": "Granted exclusive coupon 'AADI100' (₹50.00 percentage) to Aadheesh Senapati (User #9)",
+      "ip_address": "127.0.0.1:61706"
+    },
+    {
+      "id": 352,
+      "timestamp": "2026-08-17T03:14:41.291165+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:61814"
+    },
+    {
+      "id": 353,
+      "timestamp": "2026-08-17T03:16:31.634782+05:30",
+      "actor_id": 9,
+      "actor_name": "Aadheesh Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:61858"
+    },
+    {
+      "id": 354,
+      "timestamp": "2026-08-17T03:18:56.959515+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #41 to staff Aarav Sharma (ID: 10)",
+      "ip_address": "127.0.0.1:61914"
+    },
+    {
+      "id": 355,
+      "timestamp": "2026-08-17T03:19:05.133305+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #40 to staff Alok Mishra (ID: 65)",
+      "ip_address": "127.0.0.1:61914"
+    },
+    {
+      "id": 356,
+      "timestamp": "2026-08-17T03:19:14.089243+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #39 to staff Counter Staff (ID: 4)",
+      "ip_address": "127.0.0.1:61914"
+    },
+    {
+      "id": 357,
+      "timestamp": "2026-08-17T03:19:30.571987+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #38 to staff Gaurav Shetty (ID: 95)",
+      "ip_address": "127.0.0.1:61914"
+    },
+    {
+      "id": 358,
+      "timestamp": "2026-08-17T03:26:20.03249+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:62059"
+    },
+    {
+      "id": 359,
+      "timestamp": "2026-08-17T03:32:08.356401+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:62642"
+    },
+    {
+      "id": 360,
+      "timestamp": "2026-08-17T03:33:49.142929+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 361,
+      "timestamp": "2026-08-17T03:34:31.133429+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #42 (Takeaway, Total: ₹73.50)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 362,
+      "timestamp": "2026-08-17T03:35:22.006805+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #43 (Dine-in, Total: ₹67.20)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 363,
+      "timestamp": "2026-08-17T03:35:45.134792+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 364,
+      "timestamp": "2026-08-17T03:35:50.808275+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #43 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 365,
+      "timestamp": "2026-08-17T03:35:54.988076+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #42 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 366,
+      "timestamp": "2026-08-17T03:37:31.547363+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #23 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 367,
+      "timestamp": "2026-08-17T03:37:59.160377+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 368,
+      "timestamp": "2026-08-17T03:38:24.174506+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #44 (Dine-in, Total: ₹425.25)",
+      "ip_address": "127.0.0.1:63290"
+    },
+    {
+      "id": 369,
+      "timestamp": "2026-08-17T03:48:14.59819+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #45 (Takeaway, Total: ₹42.00)",
+      "ip_address": "127.0.0.1:64229"
+    },
+    {
+      "id": 370,
+      "timestamp": "2026-08-17T03:48:21.921922+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64229"
+    },
+    {
+      "id": 371,
+      "timestamp": "2026-08-17T03:50:11.230215+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64213"
+    },
+    {
+      "id": 372,
+      "timestamp": "2026-08-17T03:55:07.42303+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 373,
+      "timestamp": "2026-08-17T04:01:26.483693+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #46 (Dine-in, Total: ₹142.80)",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 374,
+      "timestamp": "2026-08-17T04:05:05.161076+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 375,
+      "timestamp": "2026-08-17T04:05:23.733868+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "REASON_DELETED",
+      "details": "Deleted cancellation reason: 'Equipment maintenance - Espresso machine cleaning'",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 376,
+      "timestamp": "2026-08-17T04:05:53.644502+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "REASON_DELETED",
+      "details": "Deleted cancellation reason: 'Raw ingredients unavailable'",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 377,
+      "timestamp": "2026-08-17T04:05:58.34564+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "REASON_DELETED",
+      "details": "Deleted cancellation reason: 'Delivery location unreachable'",
+      "ip_address": "127.0.0.1:64263"
+    },
+    {
+      "id": 378,
+      "timestamp": "2026-08-17T04:11:49.644291+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64410"
+    },
+    {
+      "id": 379,
+      "timestamp": "2026-08-17T04:33:29.946533+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64591"
     }
   ]
 }

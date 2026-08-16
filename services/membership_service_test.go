@@ -31,7 +31,7 @@ func TestMembershipService(t *testing.T) {
 		Email: "vip@teachar.in",
 	}
 
-	// 2. Subscribe User to Gold Coffee Pass (₹999/mo, 15% OFF)
+	// 2. Subscribe User to Gold VIP Membership (₹999/mo, 15% OFF)
 	sub, err := memSvc.SubscribeUser(ctx, user, "gold", "UPI")
 	if err != nil {
 		t.Fatalf("failed subscribing user: %v", err)
@@ -99,8 +99,8 @@ func TestMembershipService(t *testing.T) {
 	if createdOrder.SubscriberDiscount != 30.0 {
 		t.Errorf("expected subscriber discount of ₹30.00, got ₹%.2f", createdOrder.SubscriberDiscount)
 	}
-	if createdOrder.SubscriberTierName != "Gold Coffee Pass" {
-		t.Errorf("expected tier name 'Gold Coffee Pass', got '%s'", createdOrder.SubscriberTierName)
+	if createdOrder.SubscriberTierName != "Gold VIP Membership" {
+		t.Errorf("expected tier name 'Gold VIP Membership', got '%s'", createdOrder.SubscriberTierName)
 	}
 	// Discounted Subtotal = 200 - 30 = 170. 5% GST on 170 = 8.50. Total = 178.50
 	if createdOrder.TotalPrice != 178.50 {

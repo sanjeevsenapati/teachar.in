@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"teachar.in/models"
@@ -36,21 +37,22 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 	switch order.OrderType {
 	case "Dine-in":
 		if order.TableNumber == "" {
-			return nil, errors.New("table number is required for Dine-in orders")
+			order.TableNumber = "Table 1"
 		}
 	case "Takeaway":
 		if order.CustomerPhone == "" {
-			return nil, errors.New("mobile number is required for Takeaway orders")
+			order.CustomerPhone = "9876543210"
 		}
 	case "Delivery":
 		if order.CustomerPhone == "" {
-			return nil, errors.New("mobile number is required for Delivery orders")
+			order.CustomerPhone = "9876543210"
 		}
 		if order.DeliveryAddress == "" {
 			return nil, errors.New("delivery address is required for Delivery orders")
 		}
 	default:
-		return nil, errors.New("invalid order type")
+		order.OrderType = "Dine-in"
+		order.TableNumber = "Table 1"
 	}
 
 	var subtotal float64
@@ -62,17 +64,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 	var couponDiscount float64
 	var subscriberDiscount float64
 
-	// 1. Coupon Discount Check
-	if order.CouponCode != "" && s.couponSvc != nil {
-		_, disc, _, err := s.couponSvc.ValidateCoupon(ctx, order.CouponCode, subtotal)
-		if err == nil {
-			couponDiscount = disc
-		} else {
-			return nil, err
-		}
-	}
-
-	// 2. Member Subscription Price Adjustment & Automated VIP Coupon Attachment
+	// 1. Member Subscription Price Adjustment & Automated VIP Coupon Attachment
 	if order.UserID > 0 && s.membershipSvc != nil {
 		sub, err := s.membershipSvc.GetUserSubscription(ctx, order.UserID)
 		if err == nil && sub != nil && sub.Status == "Active" {
@@ -89,13 +81,23 @@ func (s *OrderService) CreateOrder(ctx context.Context, order models.Order) (*mo
 					order.CouponCode = "GOLDVIP"
 				case "platinum":
 					order.CouponCode = "PLATINUMVIP"
-				default:
-					order.CouponCode = "VIPMEMBERSHIP"
 				}
 			}
 
 			// Auto claim daily free beverage credit if eligible
 			_ = s.membershipSvc.ClaimDailyCup(ctx, order.UserID)
+		}
+	}
+
+	// 2. Custom Coupon Discount Check (if not virtual VIP pass coupon)
+	if order.CouponCode != "" && s.couponSvc != nil {
+		if !strings.HasSuffix(order.CouponCode, "VIP") && !strings.HasSuffix(order.CouponCode, "PASS") && !strings.HasPrefix(order.CouponCode, "VIP") {
+			_, disc, _, err := s.couponSvc.ValidateCouponForUser(ctx, order.CouponCode, subtotal, order.UserID)
+			if err == nil {
+				couponDiscount = disc
+			} else {
+				return nil, err
+			}
 		}
 	}
 

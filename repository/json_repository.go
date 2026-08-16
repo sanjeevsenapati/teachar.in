@@ -34,6 +34,7 @@ type dbSchema struct {
 	InventoryItems      []models.InventoryItem `json:"inventory_items"`
 	Expenses            []models.ExpenseEntry  `json:"expenses"`
 	CancellationReasons []string               `json:"cancellation_reasons"`
+	CafeSettings        models.CafeSettings    `json:"cafe_settings"`
 }
 
 // JSONRepository is a thread-safe, file-backed database using only standard library packages.
@@ -938,5 +939,33 @@ func (r *JSONRepository) DeleteExpense(ctx context.Context, id int64) error {
 		}
 	}
 	r.data.Expenses = updated
+	return r.save()
+}
+
+func (r *JSONRepository) GetCafeSettings(ctx context.Context) (*models.CafeSettings, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	s := r.data.CafeSettings
+	if s.StoreName == "" {
+		s = models.CafeSettings{
+			StoreName:           "TEACHAR Flagship Cafe Sanctuary",
+			StoreAddress:        "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001",
+			BrewingHours:        "6:00 AM – 11:30 PM",
+			StorePhone:          "+91 98765 43210",
+			CurrencySymbol:      "₹",
+			AnnouncementEnabled: true,
+			AnnouncementText:    "Get 20% OFF your first order! Use code FRESHTEA",
+			AnnouncementPhone:   "+91 98765 43210",
+		}
+	}
+	return &s, nil
+}
+
+func (r *JSONRepository) UpdateCafeSettings(ctx context.Context, settings models.CafeSettings) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.data.CafeSettings = settings
 	return r.save()
 }

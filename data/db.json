@@ -1,6 +1,6 @@
 {
   "next_user_id": 7,
-  "next_menu_item_id": 14,
+  "next_menu_item_id": 16,
   "next_order_id": 12,
   "next_audit_log_id": 58,
   "next_coupon_id": 3,
@@ -274,6 +274,24 @@
       "category": "Tea",
       "price": 45,
       "image": "/static/images/milk-tea-basi-roti.jpg",
+      "available": true
+    },
+    {
+      "id": 14,
+      "name": "Filter Coffee",
+      "description": "Authentic South Indian Filter Coffee brewed with chicory-infused decoction and frothy hot milk.",
+      "category": "Coffee",
+      "price": 45,
+      "image": "/static/images/filter-coffee.jpg",
+      "available": true
+    },
+    {
+      "id": 15,
+      "name": "Tender Coconut Water with Malai",
+      "description": "Pure chilled tender coconut water served in an elegant transparent glass bowl cup filled with fresh tender coconut malai (flesh) and ice.",
+      "category": "Cold Drinks",
+      "price": 65,
+      "image": "/static/images/tender-coconut-malai.jpg",
       "available": true
     }
   ],

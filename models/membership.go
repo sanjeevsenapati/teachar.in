@@ -7,7 +7,7 @@ import (
 // MembershipTier represents a cafe membership tier / subscription plan.
 type MembershipTier struct {
 	ID                 string   `json:"id"`                  // "silver", "gold", "platinum"
-	Name               string   `json:"name"`                // "Gold Coffee Pass"
+	Name               string   `json:"name"`                // "Gold VIP Membership"
 	PriceMonthly       float64  `json:"price_monthly"`       // ₹999.00
 	DiscountPercentage float64  `json:"discount_percentage"` // 15%
 	DailyFreeCupLimit  int      `json:"daily_free_cup_limit"`// 1 cup/day

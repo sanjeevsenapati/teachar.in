@@ -74,4 +74,48 @@ func TestCouponService(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error creating coupon with past expiry date, got nil")
 	}
+
+	// 6. Test Targeted Customer Coupon Granting
+	cTarget, err := couponSvc.CreateCoupon(ctx, models.Coupon{
+		Code:           "VIPGIFT100",
+		DiscountType:   "flat",
+		DiscountValue:  100,
+		TargetUserID:   99,
+		TargetUserName: "Test Customer",
+		ExpiryDate:     time.Now().Add(24 * time.Hour),
+	}, "Superadmin")
+	if err != nil {
+		t.Fatalf("failed creating targeted coupon: %v", err)
+	}
+
+	if cTarget.TargetUserID != 99 {
+		t.Fatalf("expected TargetUserID 99, got %d", cTarget.TargetUserID)
+	}
+
+	// Validation by wrong user (User #88) must fail
+	_, _, _, err = couponSvc.ValidateCouponForUser(ctx, "VIPGIFT100", 300, 88)
+	if err == nil {
+		t.Fatalf("expected error validating targeted coupon for unauthorized user #88, got nil")
+	}
+
+	// Validation by target user (User #99) must succeed
+	_, disc, finalTotal, err = couponSvc.ValidateCouponForUser(ctx, "VIPGIFT100", 300, 99)
+	if err != nil {
+		t.Fatalf("unexpected error validating targeted coupon for user #99: %v", err)
+	}
+	if disc != 100 {
+		t.Fatalf("expected discount=100, got %.2f", disc)
+	}
+	if finalTotal != 210.0 { // (300-100 = 200 + 5% tax = 210)
+		t.Fatalf("expected final total 210.0, got %.2f", finalTotal)
+	}
+
+	// Test GetAvailableCouponsForUser
+	userCoupons, err := couponSvc.GetAvailableCouponsForUser(ctx, 99)
+	if err != nil {
+		t.Fatalf("unexpected error fetching user coupons: %v", err)
+	}
+	if len(userCoupons) != 1 || userCoupons[0].Code != "VIPGIFT100" {
+		t.Fatalf("expected 1 targeted coupon for user #99, got %d", len(userCoupons))
+	}
 }

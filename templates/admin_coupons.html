@@ -93,6 +93,7 @@
                         <tr>
                             <th style="min-width:60px;">ID</th>
                             <th style="min-width:140px;">Coupon Code</th>
+                            <th style="min-width:130px;">Target Customer</th>
                             <th style="min-width:120px;">Discount Value</th>
                             <th style="min-width:120px;">Min Order</th>
                             <th style="min-width:160px;">Expiry Date</th>
@@ -110,6 +111,15 @@
                                 <span class="coupon-badge-code">
                                     <i class="fa-solid fa-ticket"></i> {{.Code}}
                                 </span>
+                            </td>
+                            <td>
+                                {{if .TargetUserName}}
+                                <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:700;">
+                                    <i class="fa-solid fa-gift me-1"></i> {{.TargetUserName}}
+                                </span>
+                                {{else}}
+                                <span class="text-muted" style="font-size:0.78rem;"><i class="fa-solid fa-users me-1"></i> All Customers</span>
+                                {{end}}
                             </td>
                             <td>
                                 <strong style="color:var(--primary); font-size:0.88rem;">
@@ -198,6 +208,17 @@
             <div class="form-group">
                 <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Minimum Order Subtotal (₹)</label>
                 <input type="number" id="min-order-amount" name="min_order_amount" step="0.01" min="0" placeholder="0 for no minimum subtotal requirement" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Assign to Specific User (Optional)</label>
+                <select name="target_user_id" class="form-select" style="width:100%;">
+                    <option value="0" selected>-- All Customers (Public Coupon) --</option>
+                    {{range .AllUsers}}
+                    <option value="{{.ID}}">#{{.ID}} - {{.Name}} ({{.Email}}) [{{.Role}}]</option>
+                    {{end}}
+                </select>
+                <small class="text-muted" style="display:block; margin-top:0.25rem;">Select any user account to grant them an exclusive single-use coupon.</small>
             </div>
 
             <div class="form-group">

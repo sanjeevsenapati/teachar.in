@@ -58,8 +58,12 @@ func (s *CouponService) GetAllCoupons(ctx context.Context) ([]models.Coupon, err
 	return s.couponRepo.GetAllCoupons(ctx)
 }
 
-// ValidateCoupon checks single-use, expiry, and min subtotal requirement, returning discount amount and final total.
+// ValidateCoupon checks single-use, expiry, min subtotal, and user targeting.
 func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtotal float64) (*models.Coupon, float64, float64, error) {
+	return s.ValidateCouponForUser(ctx, code, subtotal, 0)
+}
+
+func (s *CouponService) ValidateCouponForUser(ctx context.Context, code string, subtotal float64, userID int64) (*models.Coupon, float64, float64, error) {
 	code = strings.ToUpper(strings.TrimSpace(code))
 	if code == "" {
 		return nil, 0, subtotal, errors.New("coupon code cannot be empty")
@@ -68,17 +72,17 @@ func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtota
 	// 1. Check for Virtual Member VIP Coupons (SILVERVIP, GOLDVIP, PLATINUMVIP, VIPPASS)
 	if strings.HasSuffix(code, "VIP") || strings.HasSuffix(code, "PASS") || strings.HasPrefix(code, "VIP") {
 		var discPercent float64 = 0
-		var tierName string = "VIP Member Pass"
+		var tierName string = "VIP Membership"
 		switch code {
 		case "SILVERVIP", "SILVERPASS":
 			discPercent = 10
-			tierName = "Silver Chai Pass"
+			tierName = "Silver VIP Membership"
 		case "GOLDVIP", "GOLDPASS":
 			discPercent = 15
-			tierName = "Gold Coffee Pass"
+			tierName = "Gold VIP Membership"
 		case "PLATINUMVIP", "PLATINUMPASS", "VIPPASS", "VIPMEMBERSHIP":
 			discPercent = 20
-			tierName = "Platinum VIP Pass"
+			tierName = "Platinum VIP Membership"
 		}
 
 		if discPercent > 0 {
@@ -112,6 +116,10 @@ func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtota
 		return nil, 0, subtotal, fmt.Errorf("coupon '%s' expired on %s", code, coupon.ExpiryDate.Format("02 Jan 2006 15:04"))
 	}
 
+	if coupon.TargetUserID > 0 && userID > 0 && coupon.TargetUserID != userID {
+		return nil, 0, subtotal, fmt.Errorf("coupon '%s' is an exclusive offer for another customer", code)
+	}
+
 	if coupon.MinOrderAmount > 0 && subtotal < coupon.MinOrderAmount {
 		return nil, 0, subtotal, fmt.Errorf("minimum order amount of ₹%.2f required to use coupon '%s'", coupon.MinOrderAmount, code)
 	}
@@ -133,6 +141,28 @@ func (s *CouponService) ValidateCoupon(ctx context.Context, code string, subtota
 	finalTotal := math.Round((discountedSubtotal+tax)*100) / 100
 
 	return coupon, discountAmount, finalTotal, nil
+}
+
+func (s *CouponService) GetAvailableCouponsForUser(ctx context.Context, userID int64) ([]models.Coupon, error) {
+	allCoupons, err := s.couponRepo.GetAllCoupons(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	var available []models.Coupon
+	for _, c := range allCoupons {
+		if c.IsUsed {
+			continue
+		}
+		if !c.ExpiryDate.IsZero() && now.After(c.ExpiryDate) {
+			continue
+		}
+		if c.TargetUserID == 0 || c.TargetUserID == userID {
+			available = append(available, c)
+		}
+	}
+	return available, nil
 }
 
 func (s *CouponService) MarkCouponUsed(ctx context.Context, code string, orderID int64) error {

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"teachar.in/middleware"
 )
 
 // healthCheckHandler provides a simple health check endpoint.
@@ -75,7 +77,12 @@ func (app *Application) apiValidateCouponHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	coupon, disc, finalTotal, err := app.CouponService.ValidateCoupon(r.Context(), input.Code, input.Subtotal)
+	var userID int64
+	if user := middleware.GetUserFromContext(r); user != nil {
+		userID = user.ID
+	}
+
+	coupon, disc, finalTotal, err := app.CouponService.ValidateCouponForUser(r.Context(), input.Code, input.Subtotal, userID)
 	if err != nil {
 		app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
 			"valid": false,
@@ -93,4 +100,18 @@ func (app *Application) apiValidateCouponHandler(w http.ResponseWriter, r *http.
 		"subtotal":        input.Subtotal,
 		"final_total":     finalTotal,
 	}, nil)
+}
+
+func (app *Application) apiGetMyCouponsHandler(w http.ResponseWriter, r *http.Request) {
+	var userID int64
+	if user := middleware.GetUserFromContext(r); user != nil {
+		userID = user.ID
+	}
+
+	coupons, err := app.CouponService.GetAvailableCouponsForUser(r.Context(), userID)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	app.writeJSON(w, r, http.StatusOK, coupons, nil)
 }
