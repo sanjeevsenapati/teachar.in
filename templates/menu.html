@@ -1,0 +1,87 @@
+{{define "main"}}
+<!-- Menu Header Banner -->
+<section class="page-header-section">
+    <div class="container">
+        <span class="section-tag">Freshly Prepared Daily</span>
+        <h1 class="page-title">Our Artisanal Menu</h1>
+        <p class="page-subtitle">Select from our signature teas, freshly ground coffees, and hot crispy snacks.</p>
+        
+        <!-- Search & Filter Controls -->
+        <div class="menu-controls">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="menu-search-input" placeholder="Search tea, samosa, coffee..." aria-label="Search menu items">
+            </div>
+            
+            <div class="category-tabs" id="category-tabs">
+                <button class="tab-btn active" data-category="all">
+                    <i class="fa-solid fa-border-all"></i> All Items
+                </button>
+                <button class="tab-btn" data-category="Tea">
+                    <i class="fa-solid fa-mug-hot"></i> Tea
+                </button>
+                <button class="tab-btn" data-category="Coffee">
+                    <i class="fa-solid fa-mug-saucer"></i> Coffee
+                </button>
+                <button class="tab-btn" data-category="Snacks">
+                    <i class="fa-solid fa-cookie"></i> Snacks
+                </button>
+                <button class="tab-btn" data-category="Cold Drinks">
+                    <i class="fa-solid fa-glass-water"></i> Cold Drinks
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Menu Items Sections -->
+<div class="container menu-page-content">
+    {{range $category, $items := .Menu}}
+    <section class="menu-category-block" data-category="{{$category}}" id="{{$category}}">
+        <div class="category-header">
+            <h2 class="category-title">
+                {{if eq $category "Tea"}}<i class="fa-solid fa-mug-hot"></i>
+                {{else if eq $category "Coffee"}}<i class="fa-solid fa-mug-saucer"></i>
+                {{else if eq $category "Snacks"}}<i class="fa-solid fa-cookie-bite"></i>
+                {{else}}<i class="fa-solid fa-wine-glass"></i>{{end}}
+                {{$category}}
+            </h2>
+            <span class="category-count">{{len $items}} items</span>
+        </div>
+
+        <div class="menu-grid">
+            {{range $items}}
+            <div class="menu-card" data-item-id="{{.ID}}" data-category="{{.Category}}" data-name="{{.Name}}" data-price="{{.Price}}">
+                <div class="menu-card-image">
+                    <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" onerror="this.src='/static/images/hero-banner.jpg'">
+                    <span class="availability-badge {{if .Available}}available{{else}}unavailable{{end}}">
+                        {{if .Available}}<i class="fa-solid fa-circle-check"></i> Available{{else}}Sold Out{{end}}
+                    </span>
+                </div>
+                <div class="menu-card-content">
+                    <div class="menu-card-header">
+                        <h3 class="item-title">{{.Name}}</h3>
+                        <span class="item-price">₹{{printf "%.0f" .Price}}</span>
+                    </div>
+                    <p class="item-desc">{{.Description}}</p>
+                    <div class="menu-card-footer">
+                        <span class="rating-tag"><i class="fa-solid fa-star"></i> 4.9</span>
+                        <button class="btn btn-outline-primary add-to-cart-btn" data-id="{{.ID}}" data-name="{{.Name}}" data-price="{{.Price}}" data-image="{{.Image}}">
+                            <i class="fa-solid fa-plus"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </section>
+    {{end}}
+
+    <!-- Empty search result message -->
+    <div id="no-search-results" class="no-results-state hidden">
+        <i class="fa-solid fa-circle-question"></i>
+        <h3>No matching items found</h3>
+        <p>Try searching for something else like "Masala Tea", "Samosa", or "Coffee".</p>
+    </div>
+</div>
+{{end}}

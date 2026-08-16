@@ -1,0 +1,116 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Menu Administration</span>
+            <h1 class="page-title">Manage Menu Items</h1>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            <button class="btn btn-primary" onclick="openAddMenuModal()"><i class="fa-solid fa-plus"></i> Add New Item</button>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section">
+    <div class="container">
+        <div class="admin-table-card">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Menu}}
+                        <tr>
+                            <td>
+                                <div class="admin-item-cell">
+                                    <img src="{{.Image}}" alt="{{.Name}}" class="admin-item-thumb" onerror="this.src='/static/images/hero-banner.jpg'">
+                                    <strong>{{.Name}}</strong>
+                                </div>
+                            </td>
+                            <td><span class="category-pill-sm">{{.Category}}</span></td>
+                            <td style="max-width: 280px; font-size: 0.85rem;">{{.Description}}</td>
+                            <td><strong>₹{{printf "%.0f" .Price}}</strong></td>
+                            <td>
+                                <form action="/admin/menu/toggle" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <button type="submit" class="toggle-btn {{if .Available}}active{{else}}inactive{{end}}">
+                                        {{if .Available}}<i class="fa-solid fa-check"></i> Available{{else}}<i class="fa-solid fa-xmark"></i> Sold Out{{end}}
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/admin/menu/delete" method="POST" onsubmit="return confirm('Delete {{.Name}}?')" style="display:inline;">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Item">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Menu Item Modal -->
+<div class="modal-overlay" id="add-menu-modal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-plus-circle"></i> Add New Menu Item</h3>
+            <button class="modal-close-btn" onclick="closeAddMenuModal()">&times;</button>
+        </div>
+        <form action="/admin/menu/add" method="POST" class="modal-body">
+            <div class="form-group">
+                <label for="item-name">Item Name</label>
+                <input type="text" id="item-name" name="name" placeholder="e.g. Elaichi Chai" required>
+            </div>
+            <div class="form-group">
+                <label for="item-category">Category</label>
+                <select id="item-category" name="category" required class="form-select">
+                    <option value="Tea">Tea</option>
+                    <option value="Coffee">Coffee</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Cold Drinks">Cold Drinks</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="item-price">Price (₹)</label>
+                <input type="number" id="item-price" name="price" placeholder="35" step="1" required>
+            </div>
+            <div class="form-group">
+                <label for="item-desc">Description</label>
+                <textarea id="item-desc" name="description" rows="3" placeholder="A brief tasty description..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="item-image">Image URL</label>
+                <input type="text" id="item-image" name="image" value="/static/images/masala-tea.jpg" placeholder="/static/images/masala-tea.jpg">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAddMenuModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Add Item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddMenuModal() {
+    document.getElementById('add-menu-modal').classList.add('active');
+}
+function closeAddMenuModal() {
+    document.getElementById('add-menu-modal').classList.remove('active');
+}
+</script>
+{{end}}

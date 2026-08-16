@@ -1,0 +1,220 @@
+{{define "main"}}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fa-solid fa-fire-flame-curved"></i> Artisanal Tea & Fresh Brews
+            </div>
+            <h1 class="hero-title">Experience Real Chai, <br><span class="highlight-text">Freshly Brewed</span> Everyday.</h1>
+            <p class="hero-subtitle">Handcrafted Indian chai, aromatic coffee, and crispy golden snacks made with authentic spices and zero artificial ingredients.</p>
+            <div class="hero-actions">
+                <a href="/menu" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-utensils"></i> Explore Full Menu
+                </a>
+                <a href="#featured" class="btn btn-secondary btn-lg">
+                    <i class="fa-solid fa-star"></i> Featured Items
+                </a>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Organic Spices</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">4.9 <i class="fa-solid fa-star star-icon"></i></span>
+                    <span class="stat-label">50,000+ Reviews</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">15 Mins</span>
+                    <span class="stat-label">Quick Serving</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-image-card">
+                <img src="/static/images/hero-banner.jpg" alt="Artisanal Chai at TEACHAR" class="hero-img">
+                <div class="floating-card top-right-card">
+                    <i class="fa-solid fa-heart text-danger"></i>
+                    <div>
+                        <strong>#1 Best Seller</strong>
+                        <span>Kulhad Masala Chai</span>
+                    </div>
+                </div>
+                <div class="floating-card bottom-left-card">
+                    <div class="rating-stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span>"Best tea in town!"</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section class="features-section">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-seedling"></i></div>
+                <h3>100% Authentic Spices</h3>
+                <p>Real crushed cardamom, ginger, cloves, and cinnamon cooked fresh in every batch.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <h3>Freshly Brewed To Order</h3>
+                <p>Never re-heated or pre-stored. Every cup is brewed right when you order it.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
+                <h3>Single-Origin Leaves</h3>
+                <p>Directly sourced CTC and Orthodox tea leaves from Assam & Darjeeling estates.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h3>Lightning Fast Service</h3>
+                <p>Enjoy hot chai and crispy snacks piping hot at your table or delivered quickly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Menu Section -->
+<section class="featured-section" id="featured">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-tag">Chef's Recommendations</span>
+            <h2 class="section-title">Popular Favorites</h2>
+            <p class="section-subtitle">Discover our most loved teas, coffees, and delicious snacks</p>
+        </div>
+
+        <div class="menu-grid">
+            {{range .FeaturedItems}}
+            <div class="menu-card" data-item-id="{{.ID}}" data-item-name="{{.Name}}" data-item-price="{{.Price}}">
+                <div class="menu-card-image">
+                    <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" onerror="this.src='/static/images/hero-banner.jpg'">
+                    <span class="category-pill">{{.Category}}</span>
+                </div>
+                <div class="menu-card-content">
+                    <div class="menu-card-header">
+                        <h3 class="item-title">{{.Name}}</h3>
+                        <span class="item-price">₹{{printf "%.0f" .Price}}</span>
+                    </div>
+                    <p class="item-desc">{{.Description}}</p>
+                    <div class="menu-card-footer">
+                        <span class="rating-tag"><i class="fa-solid fa-star"></i> 4.9</span>
+                        <button class="btn btn-outline-primary add-to-cart-btn" data-id="{{.ID}}" data-name="{{.Name}}" data-price="{{.Price}}" data-image="{{.Image}}">
+                            <i class="fa-solid fa-plus"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/menu" class="btn btn-primary btn-lg">
+                <span>View Full Menu</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Story Promo Banner -->
+<section class="story-section">
+    <div class="container story-container">
+        <div class="story-image-col">
+            <img src="/static/images/masala-tea.jpg" alt="Brewing Chai" class="story-img">
+        </div>
+        <div class="story-content-col">
+            <span class="section-tag">The TEACHAR Promise</span>
+            <h2>More Than Just Tea. <br>It's a Daily Ritual.</h2>
+            <p>At TEACHAR, we believe a great cup of tea has the power to spark conversations, clear your mind, and warm your soul. We take traditional chai recipes and marry them with high standards of purity and elegance.</p>
+            
+            <div class="story-checklist">
+                <div class="check-item">
+                    <i class="fa-solid fa-circle-check text-primary"></i>
+                    <span>Pure A2 Milk and Filtered Water</span>
+                </div>
+                <div class="check-item">
+                    <i class="fa-solid fa-circle-check text-primary"></i>
+                    <span>Sustainably Sourced Eco Clay Kulhads</span>
+                </div>
+                <div class="check-item">
+                    <i class="fa-solid fa-circle-check text-primary"></i>
+                    <span>Hand-made Snacks Prepared Fresh Hourly</span>
+                </div>
+            </div>
+
+            <a href="/about" class="btn btn-secondary mt-3">Learn Our Story</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-tag">Customer Love</span>
+            <h2 class="section-title">What Tea Lovers Say</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"The Ginger Masala Tea in the clay cup takes me right back to authentic street chai stalls, but with supreme cleanliness!"</p>
+                <div class="testimonial-author">
+                    <strong>Rahul Sharma</strong>
+                    <span>Tech Lead</span>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Their Cold Coffee and Crispy Samosas are my go-to evening snack. The web ordering is super smooth!"</p>
+                <div class="testimonial-author">
+                    <strong>Priya Nair</strong>
+                    <span>UX Designer</span>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Hands down the best tea experience in the city. The aroma alone when you walk in is intoxicating."</p>
+                <div class="testimonial-author">
+                    <strong>Amit Patel</strong>
+                    <span>Entrepreneur</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call To Action -->
+<section class="cta-banner">
+    <div class="container cta-container">
+        <div class="cta-content">
+            <h2>Ready For Your Next Cup?</h2>
+            <p>Browse our menu and order your favorite tea, coffee, or snacks right now!</p>
+        </div>
+        <div class="cta-btn-wrapper">
+            <a href="/menu" class="btn btn-light btn-lg">
+                <i class="fa-solid fa-mug-hot"></i> Order Online Now
+            </a>
+        </div>
+    </div>
+</section>
+{{end}}

@@ -1,0 +1,178 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} | TEACHAR</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <div class="container announcement-content">
+            <span><i class="fa-solid fa-sparkles"></i> Get 20% OFF your first order! Use code <strong>FRESHTEA</strong></span>
+            <span class="announcement-contact"><i class="fa-solid fa-phone"></i> +91 98765 43210</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="main-header">
+        <nav class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon"><i class="fa-solid fa-mug-hot"></i></span>
+                <span class="logo-text">TEACHAR<span class="logo-dot">.in</span></span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/menu" class="nav-link">Menu</a></li>
+                <li><a href="/about" class="nav-link">About Us</a></li>
+                {{if .IsAdmin}}
+                <li><a href="/admin" class="nav-link nav-admin-highlight"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a></li>
+                {{else if .IsAuthenticated}}
+                <li><a href="/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> My Orders</a></li>
+                {{end}}
+            </ul>
+
+            <div class="header-actions">
+                <button class="cart-btn" id="open-cart-btn" aria-label="View Cart">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-count">0</span>
+                </button>
+
+                {{if .IsAuthenticated}}
+                <div class="user-dropdown">
+                    <a href="/account" class="btn btn-secondary btn-sm user-btn">
+                        <i class="fa-solid fa-user"></i>
+                        <span>{{.User.Name}}</span>
+                    </a>
+                    <form action="/logout" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Sign Out">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                </div>
+                {{else}}
+                <a href="/login" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="/register" class="btn btn-primary nav-cta">
+                    <span>Register</span>
+                </a>
+                {{end}}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Page Content -->
+    <main>
+        {{template "main" .}}
+    </main>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3><i class="fa-solid fa-bag-shopping"></i> Your Order</h3>
+            <button class="cart-close-btn" id="close-cart-btn">&times;</button>
+        </div>
+        <div class="cart-body" id="cart-items-container">
+            <div class="cart-empty-state">
+                <i class="fa-solid fa-utensils"></i>
+                <p>Your cart is empty</p>
+                <a href="/menu" class="btn btn-secondary btn-sm" id="cart-explore-btn">Explore Menu</a>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-summary-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">₹0</span>
+            </div>
+            <div class="cart-summary-row">
+                <span>Taxes & Fees (5%)</span>
+                <span id="cart-tax">₹0</span>
+            </div>
+            <div class="cart-summary-row total-row">
+                <span>Total</span>
+                <span id="cart-total">₹0</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="checkout-btn" disabled>
+                <span>Place Order</span> <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Item added to cart!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="logo logo-light">
+                    <span class="logo-icon"><i class="fa-solid fa-mug-hot"></i></span>
+                    <span class="logo-text">TEACHAR<span class="logo-dot">.in</span></span>
+                </a>
+                <p class="brand-tagline">Crafting memorable tea & coffee moments with authentic spices and fresh artisanal ingredients.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/menu">Full Menu</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    {{if .IsAdmin}}
+                    <li><a href="/admin">Admin Portal</a></li>
+                    {{else if .IsAuthenticated}}
+                    <li><a href="/orders">My Orders</a></li>
+                    {{else}}
+                    <li><a href="/login">Sign In</a></li>
+                    {{end}}
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="/menu">Artisanal Tea</a></li>
+                    <li><a href="/menu">Fresh Brewed Coffee</a></li>
+                    <li><a href="/menu">Hot Snacks</a></li>
+                    <li><a href="/menu">Cold Beverages</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact-col">
+                <h4>Visit Us</h4>
+                <p><i class="fa-solid fa-location-dot"></i> 42 Chai Galleria, MG Road, Bangalore</p>
+                <p><i class="fa-solid fa-clock"></i> Mon - Sun: 7:00 AM - 11:00 PM</p>
+                <p><i class="fa-solid fa-envelope"></i> hello@teachar.in</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; {{.CurrentYear}} TEACHAR.in. All rights reserved.</p>
+                <p class="footer-badge">Built with 100% Pure Go Standard Library</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+{{end}}

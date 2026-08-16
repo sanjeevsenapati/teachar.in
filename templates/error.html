@@ -1,0 +1,22 @@
+{{define "main"}}
+<section class="error-page-section">
+    <div class="container text-center">
+        <div class="error-card">
+            <div class="error-icon">
+                <i class="fa-solid fa-mug-hot"></i>
+                <span class="error-badge">!</span>
+            </div>
+            <h1 class="error-title">{{.Title}}</h1>
+            <p class="error-message">{{.Message}}</p>
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="fa-solid fa-house"></i> Return Home
+                </a>
+                <a href="/menu" class="btn btn-secondary">
+                    <i class="fa-solid fa-utensils"></i> Browse Menu
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{{end}}

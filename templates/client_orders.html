@@ -1,0 +1,60 @@
+{{define "main"}}
+<section class="page-header-section">
+    <div class="container text-center">
+        <span class="section-tag">Customer Portal</span>
+        <h1 class="page-title">My Orders</h1>
+        <p class="page-subtitle">Track your recent orders and view purchase history</p>
+    </div>
+</section>
+
+<section class="portal-content-section">
+    <div class="container">
+        {{if not .Orders}}
+        <div class="empty-portal-state text-center">
+            <i class="fa-solid fa-receipt empty-icon"></i>
+            <h3>No orders placed yet</h3>
+            <p>Check out our artisanal menu and enjoy freshly brewed tea & snacks!</p>
+            <a href="/menu" class="btn btn-primary mt-3">
+                <i class="fa-solid fa-utensils"></i> Explore Menu
+            </a>
+        </div>
+        {{else}}
+        <div class="orders-list">
+            {{range .Orders}}
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div>
+                        <span class="order-id">Order #{{.ID}}</span>
+                        <span class="order-date"><i class="fa-solid fa-calendar"></i> {{.CreatedAt.Format "Jan 02, 2006 • 15:04"}}</span>
+                    </div>
+                    <span class="order-status-badge status-{{.Status}}">
+                        {{if eq .Status "Pending"}}<i class="fa-solid fa-clock"></i>
+                        {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire"></i>
+                        {{else if eq .Status "Ready"}}<i class="fa-solid fa-bell"></i>
+                        {{else if eq .Status "Completed"}}<i class="fa-solid fa-circle-check"></i>
+                        {{else}}<i class="fa-solid fa-circle-xmark"></i>{{end}}
+                        {{.Status}}
+                    </span>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-items-list">
+                        {{range .Items}}
+                        <div class="order-item-row">
+                            <span class="order-item-qty">{{.Quantity}}x</span>
+                            <span class="order-item-name">{{.ItemName}}</span>
+                            <span class="order-item-price">₹{{printf "%.0f" .Price}}</span>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+                <div class="order-card-footer">
+                    <span>Total Amount (incl. tax)</span>
+                    <strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong>
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{end}}
+    </div>
+</section>
+{{end}}

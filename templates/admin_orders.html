@@ -1,0 +1,80 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag">Order Fulfillment</span>
+            <h1 class="page-title">Manage Customer Orders</h1>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section">
+    <div class="container">
+        <div class="admin-table-card">
+            {{if not .Orders}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-receipt p-3" style="font-size: 3rem;"></i>
+                <h3>No Orders Yet</h3>
+                <p>Orders placed by clients will appear here in real-time.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID & Date</th>
+                            <th>Customer Info</th>
+                            <th>Items Purchased</th>
+                            <th>Total (incl. tax)</th>
+                            <th>Current Status</th>
+                            <th>Change Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Orders}}
+                        <tr>
+                            <td>
+                                <strong>Order #{{.ID}}</strong><br>
+                                <small class="text-muted"><i class="fa-solid fa-clock"></i> {{.CreatedAt.Format "15:04 • Jan 02, 2006"}}</small>
+                            </td>
+                            <td>
+                                <strong>{{.CustomerName}}</strong>
+                                {{if .CustomerPhone}}<br><small class="text-muted"><i class="fa-solid fa-phone"></i> {{.CustomerPhone}}</small>{{end}}
+                                {{if .DeliveryAddress}}<br><small class="text-muted"><i class="fa-solid fa-location-dot"></i> {{.DeliveryAddress}}</small>{{end}}
+                            </td>
+                            <td>
+                                <ul class="admin-order-items">
+                                    {{range .Items}}
+                                    <li><strong>{{.Quantity}}x</strong> {{.ItemName}} <span class="text-muted">(₹{{printf "%.0f" .Price}})</span></li>
+                                    {{end}}
+                                </ul>
+                            </td>
+                            <td><strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong></td>
+                            <td>
+                                <span class="order-status-badge status-{{.Status}}">{{.Status}}</span>
+                            </td>
+                            <td>
+                                <form action="/admin/orders/status" method="POST" class="inline-status-form">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <select name="status" onchange="this.form.submit()" class="status-select">
+                                        <option value="Pending" {{if eq .Status "Pending"}}selected{{end}}>Pending</option>
+                                        <option value="Preparing" {{if eq .Status "Preparing"}}selected{{end}}>Preparing</option>
+                                        <option value="Ready" {{if eq .Status "Ready"}}selected{{end}}>Ready</option>
+                                        <option value="Completed" {{if eq .Status "Completed"}}selected{{end}}>Completed</option>
+                                        <option value="Cancelled" {{if eq .Status "Cancelled"}}selected{{end}}>Cancelled</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</section>
+{{end}}

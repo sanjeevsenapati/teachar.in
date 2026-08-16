@@ -1,0 +1,44 @@
+{{define "main"}}
+<section class="auth-section">
+    <div class="container auth-container">
+        <div class="auth-card">
+            <div class="auth-header text-center">
+                <div class="auth-logo-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <h2>Create Your Account</h2>
+                <p>Join TEACHAR for seamless ordering and exclusive perks</p>
+            </div>
+
+            {{if .Error}}
+            <div class="alert alert-danger">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{.Error}}
+            </div>
+            {{end}}
+
+            <form action="/register" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="name"><i class="fa-solid fa-user"></i> Full Name</label>
+                    <input type="text" id="name" name="name" value="{{.Name}}" placeholder="e.g. Rahul Sharma" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" name="email" value="{{.Email}}" placeholder="e.g. rahul@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" placeholder="Choose a password" required minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg mt-3">
+                    <span>Create Account</span> <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer text-center mt-4">
+                <p>Already have an account? <a href="/login" class="link-primary">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{{end}}

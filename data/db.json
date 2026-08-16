@@ -1,0 +1,119 @@
+{
+  "next_user_id": 3,
+  "next_menu_item_id": 11,
+  "next_order_id": 1,
+  "users": [
+    {
+      "id": 1,
+      "name": "TEACHAR Admin",
+      "email": "admin@teachar.in",
+      "password_hash": "6222e0fb6e251e7a98de4844147383fccf4b5b161301847078fd1be42e7bda24",
+      "salt": "fd0a237113c48a92b1d7c159e36a0dbc",
+      "role": "admin",
+      "created_at": "2026-08-16T02:02:36.148423+05:30"
+    },
+    {
+      "id": 2,
+      "name": "Sample Client",
+      "email": "client@teachar.in",
+      "password_hash": "2738559de74d7ddc16ebb82f0f27b3acdae186875bd91dab4a4312254dfe0a6e",
+      "salt": "5755aca52168671683d340a068de7736",
+      "role": "client",
+      "created_at": "2026-08-16T02:02:36.148423+05:30"
+    }
+  ],
+  "sessions": [],
+  "menu_items": [
+    {
+      "id": 1,
+      "name": "Masala Tea",
+      "description": "A classic blend of black tea and aromatic spices.",
+      "category": "Tea",
+      "price": 30,
+      "image": "/static/images/masala-tea.jpg",
+      "available": true
+    },
+    {
+      "id": 2,
+      "name": "Ginger Tea",
+      "description": "Zesty and refreshing tea with a ginger kick.",
+      "category": "Tea",
+      "price": 30,
+      "image": "/static/images/ginger-tea.jpg",
+      "available": true
+    },
+    {
+      "id": 3,
+      "name": "Lemon Tea",
+      "description": "Light and tangy, perfect for a fresh start.",
+      "category": "Tea",
+      "price": 30,
+      "image": "/static/images/lemon-tea.jpg",
+      "available": true
+    },
+    {
+      "id": 4,
+      "name": "Cold Coffee",
+      "description": "Rich, creamy, and perfectly chilled.",
+      "category": "Coffee",
+      "price": 80,
+      "image": "/static/images/cold-coffee.jpg",
+      "available": true
+    },
+    {
+      "id": 5,
+      "name": "Hot Coffee",
+      "description": "A strong and aromatic freshly brewed coffee.",
+      "category": "Coffee",
+      "price": 40,
+      "image": "/static/images/hot-coffee.jpg",
+      "available": true
+    },
+    {
+      "id": 6,
+      "name": "Veg Sandwich",
+      "description": "A wholesome sandwich with fresh vegetables.",
+      "category": "Snacks",
+      "price": 70,
+      "image": "/static/images/veg-sandwich.jpg",
+      "available": true
+    },
+    {
+      "id": 7,
+      "name": "Samosa",
+      "description": "Crispy pastry filled with spiced potatoes.",
+      "category": "Snacks",
+      "price": 25,
+      "image": "/static/images/samosa.jpg",
+      "available": true
+    },
+    {
+      "id": 8,
+      "name": "Coke",
+      "description": "Chilled Coca-Cola.",
+      "category": "Cold Drinks",
+      "price": 40,
+      "image": "/static/images/coke.jpg",
+      "available": true
+    },
+    {
+      "id": 9,
+      "name": "Red Tea",
+      "description": "Fragrant and antioxidant-rich crimson herbal tea brew.",
+      "category": "Tea",
+      "price": 35,
+      "image": "/static/images/red-tea.jpg",
+      "available": true
+    },
+    {
+      "id": 10,
+      "name": "Popped Rice",
+      "description": "Crispy roasted puffed rice tossed with peanuts, spices, and fresh herbs.",
+      "category": "Snacks",
+      "price": 30,
+      "image": "/static/images/popped-rice.jpg",
+      "available": true
+    }
+  ],
+  "orders": []
+}
