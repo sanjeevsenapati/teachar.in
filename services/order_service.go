@@ -82,6 +82,10 @@ func (s *OrderService) GetAllOrders(ctx context.Context) ([]models.Order, error)
 }
 
 func (s *OrderService) UpdateOrderStatus(ctx context.Context, id int64, status string) error {
+	return s.UpdateOrderStatusWithStaff(ctx, id, status, nil)
+}
+
+func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staff *models.User) error {
 	validStatuses := map[string]bool{
 		"Pending":   true,
 		"Preparing": true,
@@ -94,5 +98,29 @@ func (s *OrderService) UpdateOrderStatus(ctx context.Context, id int64, status s
 		return errors.New("invalid status value")
 	}
 
-	return s.orderRepo.UpdateOrderStatus(ctx, id, status)
+	order, err := s.orderRepo.GetOrderByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	// Duplicate protection logic:
+	// If order is already claimed by another staff member, block staff update unless actor is admin/superadmin
+	if staff != nil && order.AssignedStaffID != 0 && order.AssignedStaffID != staff.ID {
+		if staff.Role != "superadmin" && staff.Role != "admin" {
+			return fmt.Errorf("Order #%d is already claimed and being handled by %s", id, order.AssignedStaffName)
+		}
+	}
+
+	staffID := order.AssignedStaffID
+	staffName := order.AssignedStaffName
+
+	// Assign staff if not currently assigned, or if staff is claiming it
+	if staff != nil {
+		if staffID == 0 || staffID == staff.ID {
+			staffID = staff.ID
+			staffName = staff.Name
+		}
+	}
+
+	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName)
 }

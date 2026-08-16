@@ -431,6 +431,10 @@ func (r *JSONRepository) GetOrderByID(ctx context.Context, id int64) (*models.Or
 }
 
 func (r *JSONRepository) UpdateOrderStatus(ctx context.Context, id int64, status string) error {
+	return r.UpdateOrderStatusWithStaff(ctx, id, status, 0, "")
+}
+
+func (r *JSONRepository) UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staffID int64, staffName string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -438,6 +442,10 @@ func (r *JSONRepository) UpdateOrderStatus(ctx context.Context, id int64, status
 	for i, o := range r.data.Orders {
 		if o.ID == id {
 			r.data.Orders[i].Status = status
+			if staffID != 0 {
+				r.data.Orders[i].AssignedStaffID = staffID
+				r.data.Orders[i].AssignedStaffName = staffName
+			}
 			found = true
 			break
 		}

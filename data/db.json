@@ -2,7 +2,7 @@
   "next_user_id": 7,
   "next_menu_item_id": 13,
   "next_order_id": 5,
-  "next_audit_log_id": 9,
+  "next_audit_log_id": 16,
   "users": [
     {
       "id": 1,
@@ -80,6 +80,26 @@
       "id": "baf65285494dd92af56ebc781e816f250d857914df772dd92ce3a36bb1468846",
       "user_id": 1,
       "expires_at": "2026-08-17T13:36:07.909577+05:30"
+    },
+    {
+      "id": "d59d8b75c84dd8093af0926ec19ad4c84cfb5376a4712449c9cd0229b04e61d5",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:44:30.116113+05:30"
+    },
+    {
+      "id": "c30bac7f742bd970223918216620763863a8cfff4c1ef7d2ee4b9b13003208e7",
+      "user_id": 6,
+      "expires_at": "2026-08-17T13:44:38.696134+05:30"
+    },
+    {
+      "id": "ccc6871825e2b9d9356d5ca1264fe28b55a78ca0d4db441ae661139fecff8cb1",
+      "user_id": 4,
+      "expires_at": "2026-08-17T13:44:57.469625+05:30"
+    },
+    {
+      "id": "2b6164abcfcf116273c86f71999f5d618ac9f73c3e1abc46ffd577a364a0fc18",
+      "user_id": 6,
+      "expires_at": "2026-08-17T13:45:03.537458+05:30"
     }
   ],
   "menu_items": [
@@ -201,11 +221,13 @@
       "order_type": "Takeaway",
       "table_number": "",
       "delivery_address": "",
-      "status": "Completed",
+      "status": "Ready",
       "payment_method": "COD",
       "payment_status": "Pending",
       "transaction_id": "TXN84326091",
       "total_price": 162.75,
+      "assigned_staff_id": 0,
+      "assigned_staff_name": "",
       "items": [
         {
           "id": 1,
@@ -242,11 +264,13 @@
       "order_type": "Dine-in",
       "table_number": "Table 12",
       "delivery_address": "",
-      "status": "Pending",
+      "status": "Preparing",
       "payment_method": "COD",
       "payment_status": "Pending",
       "transaction_id": "TXN17868661241126",
       "total_price": 63,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
       "items": [
         {
           "id": 1,
@@ -272,6 +296,8 @@
       "payment_status": "Paid",
       "transaction_id": "TXN17868661299408",
       "total_price": 31.5,
+      "assigned_staff_id": 0,
+      "assigned_staff_name": "",
       "items": [
         {
           "id": 1,
@@ -297,6 +323,8 @@
       "payment_status": "Paid",
       "transaction_id": "TXN17868661356538",
       "total_price": 84,
+      "assigned_staff_id": 0,
+      "assigned_staff_name": "",
       "items": [
         {
           "id": 1,
@@ -390,6 +418,76 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "[::1]:52325"
+    },
+    {
+      "id": 9,
+      "timestamp": "2026-08-16T13:44:30.116533+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52422"
+    },
+    {
+      "id": 10,
+      "timestamp": "2026-08-16T13:44:30.126303+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #1 status to 'Preparing'",
+      "ip_address": "[::1]:52423"
+    },
+    {
+      "id": 11,
+      "timestamp": "2026-08-16T13:44:38.69657+05:30",
+      "actor_id": 6,
+      "actor_name": "Order Staff 1",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52427"
+    },
+    {
+      "id": 12,
+      "timestamp": "2026-08-16T13:44:38.705615+05:30",
+      "actor_id": 6,
+      "actor_name": "Order Staff 1",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #1 status to 'Ready'",
+      "ip_address": "[::1]:52428"
+    },
+    {
+      "id": 13,
+      "timestamp": "2026-08-16T13:44:57.470213+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52437"
+    },
+    {
+      "id": 14,
+      "timestamp": "2026-08-16T13:44:57.482607+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #2 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52438"
+    },
+    {
+      "id": 15,
+      "timestamp": "2026-08-16T13:45:03.537934+05:30",
+      "actor_id": 6,
+      "actor_name": "Order Staff 1",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52440"
     }
   ]
 }

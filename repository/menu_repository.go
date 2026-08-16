@@ -35,6 +35,7 @@ type OrderRepository interface {
 	GetAllOrders(ctx context.Context) ([]models.Order, error)
 	GetOrderByID(ctx context.Context, id int64) (*models.Order, error)
 	UpdateOrderStatus(ctx context.Context, id int64, status string) error
+	UpdateOrderStatusWithStaff(ctx context.Context, id int64, status string, staffID int64, staffName string) error
 }
 
 // AuditRepository defines the interface for audit trail logs.

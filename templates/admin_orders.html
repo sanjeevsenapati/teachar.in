@@ -13,6 +13,15 @@
 
 <section class="admin-body-section">
     <div class="container">
+        {{if .Error}}
+        <div class="alert alert-danger mb-4" style="background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; padding:1rem; border-radius:8px; display:flex; align-items:center; gap:0.75rem;">
+            <i class="fa-solid fa-shield-exclamation" style="font-size:1.4rem;"></i>
+            <div>
+                <strong>Claim Protection Error:</strong> {{.Error}}
+            </div>
+        </div>
+        {{end}}
+
         <div class="admin-table-card">
             {{if not .Orders}}
             <div class="text-center p-5 text-muted">
@@ -30,7 +39,7 @@
                             <th>Items Purchased</th>
                             <th>Payment Method & Status</th>
                             <th>Total Amount</th>
-                            <th>Fulfillment Status</th>
+                            <th>Handled By & Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,6 +75,20 @@
                             </td>
                             <td><strong class="order-total-price">₹{{printf "%.2f" .TotalPrice}}</strong></td>
                             <td>
+                                {{if .AssignedStaffName}}
+                                <div style="margin-bottom:0.4rem;">
+                                    <span class="category-pill-sm" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:700; padding:0.25rem 0.5rem; font-size:0.75rem;">
+                                        <i class="fa-solid fa-user-tie"></i> {{.AssignedStaffName}}
+                                    </span>
+                                </div>
+                                {{else}}
+                                <div style="margin-bottom:0.4rem;">
+                                    <span class="category-pill-sm" style="background:#f3f4f6; color:#6b7280; font-weight:600; padding:0.25rem 0.5rem; font-size:0.75rem;">
+                                        <i class="fa-solid fa-user-clock"></i> Unclaimed
+                                    </span>
+                                </div>
+                                {{end}}
+
                                 <form action="/admin/orders/status" method="POST" class="inline-status-form">
                                     <input type="hidden" name="id" value="{{.ID}}">
                                     <select name="status" onchange="this.form.submit()" class="status-select">

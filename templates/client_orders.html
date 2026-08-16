@@ -39,6 +39,11 @@
                         {{if .TransactionID}}<br><small class="text-muted"><i class="fa-solid fa-barcode"></i> TXN ID: <code>{{.TransactionID}}</code></small>{{end}}
                     </div>
                     <div class="order-badges">
+                        {{if .AssignedStaffName}}
+                        <span class="category-pill-sm" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:700; font-size:0.78rem;">
+                            <i class="fa-solid fa-user-tie"></i> Handled by {{.AssignedStaffName}}
+                        </span>
+                        {{end}}
                         <span class="order-status-badge status-{{.Status}}">
                             {{if eq .Status "Pending"}}<i class="fa-solid fa-clock"></i>
                             {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire"></i>

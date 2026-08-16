@@ -173,15 +173,24 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 
 	id, _ := strconv.ParseInt(r.FormValue("id"), 10, 64)
 	status := r.FormValue("status")
+	actor := middleware.GetUserFromContext(r)
 
-	if err := app.OrderService.UpdateOrderStatus(r.Context(), id, status); err != nil {
-		app.serverError(w, r, err)
+	if err := app.OrderService.UpdateOrderStatusWithStaff(r.Context(), id, status, actor); err != nil {
+		orders, _ := app.OrderService.GetAllOrders(r.Context())
+		data := models.PageData{
+			"Title":  "Manage Orders",
+			"Error":  err.Error(),
+			"Orders": orders,
+		}
+		app.render(w, r, http.StatusConflict, "admin_orders.html", data)
 		return
 	}
 
 	if app.AuditService != nil {
-		actor := middleware.GetUserFromContext(r)
 		details := "Updated Order #" + strconv.FormatInt(id, 10) + " status to '" + status + "'"
+		if actor != nil {
+			details += " (Handled by: " + actor.Name + ")"
+		}
 		app.AuditService.LogEvent(r.Context(), actor, "ORDER_STATUS_UPDATED", details, services.GetClientIP(r))
 	}
 
