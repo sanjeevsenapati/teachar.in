@@ -1,5 +1,5 @@
 {
-  "next_user_id": 8,
+  "next_user_id": 9,
   "users": [
     {
       "id": 1,
@@ -70,6 +70,16 @@
       "salt": "89c9d5c7dbb40c2a977ac60ed00b7323",
       "role": "client",
       "created_at": "2026-08-16T16:42:15.840002+05:30"
+    },
+    {
+      "id": 8,
+      "name": "Suraj Singh",
+      "email": "suraj.singh@ymail.com",
+      "mobile_number": "9845275973",
+      "password_hash": "693ac7bb08b204b60b7d27ebf5cb732a3300a64d2f71adc757decee418a31974",
+      "salt": "28b3af61509b69bb1dac8f7a61b2097b",
+      "role": "client",
+      "created_at": "2026-08-16T18:11:38.548697+05:30"
     }
   ]
 }

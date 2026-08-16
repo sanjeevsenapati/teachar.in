@@ -1,0 +1,15 @@
+{
+  "next_api_key_id": 2,
+  "api_keys": [
+    {
+      "id": 1,
+      "name": "POS Terminal 1",
+      "key_hash": "b27bf9a65d19efe8a4070d9fb5fb974274b7019560a0f35d4814ec98f388e8b0",
+      "key_prefix": "tch_live_b27356e...",
+      "role": "admin",
+      "is_active": true,
+      "created_at": "2026-08-16T18:18:30.032091+05:30",
+      "expires_at": "2026-11-14T18:18:30.032091+05:30"
+    }
+  ]
+}

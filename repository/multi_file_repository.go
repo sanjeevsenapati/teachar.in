@@ -55,6 +55,11 @@ type expensesSchema struct {
 	Expenses      []models.ExpenseEntry `json:"expenses"`
 }
 
+type apiKeysSchema struct {
+	NextAPIKeyID int64          `json:"next_api_key_id"`
+	APIKeys      []models.APIKey `json:"api_keys"`
+}
+
 // MultiFileRepository provides domain-isolated, fine-grained locking, O(1) in-memory indexed storage using standard library packages.
 type MultiFileRepository struct {
 	dataDir string
@@ -68,6 +73,7 @@ type MultiFileRepository struct {
 	couponsMu   sync.RWMutex
 	inventoryMu sync.RWMutex
 	expensesMu  sync.RWMutex
+	apiKeysMu   sync.RWMutex
 
 	// Data File Paths
 	usersFile     string
@@ -78,6 +84,7 @@ type MultiFileRepository struct {
 	couponsFile   string
 	inventoryFile string
 	expensesFile  string
+	apiKeysFile   string
 
 	// O(1) In-Memory Fast Lookup Maps & Caches
 	usersByEmail       map[string]*models.User
@@ -87,6 +94,7 @@ type MultiFileRepository struct {
 	ordersByID         map[int64]*models.Order
 	couponsByCode      map[string]*models.Coupon
 	inventoryItemsByID map[int64]*models.InventoryItem
+	apiKeysByHash      map[string]*models.APIKey
 
 	// Domain Data Arrays
 	users               []models.User
@@ -98,15 +106,17 @@ type MultiFileRepository struct {
 	cancellationReasons []string
 	inventoryItems      []models.InventoryItem
 	expenses            []models.ExpenseEntry
+	apiKeys             []models.APIKey
 
 	// Atomic Sequence Counters for High-Concurrency ID Generation
-	nextUserID     atomic.Int64
-	nextMenuItemID atomic.Int64
-	nextOrderID    atomic.Int64
-	nextAuditLogID atomic.Int64
-	nextCouponID   atomic.Int64
+	nextUserID      atomic.Int64
+	nextMenuItemID  atomic.Int64
+	nextOrderID     atomic.Int64
+	nextAuditLogID  atomic.Int64
+	nextCouponID    atomic.Int64
 	nextInventoryID atomic.Int64
 	nextExpenseID   atomic.Int64
+	nextAPIKeyID    atomic.Int64
 }
 
 // NewMultiFileRepository initializes and loads domain-isolated files, with automatic migration from old db.json if present.
@@ -125,6 +135,7 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 		couponsFile:        filepath.Join(dataDir, "coupons.json"),
 		inventoryFile:      filepath.Join(dataDir, "inventory.json"),
 		expensesFile:       filepath.Join(dataDir, "expenses.json"),
+		apiKeysFile:        filepath.Join(dataDir, "api_keys.json"),
 		usersByEmail:       make(map[string]*models.User),
 		usersByID:          make(map[int64]*models.User),
 		sessionsByToken:    make(map[string]*models.Session),
@@ -132,6 +143,7 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 		ordersByID:         make(map[int64]*models.Order),
 		couponsByCode:      make(map[string]*models.Coupon),
 		inventoryItemsByID: make(map[int64]*models.InventoryItem),
+		apiKeysByHash:      make(map[string]*models.APIKey),
 	}
 
 	// Check if migration from legacy db.json is required
@@ -165,6 +177,12 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 	}
 	if err := repo.loadInventory(); err != nil {
 		return nil, fmt.Errorf("failed loading inventory storage: %w", err)
+	}
+	if err := repo.loadExpenses(); err != nil {
+		return nil, fmt.Errorf("failed loading expenses storage: %w", err)
+	}
+	if err := repo.loadAPIKeys(); err != nil {
+		return nil, fmt.Errorf("failed loading API keys storage: %w", err)
 	}
 	if err := repo.loadExpenses(); err != nil {
 		return nil, fmt.Errorf("failed loading expenses storage: %w", err)
@@ -1333,4 +1351,151 @@ func (r *MultiFileRepository) DeleteExpense(ctx context.Context, id int64) error
 	}
 	r.expenses = updated
 	return r.saveExpensesLocked()
+}
+
+func (r *MultiFileRepository) loadAPIKeys() error {
+	r.apiKeysMu.Lock()
+	defer r.apiKeysMu.Unlock()
+
+	if _, err := os.Stat(r.apiKeysFile); os.IsNotExist(err) {
+		r.apiKeys = []models.APIKey{}
+		r.nextAPIKeyID.Store(1)
+		return r.saveAPIKeysLocked()
+	}
+
+	data, err := os.ReadFile(r.apiKeysFile)
+	if err != nil {
+		return err
+	}
+
+	var schema apiKeysSchema
+	if err := json.Unmarshal(data, &schema); err != nil {
+		return err
+	}
+
+	r.apiKeys = schema.APIKeys
+	r.nextAPIKeyID.Store(schema.NextAPIKeyID)
+	if r.nextAPIKeyID.Load() <= 0 {
+		r.nextAPIKeyID.Store(1)
+	}
+
+	r.apiKeysByHash = make(map[string]*models.APIKey)
+	for i := range r.apiKeys {
+		r.apiKeysByHash[r.apiKeys[i].KeyHash] = &r.apiKeys[i]
+	}
+
+	return nil
+}
+
+func (r *MultiFileRepository) saveAPIKeysLocked() error {
+	schema := apiKeysSchema{
+		NextAPIKeyID: r.nextAPIKeyID.Load(),
+		APIKeys:      r.apiKeys,
+	}
+	data, err := json.MarshalIndent(schema, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	tmpFile := r.apiKeysFile + ".tmp"
+	if err := os.WriteFile(tmpFile, data, 0644); err != nil {
+		return err
+	}
+	return os.Rename(tmpFile, r.apiKeysFile)
+}
+
+func (r *MultiFileRepository) GetAllAPIKeys(ctx context.Context) ([]models.APIKey, error) {
+	r.apiKeysMu.RLock()
+	defer r.apiKeysMu.RUnlock()
+
+	result := make([]models.APIKey, len(r.apiKeys))
+	copy(result, r.apiKeys)
+	return result, nil
+}
+
+func (r *MultiFileRepository) GetAPIKeyByID(ctx context.Context, id int64) (*models.APIKey, error) {
+	r.apiKeysMu.RLock()
+	defer r.apiKeysMu.RUnlock()
+
+	for _, k := range r.apiKeys {
+		if k.ID == id {
+			return &k, nil
+		}
+	}
+	return nil, errors.New("API key not found")
+}
+
+func (r *MultiFileRepository) GetAPIKeyByHash(ctx context.Context, keyHash string) (*models.APIKey, error) {
+	r.apiKeysMu.RLock()
+	defer r.apiKeysMu.RUnlock()
+
+	if key, ok := r.apiKeysByHash[keyHash]; ok && key.IsActive {
+		if key.ExpiresAt != nil && key.ExpiresAt.Before(time.Now()) {
+			return nil, errors.New("API key expired")
+		}
+		return key, nil
+	}
+	return nil, errors.New("invalid or revoked API key")
+}
+
+func (r *MultiFileRepository) SaveAPIKey(ctx context.Context, apiKey models.APIKey) (*models.APIKey, error) {
+	r.apiKeysMu.Lock()
+	defer r.apiKeysMu.Unlock()
+
+	now := time.Now()
+	if apiKey.CreatedAt.IsZero() {
+		apiKey.CreatedAt = now
+	}
+
+	if apiKey.ID == 0 {
+		apiKey.ID = r.nextAPIKeyID.Add(1) - 1
+		r.apiKeys = append(r.apiKeys, apiKey)
+		saved := &r.apiKeys[len(r.apiKeys)-1]
+		r.apiKeysByHash[saved.KeyHash] = saved
+		if err := r.saveAPIKeysLocked(); err != nil {
+			return nil, err
+		}
+		return saved, nil
+	}
+
+	for i, k := range r.apiKeys {
+		if k.ID == apiKey.ID {
+			r.apiKeys[i] = apiKey
+			r.apiKeysByHash[apiKey.KeyHash] = &r.apiKeys[i]
+			if err := r.saveAPIKeysLocked(); err != nil {
+				return nil, err
+			}
+			return &r.apiKeys[i], nil
+		}
+	}
+	return nil, errors.New("API key not found")
+}
+
+func (r *MultiFileRepository) UpdateAPIKeyLastUsed(ctx context.Context, id int64) error {
+	r.apiKeysMu.Lock()
+	defer r.apiKeysMu.Unlock()
+
+	now := time.Now()
+	for i, k := range r.apiKeys {
+		if k.ID == id {
+			r.apiKeys[i].LastUsedAt = &now
+			r.apiKeysByHash[k.KeyHash] = &r.apiKeys[i]
+			return r.saveAPIKeysLocked()
+		}
+	}
+	return errors.New("API key not found")
+}
+
+func (r *MultiFileRepository) RevokeAPIKey(ctx context.Context, id int64) error {
+	r.apiKeysMu.Lock()
+	defer r.apiKeysMu.Unlock()
+
+	for i, k := range r.apiKeys {
+		if k.ID == id {
+			r.apiKeys[i].IsActive = false
+			delete(r.apiKeysByHash, k.KeyHash)
+			return r.saveAPIKeysLocked()
+		}
+	}
+	return errors.New("API key not found")
 }

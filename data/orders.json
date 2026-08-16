@@ -1,5 +1,5 @@
 {
-  "next_order_id": 22,
+  "next_order_id": 25,
   "cancellation_reasons": [
     "Item out of stock",
     "Kitchen load exceeded / High volume",
@@ -866,6 +866,151 @@
         }
       ],
       "created_at": "2026-08-16T17:19:29.017774+05:30"
+    },
+    {
+      "id": 22,
+      "user_id": 3,
+      "customer_name": "Sample Client",
+      "customer_phone": "9123456789",
+      "order_type": "Delivery",
+      "table_number": "",
+      "delivery_address": "402, SS heights",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN67324542",
+      "subtotal_price": 85,
+      "total_price": 89.25,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Self Claimed",
+      "assigned_at": "2026-08-16T18:05:20.862674+05:30",
+      "completed_at": "2026-08-16T18:05:51.011343+05:30",
+      "fulfillment_minutes": 1,
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 22,
+          "menu_item_id": 12,
+          "item_name": "Red Tea \u0026 Popped Rice Combo",
+          "quantity": 1,
+          "price": 50
+        },
+        {
+          "id": 2,
+          "order_id": 22,
+          "menu_item_id": 11,
+          "item_name": "Vanilla Popped Rice",
+          "quantity": 1,
+          "price": 35
+        }
+      ],
+      "created_at": "2026-08-16T18:04:51.416548+05:30"
+    },
+    {
+      "id": 23,
+      "user_id": 8,
+      "customer_name": "Suraj Singh",
+      "customer_phone": "9845275973",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Pending",
+      "payment_method": "UPI",
+      "payment_status": "Paid",
+      "transaction_id": "TXN26847404",
+      "subtotal_price": 110,
+      "total_price": 115.5,
+      "assigned_staff_id": 0,
+      "assigned_staff_name": "",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 23,
+          "menu_item_id": 8,
+          "item_name": "Coke",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 2,
+          "order_id": 23,
+          "menu_item_id": 7,
+          "item_name": "Samosa",
+          "quantity": 1,
+          "price": 25
+        },
+        {
+          "id": 3,
+          "order_id": 23,
+          "menu_item_id": 13,
+          "item_name": "Milk Tea with Overnight High fiber Roti",
+          "quantity": 1,
+          "price": 45
+        }
+      ],
+      "created_at": "2026-08-16T18:12:50.836653+05:30"
+    },
+    {
+      "id": 24,
+      "user_id": 0,
+      "customer_name": "Guest Customer",
+      "customer_phone": "78777667655",
+      "order_type": "Takeaway",
+      "table_number": "",
+      "delivery_address": "",
+      "status": "Pending",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN17817681",
+      "subtotal_price": 180,
+      "total_price": 189,
+      "assigned_staff_id": 0,
+      "assigned_staff_name": "",
+      "cancellation_reason": "",
+      "rating": 0,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 24,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 2,
+          "order_id": 24,
+          "menu_item_id": 4,
+          "item_name": "Cold Coffee",
+          "quantity": 1,
+          "price": 80
+        },
+        {
+          "id": 3,
+          "order_id": 24,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        },
+        {
+          "id": 4,
+          "order_id": 24,
+          "menu_item_id": 10,
+          "item_name": "Popped Rice",
+          "quantity": 1,
+          "price": 30
+        }
+      ],
+      "created_at": "2026-08-16T18:16:20.220991+05:30"
     }
   ]
 }

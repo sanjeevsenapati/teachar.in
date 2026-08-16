@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"teachar.in/models"
@@ -13,17 +14,25 @@ import (
 
 type contextKey string
 
-const UserContextKey contextKey = "authenticated_user"
+const (
+	UserContextKey   contextKey = "authenticated_user"
+	APIKeyContextKey contextKey = "authenticated_apikey"
+)
 
-// Manager holds dependencies for middleware, like a logger and auth service.
+// Manager holds dependencies for middleware, like a logger, auth service, and security service.
 type Manager struct {
-	logger      *slog.Logger
-	authService *services.AuthService
+	logger          *slog.Logger
+	authService     *services.AuthService
+	securityService *services.SecurityService
 }
 
 // NewManager creates a new middleware manager.
-func NewManager(logger *slog.Logger, authService *services.AuthService) *Manager {
-	return &Manager{logger: logger, authService: authService}
+func NewManager(logger *slog.Logger, authService *services.AuthService, securityService ...*services.SecurityService) *Manager {
+	mgr := &Manager{logger: logger, authService: authService}
+	if len(securityService) > 0 {
+		mgr.securityService = securityService[0]
+	}
+	return mgr
 }
 
 // Middleware is a function that takes a http.Handler and returns a http.Handler.
@@ -64,6 +73,38 @@ func (m *Manager) RequireAuth(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(w, r)
+	})
+}
+
+// RequireAPIKey checks X-API-Key or Authorization Bearer header for valid API key authentication.
+func (m *Manager) RequireAPIKey(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if m.securityService == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		apiKeyHeader := r.Header.Get("X-API-Key")
+		if apiKeyHeader == "" {
+			authHeader := r.Header.Get("Authorization")
+			if strings.HasPrefix(authHeader, "Bearer ") {
+				apiKeyHeader = strings.TrimPrefix(authHeader, "Bearer ")
+			}
+		}
+
+		if apiKeyHeader == "" {
+			http.Error(w, `{"error":"missing API key header 'X-API-Key' or 'Authorization: Bearer <key>'"}`, http.StatusUnauthorized)
+			return
+		}
+
+		key, err := m.securityService.ValidateAPIKey(r.Context(), apiKeyHeader)
+		if err != nil || key == nil {
+			http.Error(w, `{"error":"invalid, expired, or revoked API key"}`, http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), APIKeyContextKey, key)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -135,12 +176,15 @@ func (m *Manager) Recovery(next http.Handler) http.Handler {
 	})
 }
 
-// Security adds basic security headers to every response.
+// Security adds enterprise-grade security headers to every HTTP response.
 func (m *Manager) Security(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "deny")
+		w.Header().Set("X-XSS-Protection", "1; mode=block")
 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
+		w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
 		next.ServeHTTP(w, r)
 	})
 }

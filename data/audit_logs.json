@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 145,
+  "next_audit_log_id": 161,
   "audit_logs": [
     {
       "id": 1,
@@ -1440,6 +1440,166 @@
       "action": "ORDER_STATUS_UPDATED",
       "details": "Updated Order #21 status to 'Completed' (Handled by: TEACHAR Admin)",
       "ip_address": "[::1]:56467"
+    },
+    {
+      "id": 145,
+      "timestamp": "2026-08-16T18:02:58.849353+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56672"
+    },
+    {
+      "id": 146,
+      "timestamp": "2026-08-16T18:04:51.419181+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #22 (Delivery, Total: ₹89.25)",
+      "ip_address": "[::1]:56681"
+    },
+    {
+      "id": 147,
+      "timestamp": "2026-08-16T18:05:11.982938+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56686"
+    },
+    {
+      "id": 148,
+      "timestamp": "2026-08-16T18:05:20.863544+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #22 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56686"
+    },
+    {
+      "id": 149,
+      "timestamp": "2026-08-16T18:05:39.174781+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #22 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56686"
+    },
+    {
+      "id": 150,
+      "timestamp": "2026-08-16T18:05:51.012255+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #22 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:56686"
+    },
+    {
+      "id": 151,
+      "timestamp": "2026-08-16T18:06:11.085131+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #22",
+      "ip_address": "[::1]:56681"
+    },
+    {
+      "id": 152,
+      "timestamp": "2026-08-16T18:07:10.5646+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56681"
+    },
+    {
+      "id": 153,
+      "timestamp": "2026-08-16T18:09:27.393569+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56681"
+    },
+    {
+      "id": 154,
+      "timestamp": "2026-08-16T18:11:38.551027+05:30",
+      "actor_id": 8,
+      "actor_name": "Suraj Singh",
+      "actor_role": "client",
+      "action": "USER_REGISTER",
+      "details": "Client registered new account: suraj.singh@ymail.com",
+      "ip_address": "[::1]:56681"
+    },
+    {
+      "id": 155,
+      "timestamp": "2026-08-16T18:12:50.839109+05:30",
+      "actor_id": 8,
+      "actor_name": "Suraj Singh",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #23 (Takeaway, Total: ₹115.50)",
+      "ip_address": "[::1]:56782"
+    },
+    {
+      "id": 156,
+      "timestamp": "2026-08-16T18:16:20.223613+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #24 (Takeaway, Total: ₹189.00)",
+      "ip_address": "[::1]:56798"
+    },
+    {
+      "id": 157,
+      "timestamp": "2026-08-16T18:16:32.479708+05:30",
+      "actor_id": 8,
+      "actor_name": "Suraj Singh",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56798"
+    },
+    {
+      "id": 158,
+      "timestamp": "2026-08-16T18:17:56.929588+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56833"
+    },
+    {
+      "id": 159,
+      "timestamp": "2026-08-16T18:18:21.255139+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56841"
+    },
+    {
+      "id": 160,
+      "timestamp": "2026-08-16T18:18:30.032431+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "API_KEY_GENERATED",
+      "details": "Issued API Key 'POS Terminal 1' (ID #1, Role: admin)",
+      "ip_address": "[::1]:56843"
     }
   ]
 }

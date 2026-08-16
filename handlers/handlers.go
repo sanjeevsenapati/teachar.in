@@ -25,11 +25,12 @@ type Application struct {
 	ReportService    *services.ReportService
 	CouponService    *services.CouponService
 	InventoryService *services.InventoryService
+	SecurityService  *services.SecurityService
 }
 
 // RegisterRoutes sets up all the routes for the application.
 func (app *Application) RegisterRoutes(mux *http.ServeMux) {
-	mw := middleware.NewManager(app.Logger, app.AuthService)
+	mw := middleware.NewManager(app.Logger, app.AuthService, app.SecurityService)
 	chainedHandler := mw.Chain(mw.Recovery, mw.Logging, mw.Security, mw.AuthenticateSession)
 
 	router := http.NewServeMux()
@@ -87,6 +88,9 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("GET /admin/coupons", mw.RequireSuperadmin(http.HandlerFunc(app.adminCouponsHandler)))
 	router.Handle("POST /admin/coupons/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateCouponHandler)))
 	router.Handle("POST /admin/coupons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCouponHandler)))
+	router.Handle("GET /admin/api-keys", mw.RequireSuperadmin(http.HandlerFunc(app.adminAPIKeysHandler)))
+	router.Handle("POST /admin/api-keys/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateAPIKeyHandler)))
+	router.Handle("POST /admin/api-keys/revoke", mw.RequireSuperadmin(http.HandlerFunc(app.adminRevokeAPIKeyHandler)))
 
 	// API status endpoints
 	router.HandleFunc("GET /api/status", app.apiStatusHandler)

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -43,6 +42,7 @@ func main() {
 	auditSvc := services.NewAuditService(dbRepo)
 	reportSvc := services.NewReportService(dbRepo, dbRepo, dbRepo)
 	inventorySvc := services.NewInventoryService(dbRepo, dbRepo)
+	securitySvc := services.NewSecurityService(dbRepo)
 
 	// Create application dependencies container.
 	app := &handlers.Application{
@@ -55,6 +55,7 @@ func main() {
 		ReportService:    reportSvc,
 		CouponService:    couponSvc,
 		InventoryService: inventorySvc,
+		SecurityService:  securitySvc,
 	}
 
 	// Initialize router.
@@ -87,10 +88,19 @@ func main() {
 		logger.Info("server gracefully stopped")
 	}()
 
-	logger.Info("starting server", "address", srv.Addr, "env", cfg.Env)
+	if cfg.EnableTLS {
+		if err := services.GenerateSelfSignedCert(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
+			logger.Warn("failed generating TLS certificate", "error", err)
+		}
+		logger.Info("starting HTTPS TLS server", "address", srv.Addr, "cert", cfg.SSLCertFile, "env", cfg.Env)
+		err = srv.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile)
+	} else {
+		logger.Info("starting HTTP server", "address", srv.Addr, "env", cfg.Env)
+		err = srv.ListenAndServe()
+	}
 
-	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		logger.Error("server startup failed", "error", err)
+	if err != nil && err != http.ErrServerClosed {
+		logger.Error("server encountered error", "error", err)
 		os.Exit(1)
 	}
 }
