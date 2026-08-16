@@ -1,76 +1,128 @@
 {{define "main"}}
-{{if eq .CurrentPeriod "today"}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{{end}}
 
 <!-- Admin Header Section -->
 <section class="admin-header-section">
     <div class="container admin-header-content" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
         <div>
-            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Executive Auditing & Analytics</span>
+            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Executive Auditing & Live Analytics</span>
             <h1 class="page-title" style="margin:0; font-size:2.2rem; font-weight:800; color:var(--text-main);">Financial Reports & Sales Analytics</h1>
             <div style="margin-top:0.4rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                <span style="font-size:0.9rem; color:var(--text-muted);">Active Period Filter:</span>
+                <span style="font-size:0.9rem; color:var(--text-muted);">Active Filter Window:</span>
                 <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:800; font-size:0.85rem; padding:0.25rem 0.75rem;">
                     <i class="fa-solid fa-calendar-check"></i> {{.Report.PeriodLabel}}
                 </span>
+                {{if eq .Report.Period "today"}}
+                <span class="category-pill-sm" style="background:#d1fae5; color:#047857; font-weight:800; font-size:0.8rem; padding:0.2rem 0.6rem;">
+                    <i class="fa-solid fa-bolt"></i> Today Live Default
+                </span>
+                {{end}}
             </div>
         </div>
         <div class="admin-nav-btns" style="display:flex; gap:0.75rem; flex-wrap:wrap;">
             <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
-            <a href="/admin/reports/export?period={{.CurrentPeriod}}" class="btn btn-primary" id="download-csv-btn">
-                <i class="fa-solid fa-file-csv"></i> Download CSV Data
+            <a href="/admin/reports/export?period={{.Filter.Period}}&start_date={{.Filter.StartDateStr}}&end_date={{.Filter.EndDateStr}}&fulfillment_method={{.Filter.FulfillmentMethod}}&payment_method={{.Filter.PaymentMethod}}&order_status={{.Filter.OrderStatus}}&category={{.Filter.Category}}&q={{.Filter.SearchQuery}}" class="btn btn-primary" id="download-csv-btn">
+                <i class="fa-solid fa-file-csv"></i> Download Filtered CSV
             </a>
             <button class="btn btn-secondary" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> Print / PDF Summary
+                <i class="fa-solid fa-print"></i> Print / PDF Report
             </button>
         </div>
     </div>
 </section>
 
-<section class="admin-body-section" style="padding: 2.5rem 0 6rem; background: var(--bg-main);">
+<section class="admin-body-section" style="padding: 2rem 0 6rem; background: var(--bg-main);">
     <div class="container" style="display:flex; flex-direction:column; gap:2rem;">
         
-        <!-- Period Filter Tabs -->
-        <div class="report-period-tabs" style="display:flex; gap:0.5rem; flex-wrap:wrap; background: #ffffff; padding:0.6rem; border-radius:var(--border-radius-md); border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
-            <a href="/admin/reports?period=today" class="period-tab {{if eq .CurrentPeriod "today"}}active{{end}}">
-                <i class="fa-solid fa-circle text-danger" style="font-size:0.5rem; vertical-align:middle; margin-right:0.35rem;"></i> Today (Live 24h)
-            </a>
-            <a href="/admin/reports?period=daily" class="period-tab {{if eq .CurrentPeriod "daily"}}active{{end}}">
-                <i class="fa-solid fa-calendar-day" style="margin-right:0.35rem;"></i> Past 7 Days
-            </a>
-            <a href="/admin/reports?period=weekly" class="period-tab {{if eq .CurrentPeriod "weekly"}}active{{end}}">
-                <i class="fa-solid fa-calendar-week" style="margin-right:0.35rem;"></i> Current Week
-            </a>
-            <a href="/admin/reports?period=monthly" class="period-tab {{if eq .CurrentPeriod "monthly"}}active{{end}}">
-                <i class="fa-solid fa-calendar-days" style="margin-right:0.35rem;"></i> Current Month
-            </a>
-            <a href="/admin/reports?period=yearly" class="period-tab {{if eq .CurrentPeriod "yearly"}}active{{end}}">
-                <i class="fa-solid fa-building-columns" style="margin-right:0.35rem;"></i> Financial Year (FY)
-            </a>
-        </div>
-
-        <!-- Export & Download Banner Card (All Timeframes) -->
-        <div class="export-banner-card">
-            <div class="export-banner-content">
-                <div style="flex:1; min-width:280px;">
-                    <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:0.35rem; display:flex; align-items:center; gap:0.5rem;">
-                        <i class="fa-solid fa-file-arrow-down text-primary"></i> 
-                        Executive Sales Summary & Export Options ({{.Report.PeriodLabel}})
-                    </h3>
-                    <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
-                        Download complete sales spreadsheets as CSV datasets or generate clean printable PDF summaries for auditing and bookkeeping.
-                    </p>
-                </div>
-                <div class="export-btn-group" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
-                    <a href="/admin/reports/export?period={{.CurrentPeriod}}" class="btn btn-primary" style="white-space:nowrap;">
-                        <i class="fa-solid fa-file-csv"></i> Export {{.Report.PeriodLabel}} CSV
-                    </a>
-                    <button class="btn btn-secondary" onclick="window.print()" style="white-space:nowrap;">
-                        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
-                    </button>
-                </div>
+        <!-- Dynamic Interactive Filter Form Control Panel -->
+        <div class="admin-table-card" style="background:#ffffff; border:1px solid var(--border-color); padding:1.5rem; border-radius:var(--border-radius-md); box-shadow:var(--shadow-sm);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
+                <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-sliders text-primary"></i> Dynamic Financial & Sales Filter Controls
+                </h3>
+                <a href="/admin/reports?period=today" class="btn btn-sm btn-outline-danger" style="font-size:0.8rem; font-weight:700;">
+                    <i class="fa-solid fa-rotate-left"></i> Reset to Today Live Default
+                </a>
             </div>
+
+            <form action="/admin/reports" method="GET" style="display:flex; flex-direction:column; gap:1.25rem;">
+                <!-- Preset Timeframe Pills Bar -->
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                    <span style="font-size:0.82rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:0.5rem;">Timeframe Presets:</span>
+                    <a href="/admin/reports?period=today" class="period-tab {{if eq .Filter.Period "today"}}active{{end}}">Today (Live)</a>
+                    <a href="/admin/reports?period=yesterday" class="period-tab {{if eq .Filter.Period "yesterday"}}active{{end}}">Yesterday</a>
+                    <a href="/admin/reports?period=daily" class="period-tab {{if eq .Filter.Period "daily"}}active{{end}}">Past 7 Days</a>
+                    <a href="/admin/reports?period=weekly" class="period-tab {{if eq .Filter.Period "weekly"}}active{{end}}">This Week</a>
+                    <a href="/admin/reports?period=monthly" class="period-tab {{if eq .Filter.Period "monthly"}}active{{end}}">This Month</a>
+                    <a href="/admin/reports?period=quarterly" class="period-tab {{if eq .Filter.Period "quarterly"}}active{{end}}">This Quarter</a>
+                    <a href="/admin/reports?period=yearly" class="period-tab {{if eq .Filter.Period "yearly"}}active{{end}}">Financial Year (FY)</a>
+                </div>
+
+                <!-- Multi-Dimensional Filter Selectors Grid -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1rem;">
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">Start Date</label>
+                        <input type="date" name="start_date" value="{{.Filter.StartDateStr}}" class="form-input" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                    </div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">End Date</label>
+                        <input type="date" name="end_date" value="{{.Filter.EndDateStr}}" class="form-input" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                    </div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">Fulfillment</label>
+                        <select name="fulfillment_method" class="form-select" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                            <option value="all" {{if or (eq .Filter.FulfillmentMethod "") (eq .Filter.FulfillmentMethod "all")}}selected{{end}}>All Methods</option>
+                            <option value="Dine-in" {{if eq .Filter.FulfillmentMethod "Dine-in"}}selected{{end}}>Dine-in</option>
+                            <option value="Takeaway" {{if eq .Filter.FulfillmentMethod "Takeaway"}}selected{{end}}>Takeaway</option>
+                            <option value="Delivery" {{if eq .Filter.FulfillmentMethod "Delivery"}}selected{{end}}>Delivery</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">Payment Method</label>
+                        <select name="payment_method" class="form-select" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                            <option value="all" {{if or (eq .Filter.PaymentMethod "") (eq .Filter.PaymentMethod "all")}}selected{{end}}>All Payments</option>
+                            <option value="UPI" {{if eq .Filter.PaymentMethod "UPI"}}selected{{end}}>UPI Instant</option>
+                            <option value="Card" {{if eq .Filter.PaymentMethod "Card"}}selected{{end}}>Credit / Debit Card</option>
+                            <option value="NetBanking" {{if eq .Filter.PaymentMethod "NetBanking"}}selected{{end}}>NetBanking</option>
+                            <option value="COD" {{if eq .Filter.PaymentMethod "COD"}}selected{{end}}>Cash on Delivery (COD)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">Order Status</label>
+                        <select name="order_status" class="form-select" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                            <option value="all" {{if or (eq .Filter.OrderStatus "") (eq .Filter.OrderStatus "all")}}selected{{end}}>All Statuses</option>
+                            <option value="Completed" {{if eq .Filter.OrderStatus "Completed"}}selected{{end}}>Completed</option>
+                            <option value="Pending" {{if eq .Filter.OrderStatus "Pending"}}selected{{end}}>Pending / Preparing</option>
+                            <option value="Cancelled" {{if eq .Filter.OrderStatus "Cancelled"}}selected{{end}}>Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:0.25rem;">Category</label>
+                        <select name="category" class="form-select" style="padding:0.45rem 0.75rem; font-size:0.88rem;">
+                            <option value="all" {{if or (eq .Filter.Category "") (eq .Filter.Category "all")}}selected{{end}}>All Categories</option>
+                            <option value="Tea" {{if eq .Filter.Category "Tea"}}selected{{end}}>Tea (Chai)</option>
+                            <option value="Coffee" {{if eq .Filter.Category "Coffee"}}selected{{end}}>Coffee</option>
+                            <option value="Snacks" {{if eq .Filter.Category "Snacks"}}selected{{end}}>Snacks & Breads</option>
+                            <option value="Cold Beverages" {{if eq .Filter.Category "Cold Beverages"}}selected{{end}}>Cold Beverages</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Keyword Search & Action Buttons Bar -->
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; border-top:1px dashed var(--border-color); padding-top:1rem;">
+                    <div style="flex:1; min-width:240px;">
+                        <input type="text" name="q" value="{{.Filter.SearchQuery}}" placeholder="Search by item name, customer, mobile, or order ID..." class="form-input" style="padding:0.5rem 0.85rem; font-size:0.9rem;">
+                    </div>
+                    <div style="display:flex; gap:0.75rem;">
+                        <button type="submit" class="btn btn-primary" style="padding:0.5rem 1.25rem;"><i class="fa-solid fa-filter"></i> Apply Dynamic Filters</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Sales Overview Metrics Grid (Horizontal Row Grid) -->
@@ -78,7 +130,7 @@
             <div class="metric-card">
                 <div class="metric-icon icon-revenue"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                 <div class="metric-info">
-                    <span class="metric-label">Gross Revenue</span>
+                    <span class="metric-label">Filtered Revenue</span>
                     <h3 class="metric-value">₹{{printf "%.2f" .Report.GrossRevenue}}</h3>
                 </div>
             </div>
@@ -100,144 +152,109 @@
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon icon-orders"><i class="fa-solid fa-bag-shopping"></i></div>
+                <div class="metric-icon icon-orders"><i class="fa-solid fa-receipt"></i></div>
                 <div class="metric-info">
-                    <span class="metric-label">Avg Order Value</span>
+                    <span class="metric-label">Total Orders</span>
+                    <h3 class="metric-value">{{.Report.TotalOrders}} Orders</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Financial KPI Row -->
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; width: 100%;">
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#d1fae5; color:#047857;"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Completed Orders</span>
+                    <h3 class="metric-value" style="color:#047857;">{{.Report.CompletedOrders}}</h3>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-calculator"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Avg Order Value (AOV)</span>
                     <h3 class="metric-value">₹{{printf "%.2f" .Report.AverageOrderValue}}</h3>
                 </div>
             </div>
-        </div>
 
-        <!-- Financial & Sales Summary Table (All Timeframes) -->
-        <div class="admin-table-card">
-            <div class="table-card-header">
-                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
-                    <i class="fa-solid fa-file-invoice-dollar text-primary"></i> 
-                    Financial & Sales Summary Audit Table ({{.Report.PeriodLabel}})
-                </h3>
-                <a href="/admin/reports/export?period={{.CurrentPeriod}}" class="btn btn-secondary btn-sm" style="font-size:0.8rem;">
-                    <i class="fa-solid fa-download"></i> CSV Export
-                </a>
-            </div>
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Auditing Metric</th>
-                            <th>Value / Amount</th>
-                            <th>Metric Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Gross Revenue</strong></td>
-                            <td><strong class="order-total-price">₹{{printf "%.2f" .Report.GrossRevenue}}</strong></td>
-                            <td><span class="text-muted">Total order revenue collected before tax deductions</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Total GST Tax (5%)</strong></td>
-                            <td><strong style="color:#d97706;">₹{{printf "%.2f" .Report.TotalTax}}</strong></td>
-                            <td><span class="text-muted">Mandatory 5% GST tax collected across orders</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Net Sales Revenue</strong></td>
-                            <td><strong style="color:#0284c7;">₹{{printf "%.2f" .Report.NetRevenue}}</strong></td>
-                            <td><span class="text-muted">Net cafe revenue after GST tax exclusion</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Total Orders Count</strong></td>
-                            <td><strong>{{.Report.TotalOrders}} orders</strong></td>
-                            <td><span class="text-muted">{{.Report.CompletedOrders}} Completed • {{.Report.CancelledOrders}} Cancelled</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Average Order Value (AOV)</strong></td>
-                            <td><strong>₹{{printf "%.2f" .Report.AverageOrderValue}}</strong></td>
-                            <td><span class="text-muted">Average spend per successful non-cancelled order</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Total Paid Amount</strong></td>
-                            <td><strong class="text-success">₹{{printf "%.2f" .Report.PaidAmount}}</strong></td>
-                            <td><span class="text-muted">Revenue settled via instant online & counter payments</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pending Payment Balance</strong></td>
-                            <td><strong class="text-danger">₹{{printf "%.2f" .Report.PendingPayment}}</strong></td>
-                            <td><span class="text-muted">Uncollected Cash on Delivery (COD) balance</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Peak Rush Hour</strong></td>
-                            <td><strong class="text-primary">{{.Report.PeakRushHour}}</strong></td>
-                            <td><span class="text-muted">Highest order volume time window</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Quiet / Slow Hour</strong></td>
-                            <td><strong>{{.Report.SlowestHour}}</strong></td>
-                            <td><span class="text-muted">Lowest order volume time window</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Rush Hour & Quiet Hour Analytics Highlights -->
-        <div class="analytics-highlight-grid">
-            <div class="highlight-card peak-card">
-                <div class="highlight-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                <div>
-                    <div class="highlight-label">Peak Rush Hour</div>
-                    <div class="highlight-value">{{.Report.PeakRushHour}}</div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#fee2e2; color:#b91c1c;"><i class="fa-solid fa-ban"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Cancelled Orders</span>
+                    <h3 class="metric-value" style="color:#b91c1c;">{{.Report.CancelledOrders}}</h3>
                 </div>
             </div>
 
-            <div class="highlight-card slow-card">
-                <div class="highlight-icon"><i class="fa-solid fa-bed"></i></div>
-                <div>
-                    <div class="highlight-label">Quiet / Free Hour</div>
-                    <div class="highlight-value">{{.Report.SlowestHour}}</div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background:#f3e8ff; color:#7e22ce;"><i class="fa-solid fa-credit-card"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Paid Collection</span>
+                    <h3 class="metric-value" style="color:#7e22ce;">₹{{printf "%.2f" .Report.PaidAmount}}</h3>
                 </div>
             </div>
         </div>
 
-        <!-- Strategic Marketing Advice Banner -->
-        {{if .Report.MarketingAdvice}}
-        <div class="marketing-advice-box">
-            <i class="fa-solid fa-lightbulb advice-icon"></i>
-            <div>
-                <strong style="color:var(--text-main); font-size:1rem;">Strategic Marketing Recommendation:</strong>
-                <p style="margin-top:0.25rem; color:var(--text-muted); font-size:0.92rem;">{{.Report.MarketingAdvice}}</p>
-            </div>
-        </div>
-        {{end}}
-
-        <!-- 24-Hour Time Series Graph (ONLY FOR TODAY) -->
-        {{if eq .CurrentPeriod "today"}}
-        <div class="admin-table-card" style="padding:1.5rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.5rem;">
-                <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin:0;">
-                    <i class="fa-solid fa-chart-line text-primary"></i> Today's 24-Hour Live Hourly Time Series
+        <!-- Dynamic Time-Series Chart Section -->
+        <div class="admin-table-card" style="padding:1.5rem; background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-md);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin:0;">
+                    <i class="fa-solid fa-chart-line text-primary"></i> Live Hourly Revenue & Order Trend ({{.Report.PeriodLabel}})
                 </h3>
-                <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:700;">Live Hourly Breakdown</span>
             </div>
-            <div style="position: relative; height:320px; width:100%;">
-                <canvas id="timeSeriesChart"></canvas>
+            <div style="height:280px; position:relative;">
+                <canvas id="hourlyTrendChart"></canvas>
             </div>
         </div>
-        {{end}}
 
-        <!-- Payment Methods & Order Types Grid -->
-        <div class="reports-two-col-grid">
-            <!-- Revenue by Payment Method -->
+        <!-- Category Sales & Payment Methods Distribution Grid -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+            
+            <!-- Category Revenue Breakdown Card -->
             <div class="admin-table-card">
                 <div class="table-card-header">
-                    <h3 style="font-size:1.05rem; font-weight:700; margin:0;"><i class="fa-solid fa-credit-card text-primary"></i> Revenue by Payment Method</h3>
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                        <i class="fa-solid fa-chart-pie text-primary"></i> Category Revenue Distribution
+                    </h3>
                 </div>
                 <div class="table-responsive">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Method</th>
+                                <th>Category</th>
+                                <th>Items Sold</th>
+                                <th>Revenue (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Report.CategorySales}}
+                            <tr>
+                                <td><strong>{{.Category}}</strong></td>
+                                <td>{{.ItemsSold}} units</td>
+                                <td><strong style="color:var(--primary);">₹{{printf "%.2f" .TotalAmount}}</strong></td>
+                            </tr>
+                            {{else}}
+                            <tr><td colspan="3" class="text-center text-muted p-3">No category data for current filter.</td></tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payment Method Breakdown Card -->
+            <div class="admin-table-card">
+                <div class="table-card-header">
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                        <i class="fa-solid fa-building-columns text-primary"></i> Payment Channel Collection
+                    </h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Payment Method</th>
                                 <th>Orders</th>
-                                <th>Total Revenue</th>
+                                <th>Collected Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -245,47 +262,36 @@
                             <tr>
                                 <td><strong>{{.Method}}</strong></td>
                                 <td>{{.OrderCount}} orders</td>
-                                <td><strong class="order-total-price">₹{{printf "%.2f" .TotalAmount}}</strong></td>
+                                <td><strong style="color:#047857;">₹{{printf "%.2f" .TotalAmount}}</strong></td>
                             </tr>
+                            {{else}}
+                            <tr><td colspan="3" class="text-center text-muted p-3">No payment data for current filter.</td></tr>
                             {{end}}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Revenue by Order Type -->
-            <div class="admin-table-card">
-                <div class="table-card-header">
-                    <h3 style="font-size:1.05rem; font-weight:700; margin:0;"><i class="fa-solid fa-truck-ramp-box text-primary"></i> Revenue by Order Type</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Order Type</th>
-                                <th>Orders</th>
-                                <th>Total Revenue</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{range .Report.OrderTypes}}
-                            <tr>
-                                <td><strong>{{.Type}}</strong></td>
-                                <td>{{.OrderCount}} orders</td>
-                                <td><strong class="order-total-price">₹{{printf "%.2f" .TotalAmount}}</strong></td>
-                            </tr>
-                            {{end}}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
 
-        <!-- Top Selling Menu Items Table -->
+        <!-- Itemized Top Selling Menu Items Table -->
         <div class="admin-table-card">
-            <div class="table-card-header">
-                <h3 style="font-size:1.1rem; font-weight:700; margin:0;"><i class="fa-solid fa-award text-primary"></i> Top Selling Menu Items & Categories</h3>
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                    <i class="fa-solid fa-trophy text-primary"></i> Filtered Itemized Sales Performance
+                </h3>
+                <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:800;">
+                    {{len .Report.TopSellingItems}} Products Sold
+                </span>
             </div>
+
+            {{if not .Report.TopSellingItems}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-box-open p-3" style="font-size: 3rem; color:var(--border-color);"></i>
+                <h3 style="margin-top:0.5rem; font-weight:700;">No Items Match Selected Filter</h3>
+                <p>Try adjusting your timeframe, category, or payment method filters above.</p>
+            </div>
+            {{else}}
             <div class="table-responsive">
                 <table class="admin-table">
                     <thead>
@@ -293,234 +299,63 @@
                             <th>Item Name</th>
                             <th>Category</th>
                             <th>Units Sold</th>
-                            <th>Total Revenue Generated</th>
+                            <th>Total Revenue (₹)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{range .Report.TopSellingItems}}
                         <tr>
-                            <td><strong>{{.ItemName}}</strong></td>
+                            <td><strong style="color:var(--text-main); font-size:0.95rem;">{{.ItemName}}</strong></td>
                             <td><span class="category-pill-sm">{{.Category}}</span></td>
-                            <td><strong>{{.Quantity}}</strong> units</td>
-                            <td><strong class="order-total-price">₹{{printf "%.2f" .TotalRevenue}}</strong></td>
+                            <td><strong>{{.Quantity}}</strong></td>
+                            <td><strong style="color:var(--primary); font-size:1rem;">₹{{printf "%.2f" .TotalRevenue}}</strong></td>
                         </tr>
                         {{end}}
                     </tbody>
                 </table>
             </div>
+            {{end}}
         </div>
 
     </div>
 </section>
 
-<style>
-.reports-metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-}
-
-@media (max-width: 992px) {
-    .reports-metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 576px) {
-    .reports-metrics-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.reports-two-col-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-@media (max-width: 768px) {
-    .reports-two-col-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.period-tab {
-    padding: 0.55rem 1.1rem;
-    border-radius: var(--border-radius-sm);
-    color: var(--text-muted);
-    font-weight: 700;
-    text-decoration: none;
-    font-size: 0.88rem;
-    transition: all var(--transition-fast);
-    display: inline-flex;
-    align-items: center;
-}
-
-.period-tab:hover {
-    color: var(--primary);
-    background: rgba(180, 83, 9, 0.08);
-}
-
-.period-tab.active {
-    background: var(--primary);
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px var(--primary-glow);
-}
-
-.analytics-highlight-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-}
-
-@media (max-width: 768px) {
-    .analytics-highlight-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.highlight-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    border-radius: var(--border-radius-md);
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
-
-.peak-card {
-    background: #fffbeb;
-    border: 1px solid #fef3c7;
-    border-left: 4px solid var(--accent-amber);
-}
-
-.slow-card {
-    background: #f0f9ff;
-    border: 1px solid #e0f2fe;
-    border-left: 4px solid #0284c7;
-}
-
-.highlight-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    flex-shrink: 0;
-}
-
-.peak-card .highlight-icon {
-    background: #fef3c7;
-    color: var(--accent-amber);
-}
-
-.slow-card .highlight-icon {
-    background: #e0f2fe;
-    color: #0284c7;
-}
-
-.highlight-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-}
-
-.highlight-value {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-top: 0.15rem;
-}
-
-.marketing-advice-box {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    background: #fff8f1;
-    border: 1px solid #fed7aa;
-    padding: 1.1rem 1.25rem;
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
-}
-
-.advice-icon {
-    font-size: 1.5rem;
-    color: var(--accent-amber);
-    margin-top: 0.1rem;
-    flex-shrink: 0;
-}
-
-.export-banner-card {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    padding: 1.25rem 1.5rem;
-    box-shadow: var(--shadow-sm);
-}
-
-.export-banner-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-@media print {
-    .admin-header-section, .report-period-tabs, .admin-nav-btns, .export-banner-card, .main-footer, .announcement-bar, .main-header {
-        display: none !important;
-    }
-    body { background: #fff !important; }
-    .admin-table-card, .highlight-card { box-shadow: none !important; border: 1px solid #ccc !important; }
-}
-</style>
-
-{{if eq .CurrentPeriod "today"}}
+<!-- Dynamic Chart.js Script -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const ctx = document.getElementById('timeSeriesChart');
-    if (!ctx) return;
-
-    const hourlyLabels = [
-        {{range .Report.HourlyAnalytics}}"{{.Label}}",{{end}}
+document.addEventListener('DOMContentLoaded', function () {
+    const labels = [
+        {{range .Report.HourlyAnalytics}}'{{.Label}}',{{end}}
     ];
-
+    const revenueData = [
+        {{range .Report.HourlyAnalytics}}{{.Revenue}},{{end}}
+    ];
     const orderData = [
         {{range .Report.HourlyAnalytics}}{{.OrderCount}},{{end}}
     ];
 
-    const revenueData = [
-        {{range .Report.HourlyAnalytics}}{{.Revenue}},{{end}}
-    ];
-
+    const ctx = document.getElementById('hourlyTrendChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: hourlyLabels,
+            labels: labels,
             datasets: [
                 {
                     label: 'Hourly Revenue (₹)',
                     data: revenueData,
-                    backgroundColor: 'rgba(217, 119, 6, 0.55)',
-                    borderColor: 'rgba(217, 119, 6, 1)',
-                    borderWidth: 1,
+                    backgroundColor: 'rgba(194, 65, 12, 0.75)',
+                    borderColor: '#c2410c',
+                    borderWidth: 1.5,
+                    borderRadius: 4,
                     yAxisID: 'y'
                 },
                 {
-                    label: 'Hourly Orders',
+                    label: 'Order Volume',
                     data: orderData,
                     type: 'line',
-                    borderColor: '#b45309',
-                    backgroundColor: '#b45309',
+                    borderColor: '#0284c7',
+                    backgroundColor: '#0284c7',
                     borderWidth: 2,
                     pointRadius: 4,
-                    pointBackgroundColor: '#b45309',
                     yAxisID: 'y1'
                 }
             ]
@@ -528,40 +363,23 @@ document.addEventListener('DOMContentLoaded', () => {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
             scales: {
-                x: {
-                    grid: { color: 'rgba(0, 0, 0, 0.04)' },
-                    ticks: { color: '#6b5c53', font: { size: 10 } }
-                },
+                x: { grid: { color: 'rgba(0, 0, 0, 0.04)' } },
                 y: {
                     type: 'linear',
-                    display: true,
                     position: 'left',
                     grid: { color: 'rgba(0, 0, 0, 0.04)' },
-                    ticks: { color: '#d97706' },
-                    title: { display: true, text: 'Revenue (₹)', color: '#d97706' }
+                    title: { display: true, text: 'Revenue (₹)' }
                 },
                 y1: {
                     type: 'linear',
-                    display: true,
                     position: 'right',
                     grid: { drawOnChartArea: false },
-                    ticks: { color: '#b45309', precision: 0 },
-                    title: { display: true, text: 'Orders', color: '#b45309' }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: '#271c16', font: { weight: 'bold' } }
+                    title: { display: true, text: 'Orders' }
                 }
             }
         }
     });
 });
 </script>
-{{end}}
 {{end}}

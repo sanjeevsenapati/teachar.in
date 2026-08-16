@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -17,15 +19,45 @@ import (
 )
 
 func main() {
-	// Initialize structured logger.
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	// Parse CLI flags for config file path (defaults to config.json)
+	configPathFlag := flag.String("config", "config.json", "Path to server JSON configuration file")
+	flag.Parse()
 
-	// Load application configuration.
-	cfg, err := config.New()
+	// Load server configuration from config.json file using 100% standard library
+	cfg, err := config.LoadConfig(*configPathFlag)
 	if err != nil {
-		logger.Error("failed to load configuration", "error", err)
+		fmt.Printf("Error loading configuration from %s: %v\n", *configPathFlag, err)
 		os.Exit(1)
 	}
+
+	// Initialize log directory and multi-writer file logging (stdout + logs/app.log)
+	if err := os.MkdirAll(cfg.LogDir, 0755); err != nil {
+		fmt.Printf("Error creating log directory %s: %v\n", cfg.LogDir, err)
+		os.Exit(1)
+	}
+
+	logFile, err := os.OpenFile(cfg.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Error opening log file %s: %v\n", cfg.LogFile, err)
+		os.Exit(1)
+	}
+	defer logFile.Close()
+
+	// MultiWriter sends logs to stdout AND to logs/app.log simultaneously
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	logger := slog.New(slog.NewJSONHandler(multiWriter, nil))
+
+	logger.Info("server config loaded successfully",
+		"config_file", *configPathFlag,
+		"app_name", cfg.AppName,
+		"host", cfg.Host,
+		"port", cfg.Port,
+		"enable_tls", cfg.EnableTLS,
+		"enable_rate_limit", cfg.EnableRateLimit,
+		"rate_limit_requests", cfg.RateLimitRequests,
+		"rate_limit_window_seconds", cfg.RateLimitWindowSeconds,
+		"log_file", cfg.LogFile,
+	)
 
 	// Initialize the high-performance multi-file domain-isolated repository.
 	dbRepo, err := repository.NewMultiFileRepository("data")
@@ -43,19 +75,21 @@ func main() {
 	reportSvc := services.NewReportService(dbRepo, dbRepo, dbRepo)
 	inventorySvc := services.NewInventoryService(dbRepo, dbRepo)
 	securitySvc := services.NewSecurityService(dbRepo)
+	membershipSvc := services.NewMembershipService(dbRepo)
 
 	// Create application dependencies container.
 	app := &handlers.Application{
-		Logger:           logger,
-		Config:           cfg,
-		MenuService:      menuSvc,
-		AuthService:      authSvc,
-		OrderService:     orderSvc,
-		AuditService:     auditSvc,
-		ReportService:    reportSvc,
-		CouponService:    couponSvc,
-		InventoryService: inventorySvc,
-		SecurityService:  securitySvc,
+		Logger:            logger,
+		Config:            cfg,
+		MenuService:       menuSvc,
+		AuthService:       authSvc,
+		OrderService:      orderSvc,
+		AuditService:      auditSvc,
+		ReportService:     reportSvc,
+		CouponService:     couponSvc,
+		InventoryService:  inventorySvc,
+		SecurityService:   securitySvc,
+		MembershipService: membershipSvc,
 	}
 
 	// Initialize router.
@@ -92,10 +126,21 @@ func main() {
 		if err := services.GenerateSelfSignedCert(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
 			logger.Warn("failed generating TLS certificate", "error", err)
 		}
-		logger.Info("starting HTTPS TLS server", "address", srv.Addr, "cert", cfg.SSLCertFile, "env", cfg.Env)
+		logger.Info("starting HTTPS TLS server for teachar.in",
+			"domain", "teachar.in",
+			"domain_url", fmt.Sprintf("https://teachar.in:%s", cfg.Port),
+			"localhost_url", fmt.Sprintf("https://localhost:%s", cfg.Port),
+			"cert", cfg.SSLCertFile,
+			"key", cfg.SSLKeyFile,
+			"log_file", cfg.LogFile,
+		)
 		err = srv.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile)
 	} else {
-		logger.Info("starting HTTP server", "address", srv.Addr, "env", cfg.Env)
+		logger.Info("starting HTTP server",
+			"address", fmt.Sprintf("http://%s:%s", cfg.Host, cfg.Port),
+			"log_file", cfg.LogFile,
+			"env", cfg.Env,
+		)
 		err = srv.ListenAndServe()
 	}
 

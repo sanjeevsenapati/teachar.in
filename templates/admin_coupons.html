@@ -1,11 +1,12 @@
 {{define "main"}}
 <section class="admin-header-section">
-    <div class="container admin-header-content">
+    <div class="container admin-header-content" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
         <div>
-            <span class="section-tag">Promotions & Discounts</span>
-            <h1 class="page-title">Offers & Single-Use Coupons</h1>
+            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Promotions & Customer Retention</span>
+            <h1 class="page-title" style="margin:0; font-size:2.2rem; font-weight:800; color:var(--text-main);">Offers & Single-Use Coupons</h1>
+            <p class="text-muted" style="margin-top:0.35rem; font-size:0.95rem;">Issue, manage, and track single-use discount promo codes for cafe orders.</p>
         </div>
-        <div class="admin-nav-btns">
+        <div class="admin-nav-btns" style="display:flex; gap:0.75rem;">
             <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
             <button class="btn btn-primary" onclick="openCreateCouponModal()">
                 <i class="fa-solid fa-plus-circle"></i> Create Coupon
@@ -14,94 +15,142 @@
     </div>
 </section>
 
-<section class="admin-body-section">
-    <div class="container">
+<section class="admin-body-section" style="padding: 2.5rem 0 6rem; background: var(--bg-main);">
+    <div class="container" style="display:flex; flex-direction:column; gap:2rem;">
         {{if .Error}}
-        <div class="alert alert-danger mb-4" style="background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; padding:1rem; border-radius:8px; display:flex; align-items:center; gap:0.75rem;">
+        <div class="alert alert-danger" style="background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; padding:1rem 1.25rem; border-radius:var(--border-radius-md); display:flex; align-items:center; gap:0.75rem;">
             <i class="fa-solid fa-circle-exclamation" style="font-size:1.3rem;"></i>
             <div><strong>Coupon Creation Error:</strong> {{.Error}}</div>
         </div>
         {{end}}
 
-        <!-- Coupons Table Card -->
+        <!-- Top Metric Summary Cards Grid (4-Column Horizontal Row) -->
+        <div class="reports-metrics-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; width: 100%;">
+            
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:var(--primary-light); color:var(--primary); width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-ticket"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Total Issued</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--primary); margin:0;">{{len .Coupons}} Coupons</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#d1fae5; color:#047857; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-tag"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Active Offers</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#047857; margin:0;">{{.ActiveCount}} Active</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#e0f2fe; color:#0284c7; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Redeemed</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#0284c7; margin:0;">{{.RedeemedCount}} Used</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#fee2e2; color:#b91c1c; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Expired / Past</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#b91c1c; margin:0;">{{.ExpiredCount}} Expired</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Master Coupons Table Card -->
         <div class="admin-table-card">
-            <div class="table-card-header">
-                <h3><i class="fa-solid fa-ticket"></i> Active & Historical Coupons ({{len .Coupons}})</h3>
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                    <i class="fa-solid fa-ticket text-primary"></i> Promo Coupons Register
+                </h3>
                 <button class="btn btn-primary btn-sm" onclick="openCreateCouponModal()">
-                    <i class="fa-solid fa-plus"></i> New Coupon
+                    <i class="fa-solid fa-plus"></i> Issue New Coupon
                 </button>
             </div>
+
             {{if not .Coupons}}
             <div class="text-center p-5 text-muted">
-                <i class="fa-solid fa-ticket-simple p-3" style="font-size: 3rem; color: var(--primary-gold);"></i>
-                <h3>No Discount Coupons Found</h3>
-                <p>Click "Create Coupon" above to issue a single-use discount code for your customers.</p>
+                <i class="fa-solid fa-ticket-simple p-3" style="font-size: 3rem; color: var(--border-color);"></i>
+                <h3 style="margin-top:0.5rem; font-weight:700;">No Discount Coupons Issued</h3>
+                <p>Click "Create Coupon" above to issue a single-use promo code for your customers.</p>
             </div>
             {{else}}
-            <div class="table-responsive">
-                <table class="admin-table">
+            <div class="table-responsive" style="overflow-x:auto; width:100%;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; min-width:900px;">
                     <thead>
                         <tr>
-                            <th style="white-space: nowrap;">ID</th>
-                            <th style="white-space: nowrap;">Coupon Code</th>
-                            <th style="white-space: nowrap;">Discount</th>
-                            <th style="white-space: nowrap;">Min Order</th>
-                            <th style="white-space: nowrap;">Expiry Date</th>
-                            <th style="white-space: nowrap;">Status</th>
-                            <th style="white-space: nowrap;">Created By</th>
-                            <th style="white-space: nowrap;">Redemption Info</th>
-                            <th style="white-space: nowrap;">Actions</th>
+                            <th style="padding:1rem; min-width:60px;">ID</th>
+                            <th style="padding:1rem; min-width:140px;">Coupon Code</th>
+                            <th style="padding:1rem; min-width:120px;">Discount Value</th>
+                            <th style="padding:1rem; min-width:120px;">Min Order</th>
+                            <th style="padding:1rem; min-width:160px;">Expiry Date</th>
+                            <th style="padding:1rem; min-width:110px;">Status</th>
+                            <th style="padding:1rem; min-width:120px;">Created By</th>
+                            <th style="padding:1rem; min-width:130px;">Redemption</th>
+                            <th style="padding:1rem; text-align:right; min-width:80px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{range .Coupons}}
                         <tr>
-                            <td style="white-space: nowrap;"><strong>#{{.ID}}</strong></td>
-                            <td style="white-space: nowrap;">
+                            <td style="padding:1rem; font-weight:700; color:var(--text-muted);">#{{.ID}}</td>
+                            <td style="padding:1rem;">
                                 <span class="coupon-badge-code">
-                                    <i class="fa-solid fa-ticket me-1"></i> {{.Code}}
+                                    <i class="fa-solid fa-ticket"></i> {{.Code}}
                                 </span>
                             </td>
-                            <td style="white-space: nowrap;">
-                                <strong>
-                                    {{if eq .DiscountType "flat"}}
-                                    ₹{{printf "%.2f" .DiscountValue}} OFF
-                                    {{else}}
-                                    {{printf "%.0f" .DiscountValue}}% OFF
-                                    {{end}}
-                                </strong>
+                            <td style="padding:1rem; font-weight:800; color:var(--primary); font-size:0.95rem;">
+                                {{if eq .DiscountType "flat"}}
+                                ₹{{printf "%.2f" .DiscountValue}} OFF
+                                {{else}}
+                                {{printf "%.0f" .DiscountValue}}% OFF
+                                {{end}}
                             </td>
-                            <td style="white-space: nowrap;">
+                            <td style="padding:1rem;">
                                 {{if gt .MinOrderAmount 0.0}}
-                                ₹{{printf "%.2f" .MinOrderAmount}}
+                                <strong style="color:var(--text-main);">₹{{printf "%.2f" .MinOrderAmount}}</strong>
                                 {{else}}
-                                <span class="text-muted">No Minimum</span>
+                                <span class="text-muted" style="font-size:0.85rem;">No Minimum</span>
                                 {{end}}
                             </td>
-                            <td style="white-space: nowrap;"><small class="text-muted"><i class="fa-solid fa-clock"></i> {{.ExpiryDate.Format "Jan 02, 2006 • 15:04"}}</small></td>
-                            <td style="white-space: nowrap;">
+                            <td style="padding:1rem; font-size:0.85rem; color:var(--text-muted);">
+                                <i class="fa-solid fa-clock"></i> {{.ExpiryDate.Format "Jan 02, 2006 • 15:04"}}
+                            </td>
+                            <td style="padding:1rem;">
                                 {{if .IsUsed}}
-                                <span class="category-pill-sm bg-secondary text-white" style="white-space: nowrap;">
-                                    <i class="fa-solid fa-circle-check me-1"></i> Redeemed
+                                <span class="category-pill-sm" style="background:#e5e7eb; color:#374151; font-weight:800;">
+                                    <i class="fa-solid fa-circle-check"></i> Redeemed
                                 </span>
                                 {{else}}
-                                <span class="category-pill-sm bg-success text-white" style="background:#10b981 !important; white-space: nowrap;">
-                                    <i class="fa-solid fa-tag me-1"></i> Active
+                                <span class="category-pill-sm" style="background:#d1fae5; color:#047857; font-weight:800;">
+                                    <i class="fa-solid fa-tag"></i> Active
                                 </span>
                                 {{end}}
                             </td>
-                            <td style="white-space: nowrap;"><small class="text-muted">{{.CreatedBy}}</small></td>
-                            <td style="white-space: nowrap;">
+                            <td style="padding:1rem; font-size:0.85rem; color:var(--text-muted);">{{.CreatedBy}}</td>
+                            <td style="padding:1rem; font-size:0.85rem;">
                                 {{if .IsUsed}}
-                                <small class="text-muted">Order #{{.UsedByOrderID}}</small>
+                                <strong style="color:var(--primary);">Order #{{.UsedByOrderID}}</strong>
                                 {{else}}
-                                <small class="text-muted">Available</small>
+                                <span class="text-muted">Available</span>
                                 {{end}}
                             </td>
-                            <td>
+                            <td style="padding:1rem; text-align:right;">
                                 <form action="/admin/coupons/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete coupon {{.Code}}?');">
                                     <input type="hidden" name="id" value="{{.ID}}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Coupon">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.25rem 0.5rem;" title="Delete Coupon">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
@@ -113,25 +162,26 @@
             </div>
             {{end}}
         </div>
+
     </div>
 </section>
 
 <!-- Create Single-Use Coupon Modal -->
 <div class="modal-overlay" id="create-coupon-modal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:500px;">
         <div class="modal-header">
             <h3><i class="fa-solid fa-ticket-simple text-primary"></i> Create Single-Use Coupon</h3>
             <button type="button" class="modal-close-btn" onclick="closeCreateCouponModal()">&times;</button>
         </div>
-        <form action="/admin/coupons/create" method="POST" class="modal-body">
+        <form action="/admin/coupons/create" method="POST" class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
             <div class="form-group">
-                <label for="coupon-code">Coupon Code <span class="text-danger">*</span></label>
-                <input type="text" id="coupon-code" name="code" placeholder="e.g. WELCOME50" style="text-transform: uppercase; font-weight:700;" required>
-                <small class="text-muted" style="display:block; margin-top:0.25rem;">Codes are automatically capitalized and uppercase.</small>
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Coupon Code <span class="text-danger">*</span></label>
+                <input type="text" id="coupon-code" name="code" placeholder="e.g. WELCOME50" class="form-input" style="text-transform: uppercase; font-weight:800; letter-spacing:0.05em;" required>
+                <small class="text-muted" style="display:block; margin-top:0.25rem;">Codes are automatically converted to uppercase.</small>
             </div>
 
             <div class="form-group">
-                <label for="discount-type">Discount Type <span class="text-danger">*</span></label>
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Discount Type <span class="text-danger">*</span></label>
                 <select id="discount-type" name="discount_type" class="form-select" required>
                     <option value="flat">Flat Discount Amount (₹)</option>
                     <option value="percentage">Percentage Discount (%)</option>
@@ -139,42 +189,27 @@
             </div>
 
             <div class="form-group">
-                <label for="discount-value">Discount Value <span class="text-danger">*</span></label>
-                <input type="number" id="discount-value" name="discount_value" step="0.01" min="0.01" placeholder="e.g. 50 (for ₹50 off) or 10 (for 10% off)" required>
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Discount Value <span class="text-danger">*</span></label>
+                <input type="number" id="discount-value" name="discount_value" step="0.01" min="0.01" placeholder="e.g. 50 (for ₹50 off) or 10 (for 10% off)" class="form-input" required>
             </div>
 
             <div class="form-group">
-                <label for="min-order-amount">Minimum Order Subtotal (₹)</label>
-                <input type="number" id="min-order-amount" name="min_order_amount" step="0.01" min="0" placeholder="0 for no minimum subtotal requirement">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Minimum Order Subtotal (₹)</label>
+                <input type="number" id="min-order-amount" name="min_order_amount" step="0.01" min="0" placeholder="0 for no minimum subtotal requirement" class="form-input">
             </div>
 
             <div class="form-group">
-                <label for="expiry-date">Expiration Date & Time <span class="text-danger">*</span></label>
-                <input type="datetime-local" id="expiry-date" name="expiry_date" required>
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Expiration Date <span class="text-danger">*</span></label>
+                <input type="date" id="expiry-date" name="expiry_date" class="form-input" required>
             </div>
 
-            <div class="modal-footer">
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.5rem;">
                 <button type="button" class="btn btn-secondary" onclick="closeCreateCouponModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Create Coupon</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Issue Coupon</button>
             </div>
         </form>
     </div>
 </div>
-
-<style>
-.coupon-badge-code {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: var(--primary-gold);
-    background: rgba(212, 175, 55, 0.12);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    display: inline-block;
-    letter-spacing: 0.5px;
-}
-</style>
 
 <script>
 function openCreateCouponModal() {
@@ -183,16 +218,5 @@ function openCreateCouponModal() {
 function closeCreateCouponModal() {
     document.getElementById('create-coupon-modal').classList.remove('active');
 }
-
-// Default expiry date to 7 days from now
-document.addEventListener('DOMContentLoaded', () => {
-    const expiryInput = document.getElementById('expiry-date');
-    if (expiryInput && !expiryInput.value) {
-        const now = new Date();
-        now.setDate(now.getDate() + 7);
-        const isoString = now.toISOString().slice(0, 16);
-        expiryInput.value = isoString;
-    }
-});
 </script>
 {{end}}

@@ -320,6 +320,22 @@ func (r *JSONRepository) CreateUser(ctx context.Context, user models.User) (*mod
 	return &user, nil
 }
 
+func (r *JSONRepository) UpdateUser(ctx context.Context, user models.User) (*models.User, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for i, u := range r.data.Users {
+		if u.ID == user.ID {
+			r.data.Users[i] = user
+			if err := r.save(); err != nil {
+				return nil, err
+			}
+			return &r.data.Users[i], nil
+		}
+	}
+	return nil, fmt.Errorf("user not found")
+}
+
 func (r *JSONRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

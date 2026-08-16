@@ -20,6 +20,7 @@ type MenuRepository interface {
 // UserRepository defines the interface for user and session management.
 type UserRepository interface {
 	CreateUser(ctx context.Context, user models.User) (*models.User, error)
+	UpdateUser(ctx context.Context, user models.User) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByID(ctx context.Context, id int64) (*models.User, error)
 	GetAllUsers(ctx context.Context) ([]models.User, error)

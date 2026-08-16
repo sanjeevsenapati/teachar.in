@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 161,
+  "next_audit_log_id": 182,
   "audit_logs": [
     {
       "id": 1,
@@ -1600,6 +1600,216 @@
       "action": "API_KEY_GENERATED",
       "details": "Issued API Key 'POS Terminal 1' (ID #1, Role: admin)",
       "ip_address": "[::1]:56843"
+    },
+    {
+      "id": 161,
+      "timestamp": "2026-08-16T19:04:00.276415+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:57131"
+    },
+    {
+      "id": 162,
+      "timestamp": "2026-08-16T21:19:05.072017+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:58067"
+    },
+    {
+      "id": 163,
+      "timestamp": "2026-08-16T21:20:23.03731+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:58093"
+    },
+    {
+      "id": 164,
+      "timestamp": "2026-08-16T21:20:27.196663+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_SUBSCRIBED",
+      "details": "Subscribed to Gold Coffee Pass (Txn #SUB-1786895427-3, Amount ₹999.00)",
+      "ip_address": "[::1]:58094"
+    },
+    {
+      "id": 165,
+      "timestamp": "2026-08-16T21:20:30.171949+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:58095"
+    },
+    {
+      "id": 166,
+      "timestamp": "2026-08-16T21:21:21.898089+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:58106"
+    },
+    {
+      "id": 167,
+      "timestamp": "2026-08-16T21:23:41.002106+05:30",
+      "actor_id": 3,
+      "actor_name": "Sample Client",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_SUBSCRIBED",
+      "details": "Subscribed to Silver Chai Pass (Txn #SUB-1786895621-3, Amount ₹499.00)",
+      "ip_address": "127.0.0.1:58131"
+    },
+    {
+      "id": 168,
+      "timestamp": "2026-08-16T21:32:14.675695+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_GRANTED",
+      "details": "Granted Platinum Executive VIP Pass to Super Admin (superadmin@teachar.in) for 3 month(s)",
+      "ip_address": "[::1]:58213"
+    },
+    {
+      "id": 169,
+      "timestamp": "2026-08-16T21:42:33.465246+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #24 status to 'Cancelled' [Reason: Item out of stock] (Handled by: Super Admin)",
+      "ip_address": "127.0.0.1:58304"
+    },
+    {
+      "id": 170,
+      "timestamp": "2026-08-16T21:49:04.042583+05:30",
+      "actor_id": 3,
+      "actor_name": "Test VIP Client",
+      "actor_role": "client",
+      "action": "USER_PROFILE_UPDATED",
+      "details": "Updated profile details",
+      "ip_address": "[::1]:58445"
+    },
+    {
+      "id": 171,
+      "timestamp": "2026-08-16T21:58:13.827433+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_PROFILE_UPDATED",
+      "details": "Updated profile details",
+      "ip_address": "127.0.0.1:58496"
+    },
+    {
+      "id": 172,
+      "timestamp": "2026-08-16T21:59:58.901792+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:58522"
+    },
+    {
+      "id": 173,
+      "timestamp": "2026-08-16T22:20:12.710431+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_GRANTED",
+      "details": "Granted Platinum Executive VIP Pass to Sanjeev Senapati (sanjeev@gmail.com) for 12 month(s)",
+      "ip_address": "127.0.0.1:58774"
+    },
+    {
+      "id": 174,
+      "timestamp": "2026-08-16T22:40:57.22406+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #23 to staff Counter Staff (ID: 4)",
+      "ip_address": "127.0.0.1:59135"
+    },
+    {
+      "id": 175,
+      "timestamp": "2026-08-16T22:43:46.919176+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 176,
+      "timestamp": "2026-08-16T22:44:16.892964+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #25 (Dine-in, Total: ₹136.50)",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 177,
+      "timestamp": "2026-08-16T22:44:40.687937+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 178,
+      "timestamp": "2026-08-16T22:44:57.540887+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #25 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 179,
+      "timestamp": "2026-08-16T22:45:25.333784+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #25 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 180,
+      "timestamp": "2026-08-16T22:45:45.109156+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #25 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:59192"
+    },
+    {
+      "id": 181,
+      "timestamp": "2026-08-16T22:46:10.995699+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "REVIEW_SUBMITTED",
+      "details": "Submitted 5-Star review for Order #25",
+      "ip_address": "127.0.0.1:59201"
     }
   ]
 }

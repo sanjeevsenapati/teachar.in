@@ -142,15 +142,15 @@ func GenerateSelfSignedCert(certPath, keyPath string) error {
 	template := x509.Certificate{
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
-			Organization: []string{"TEACHAR.in Development Security"},
-			CommonName:   "localhost",
+			Organization: []string{"TEACHAR.in Artisanal Store Security"},
+			CommonName:   "teachar.in",
 		},
 		NotBefore:             notBefore,
 		NotAfter:              notAfter,
 		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature,
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
 		BasicConstraintsValid: true,
-		DNSNames:              []string{"localhost", "127.0.0.1"},
+		DNSNames:              []string{"teachar.in", "www.teachar.in", "localhost", "127.0.0.1"},
 		IPAddresses:           []net.IP{net.ParseIP("127.0.0.1"), net.ParseIP("::1")},
 	}
 

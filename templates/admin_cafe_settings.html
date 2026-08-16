@@ -1,0 +1,155 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content">
+        <div>
+            <span class="section-tag"><i class="fa-solid fa-mug-hot me-1"></i> Daily Cafe Configuration</span>
+            <h1 class="page-title">Cafe Settings & Order Cancellation Reasons</h1>
+            <p style="margin:0.25rem 0 0; font-size:0.95rem; color:#fef3c7; opacity:0.95;">Configure store operational settings, brewing hours, and predefined order cancellation reasons.</p>
+        </div>
+        <div class="admin-nav-btns">
+            <a href="/admin" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            <a href="/admin/orders" class="btn btn-primary"><i class="fa-solid fa-receipt"></i> Order Fulfillment</a>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section" style="padding-top:1.5rem;">
+    <div class="container">
+
+        <!-- Summary Metric Cards for Cafe Operations -->
+        <div class="reports-metrics-grid mb-4" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1.25rem;">
+            <div class="metric-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem;">
+                <div class="metric-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-store"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Store Status</span>
+                    <h3 class="metric-value">Open & Brewing</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem;">
+                <div class="metric-icon" style="background:#d1fae5; color:#047857;"><i class="fa-solid fa-clock"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Brewing Hours</span>
+                    <h3 class="metric-value">6:00 AM – 11:30 PM</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem;">
+                <div class="metric-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-list-check"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Cancellation Reasons</span>
+                    <h3 class="metric-value">{{len .CancellationReasons}} Preset Reasons</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem;">
+                <div class="metric-icon" style="background:#f3e8ff; color:#7c3aed;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                <div class="metric-info">
+                    <span class="metric-label">Default Currency</span>
+                    <h3 class="metric-value">INR ({{.CurrencySymbol}})</h3>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.75rem;">
+
+            <!-- Predefined Order Cancellation Reasons Table -->
+            <div class="admin-table-card">
+                <div class="table-card-header">
+                    <h3><i class="fa-solid fa-list-check text-primary"></i> Order Cancellation Reasons</h3>
+                    <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; font-weight:700; border:1px solid #fde68a;">
+                        {{len .CancellationReasons}} Presets
+                    </span>
+                </div>
+                
+                <div style="padding:1rem 1.25rem;">
+                    <form action="/admin/cancellation-reasons/add" method="POST" style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                        <input type="text" name="reason" placeholder="Enter new preset cancellation reason..." required class="form-input" style="flex:1; padding:0.45rem 0.75rem; font-size:0.85rem;">
+                        <button type="submit" class="btn btn-primary btn-sm" style="padding:0.45rem 0.9rem; font-weight:800; white-space:nowrap; font-size:0.82rem;">
+                            <i class="fa-solid fa-plus me-1"></i> Add Reason
+                        </button>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cancellation Reason Title</th>
+                                    <th style="text-align:right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range $reason := .CancellationReasons}}
+                                <tr>
+                                    <td><i class="fa-solid fa-circle-dot text-primary me-1" style="font-size:0.7rem;"></i> <strong>Preset</strong></td>
+                                    <td><strong>{{$reason}}</strong></td>
+                                    <td style="text-align:right;">
+                                        <form action="/admin/cancellation-reasons/delete" method="POST" style="margin:0; display:inline;">
+                                            <input type="hidden" name="reason" value="{{$reason}}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove preset reason" style="padding:0.2rem 0.5rem; font-size:0.75rem; font-weight:700;">
+                                                <i class="fa-solid fa-trash-can me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cafe Operational Info Settings Card -->
+            <div class="admin-table-card" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--border-radius-lg); box-shadow:var(--shadow-sm);">
+                <div class="table-card-header" style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border-color);">
+                    <h3 style="margin:0; font-family:var(--font-heading); font-size:1.25rem; font-weight:800; color:var(--text-main);">
+                        <i class="fa-solid fa-sliders text-primary me-2"></i> Cafe Sanctuary Profile Settings
+                    </h3>
+                </div>
+
+                <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem;">
+                    
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                            <i class="fa-solid fa-store text-primary me-1"></i> Cafe Store Name
+                        </label>
+                        <input type="text" value="{{.StoreName}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                            <i class="fa-solid fa-location-dot text-primary me-1"></i> Store Address & Location
+                        </label>
+                        <input type="text" value="{{.StoreAddress}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="form-group">
+                            <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                                <i class="fa-solid fa-clock text-primary me-1"></i> Operational Hours
+                            </label>
+                            <input type="text" value="{{.BrewingHours}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                                <i class="fa-solid fa-phone text-primary me-1"></i> Contact Phone
+                            </label>
+                            <input type="text" value="{{.StorePhone}}" class="form-input" style="width:100%; padding:0.75rem; background:#f8fafc;" readonly>
+                        </div>
+                    </div>
+
+                    <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:var(--border-radius-sm); padding:1rem; display:flex; align-items:center; gap:0.75rem; color:#92400e; font-size:0.88rem;">
+                        <i class="fa-solid fa-shield-check" style="font-size:1.3rem;"></i>
+                        <div><strong>Zero 3rd-Party Dependencies:</strong> Operational settings are persisted in memory and atomic JSON storage.</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{{end}}

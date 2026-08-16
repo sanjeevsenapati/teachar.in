@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"teachar.in/config"
 	"teachar.in/middleware"
@@ -16,22 +17,41 @@ import (
 
 // Application holds the application-wide dependencies.
 type Application struct {
-	Logger           *slog.Logger
-	Config           *config.Config
-	MenuService      *services.MenuService
-	AuthService      *services.AuthService
-	OrderService     *services.OrderService
-	AuditService     *services.AuditService
-	ReportService    *services.ReportService
-	CouponService    *services.CouponService
-	InventoryService *services.InventoryService
-	SecurityService  *services.SecurityService
+	Logger            *slog.Logger
+	Config            *config.Config
+	MenuService       *services.MenuService
+	AuthService       *services.AuthService
+	OrderService      *services.OrderService
+	AuditService      *services.AuditService
+	ReportService     *services.ReportService
+	CouponService     *services.CouponService
+	InventoryService  *services.InventoryService
+	SecurityService   *services.SecurityService
+	MembershipService *services.MembershipService
 }
 
 // RegisterRoutes sets up all the routes for the application.
 func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	mw := middleware.NewManager(app.Logger, app.AuthService, app.SecurityService)
-	chainedHandler := mw.Chain(mw.Recovery, mw.Logging, mw.Security, mw.AuthenticateSession)
+
+	var middlewares []middleware.Middleware
+	middlewares = append(middlewares, mw.Recovery, mw.Logging, mw.Security)
+
+	if app.Config != nil && app.Config.EnableRateLimit {
+		window := time.Duration(app.Config.RateLimitWindowSeconds) * time.Second
+		if window <= 0 {
+			window = time.Minute
+		}
+		limit := app.Config.RateLimitRequests
+		if limit <= 0 {
+			limit = 60
+		}
+		limiter := middleware.NewRateLimiter(limit, window)
+		middlewares = append(middlewares, limiter.LimitMiddleware)
+	}
+
+	middlewares = append(middlewares, mw.AuthenticateSession)
+	chainedHandler := mw.Chain(middlewares...)
 
 	router := http.NewServeMux()
 
@@ -43,6 +63,7 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("GET /{$}", app.homeHandler)
 	router.HandleFunc("GET /menu", app.menuHandler)
 	router.HandleFunc("GET /about", app.aboutHandler)
+	router.HandleFunc("GET /membership", app.clientMembershipHandler)
 
 	// Auth handlers
 	router.HandleFunc("GET /login", app.loginPageHandler)
@@ -51,12 +72,15 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("POST /register", app.registerSubmitHandler)
 	router.HandleFunc("POST /logout", app.logoutHandler)
 
-	// Client dashboard handlers
+	// Client dashboard & membership handlers
 	router.HandleFunc("GET /account", app.clientAccountHandler)
+	router.HandleFunc("POST /api/profile/update", app.apiUpdateProfileHandler)
 	router.HandleFunc("GET /orders", app.clientOrdersHandler)
 	router.HandleFunc("POST /api/orders", app.apiCreateOrderHandler)
 	router.HandleFunc("POST /api/orders/review", app.apiSubmitOrderReviewHandler)
 	router.HandleFunc("POST /api/coupons/validate", app.apiValidateCouponHandler)
+	router.HandleFunc("POST /api/membership/subscribe", app.apiSubscribeMembershipHandler)
+	router.HandleFunc("POST /api/membership/claim-cup", app.apiClaimDailyCupHandler)
 
 	// Staff and Admin shared handlers
 	router.Handle("GET /admin", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminDashboardHandler)))
@@ -76,10 +100,12 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("POST /admin/expenses/add", mw.RequireAdmin(http.HandlerFunc(app.adminAddExpenseHandler)))
 	router.Handle("POST /admin/expenses/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteExpenseHandler)))
 	router.Handle("GET /admin/inventory/export", mw.RequireAdmin(http.HandlerFunc(app.adminExportInventoryHandler)))
+	router.Handle("GET /admin/cafe-settings", mw.RequireAdmin(http.HandlerFunc(app.adminCafeSettingsHandler)))
 
-	// Superadmin specific handlers
+	// Superadmin & Admin membership handlers
 	router.Handle("GET /admin/users", mw.RequireSuperadmin(http.HandlerFunc(app.adminUsersHandler)))
 	router.Handle("POST /admin/users/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateStaffHandler)))
+	router.Handle("POST /admin/users/create-staff", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateStaffHandler)))
 	router.Handle("POST /admin/cancellation-reasons/add", mw.RequireSuperadmin(http.HandlerFunc(app.adminAddCancellationReasonHandler)))
 	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
@@ -91,6 +117,9 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.Handle("GET /admin/api-keys", mw.RequireSuperadmin(http.HandlerFunc(app.adminAPIKeysHandler)))
 	router.Handle("POST /admin/api-keys/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateAPIKeyHandler)))
 	router.Handle("POST /admin/api-keys/revoke", mw.RequireSuperadmin(http.HandlerFunc(app.adminRevokeAPIKeyHandler)))
+	router.Handle("GET /admin/memberships", mw.RequireAdmin(http.HandlerFunc(app.adminMembershipsHandler)))
+	router.Handle("POST /admin/memberships/grant", mw.RequireAdmin(http.HandlerFunc(app.adminGrantMembershipHandler)))
+	router.Handle("POST /admin/memberships/cancel", mw.RequireAdmin(http.HandlerFunc(app.adminCancelMembershipHandler)))
 
 	// API status endpoints
 	router.HandleFunc("GET /api/status", app.apiStatusHandler)

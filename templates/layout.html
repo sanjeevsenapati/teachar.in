@@ -32,44 +32,58 @@
             </a>
             
             <ul class="nav-links">
+                {{if not (or .IsSuperadmin .IsAdmin .IsStaff)}}
                 <li><a href="/" class="nav-link">Home</a></li>
                 <li><a href="/menu" class="nav-link">Menu</a></li>
-                <li><a href="/about" class="nav-link">About Us</a></li>
-                {{if .IsSuperadmin}}
+                <li><a href="/membership" class="nav-link"><i class="fa-solid fa-crown text-primary"></i> Coffee Pass</a></li>
+                {{if .IsAuthenticated}}
+                <li><a href="/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> My Orders</a></li>
+                {{end}}
+                {{else}}
+                
+                <!-- Daily Cafe Group Dropdown -->
                 <li class="nav-dropdown-wrapper">
                     <button class="nav-link nav-dropdown-btn nav-admin-highlight" aria-haspopup="true">
-                        <i class="fa-solid fa-crown"></i> Superadmin Portal <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                        <i class="fa-solid fa-mug-hot"></i> Daily Cafe <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
                         <a href="/admin" class="dropdown-item"><i class="fa-solid fa-gauge"></i> Executive Dashboard</a>
-                        <a href="/admin/users" class="dropdown-item"><i class="fa-solid fa-users-gear"></i> Users & Staff Accounts</a>
                         <a href="/admin/orders" class="dropdown-item"><i class="fa-solid fa-receipt"></i> Order Fulfillment</a>
                         <a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Artisanal Menu Items</a>
-                        <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
-                        <a href="/admin/reports" class="dropdown-item"><i class="fa-solid fa-chart-line"></i> Financial Reports</a>
                         <a href="/admin/staff-performance" class="dropdown-item"><i class="fa-solid fa-stopwatch"></i> Staff Speed & Ratings</a>
-                        <a href="/admin/inventory" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory & Assets</a>
-                        <a href="/admin/expenses" class="dropdown-item"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses & Tax Audit</a>
-                        <a href="/admin/coupons" class="dropdown-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
-                        <a href="/admin/api-keys" class="dropdown-item"><i class="fa-solid fa-key"></i> API Keys & Security</a>
+                        <a href="/admin/cafe-settings" class="dropdown-item"><i class="fa-solid fa-gear"></i> Cafe Settings</a>
                     </div>
                 </li>
-                {{else if or .IsAdmin .IsStaff}}
+
+                <!-- Accounting Group Dropdown -->
                 <li class="nav-dropdown-wrapper">
                     <button class="nav-link nav-dropdown-btn nav-admin-highlight" aria-haspopup="true">
-                        <i class="fa-solid fa-shield-halved"></i> {{if .IsStaff}}Staff Portal{{else}}Admin Portal{{end}} <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                        <i class="fa-solid fa-file-invoice-dollar"></i> Accounting <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
-                        <a href="/admin" class="dropdown-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-                        <a href="/admin/orders" class="dropdown-item"><i class="fa-solid fa-receipt"></i> Manage Orders</a>
-                        {{if .IsAdmin}}<a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Manage Menu</a>{{end}}
-                        {{if .IsAdmin}}<a href="/admin/staff-performance" class="dropdown-item"><i class="fa-solid fa-stopwatch"></i> Staff Speed & Ratings</a>{{end}}
-                        {{if .IsAdmin}}<a href="/admin/inventory" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory & Assets</a>{{end}}
-                        {{if .IsAdmin}}<a href="/admin/expenses" class="dropdown-item"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses & Tax Audit</a>{{end}}
+                        <a href="/admin/reports" class="dropdown-item"><i class="fa-solid fa-chart-line"></i> Financial Reports & Sales</a>
+                        <a href="/admin/expenses" class="dropdown-item"><i class="fa-solid fa-calculator"></i> Operating Expenses & Tax Audit</a>
+                        <a href="/admin/inventory" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory & Assets</a>
+                        <a href="/admin/coupons" class="dropdown-item"><i class="fa-solid fa-ticket"></i> Offers & Single-Use Coupons</a>
+                        <a href="/admin/memberships" class="dropdown-item"><i class="fa-solid fa-id-card"></i> Subscriptions & Coffee Passes</a>
                     </div>
                 </li>
-                {{else if .IsAuthenticated}}
-                <li><a href="/orders" class="nav-link"><i class="fa-solid fa-receipt"></i> My Orders</a></li>
+
+                <!-- Admin Group Dropdown -->
+                <li class="nav-dropdown-wrapper">
+                    <button class="nav-link nav-dropdown-btn nav-admin-highlight" aria-haspopup="true">
+                        <i class="fa-solid fa-shield-halved"></i> Admin <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        {{if .IsSuperadmin}}
+                        <a href="/admin/users?tab=staff" class="dropdown-item"><i class="fa-solid fa-user-tie"></i> Staff & Employee Accounts</a>
+                        <a href="/admin/users?tab=customers" class="dropdown-item"><i class="fa-solid fa-users"></i> Customer & Member Accounts</a>
+                        <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
+                        <a href="/admin/api-keys" class="dropdown-item"><i class="fa-solid fa-key"></i> API Keys & Security</a>
+                        {{end}}
+                    </div>
+                </li>
+
                 {{end}}
             </ul>
 

@@ -1,9 +1,14 @@
 package handlers
 
 import (
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
+	"teachar.in/middleware"
 	"teachar.in/models"
 	"teachar.in/services"
 )
@@ -68,7 +73,7 @@ func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	http.Redirect(w, r, "/menu", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app *Application) registerPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +124,7 @@ func (app *Application) registerSubmitHandler(w http.ResponseWriter, r *http.Req
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	http.Redirect(w, r, "/menu", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app *Application) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -137,4 +142,60 @@ func (app *Application) logoutHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *Application) apiUpdateProfileHandler(w http.ResponseWriter, r *http.Request) {
+	user := middleware.GetUserFromContext(r)
+	if user == nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// Parse multipart form for avatar image uploads (up to 10MB)
+	_ = r.ParseMultipartForm(10 << 20)
+
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	mobile := r.FormValue("mobile_number")
+	address := r.FormValue("address")
+	avatarURL := r.FormValue("avatar")
+
+	// Check if custom avatar file was uploaded
+	file, header, err := r.FormFile("avatar_file")
+	if err == nil && file != nil {
+		defer file.Close()
+
+		avatarDir := "./static/images/avatars"
+		_ = os.MkdirAll(avatarDir, 0755)
+
+		ext := filepath.Ext(header.Filename)
+		if ext == "" {
+			ext = ".jpg"
+		}
+		avatarPath := filepath.Join(avatarDir, fmt.Sprintf("user_%d%s", user.ID, ext))
+
+		out, createErr := os.Create(avatarPath)
+		if createErr == nil {
+			defer out.Close()
+			_, _ = io.Copy(out, file)
+			avatarURL = fmt.Sprintf("/static/images/avatars/user_%d%s", user.ID, ext)
+		}
+	}
+
+	updatedUser, err := app.AuthService.UpdateUserProfile(r.Context(), user.ID, name, email, mobile, address, avatarURL)
+	if err != nil {
+		data := models.PageData{
+			"Title": "My Profile Account",
+			"User":  user,
+			"Error": err.Error(),
+		}
+		app.render(w, r, http.StatusBadRequest, "client_account.html", data)
+		return
+	}
+
+	if app.AuditService != nil {
+		app.AuditService.LogEvent(r.Context(), updatedUser, "USER_PROFILE_UPDATED", "Updated profile details", services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/account?updated=true", http.StatusSeeOther)
 }

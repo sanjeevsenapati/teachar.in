@@ -55,6 +55,31 @@ func (s *AuthService) GetUserByID(ctx context.Context, id int64) (*models.User, 
 	return s.userRepo.GetUserByID(ctx, id)
 }
 
+func (s *AuthService) UpdateUserProfile(ctx context.Context, userID int64, name, email, mobileNumber, address, avatar string) (*models.User, error) {
+	user, err := s.userRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if name != "" {
+		user.Name = name
+	}
+	if email != "" {
+		user.Email = email
+	}
+	if mobileNumber != "" {
+		user.MobileNumber = mobileNumber
+	}
+	if address != "" {
+		user.Address = address
+	}
+	if avatar != "" {
+		user.Avatar = avatar
+	}
+
+	return s.userRepo.UpdateUser(ctx, *user)
+}
+
 func (s *AuthService) AuthenticateUser(ctx context.Context, email, password string) (*models.User, error) {
 	user, err := s.userRepo.GetUserByEmail(ctx, email)
 	if err != nil {

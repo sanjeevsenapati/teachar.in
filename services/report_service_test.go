@@ -21,20 +21,21 @@ func TestReportService(t *testing.T) {
 
 	// Seed dummy orders
 	_, err = repo.CreateOrder(ctx, models.Order{
-		OrderType:    "Dine-in",
-		CustomerName: "Test Client",
-		TableNumber:  "Table 1",
+		OrderType:     "Dine-in",
+		Status:        "Completed",
+		CustomerName:  "Test Client",
+		TableNumber:   "Table 1",
 		PaymentStatus: "Paid",
 		PaymentMethod: "UPI",
 		Items: []models.OrderItem{
-			{MenuItemID: 1, Quantity: 2, Price: 30},
+			{MenuItemID: 1, ItemName: "Masala Chai", Quantity: 2, Price: 30},
 		},
 	})
 	if err != nil {
 		t.Fatalf("failed creating order: %v", err)
 	}
 
-	periods := []string{"today", "daily", "weekly", "monthly", "yearly"}
+	periods := []string{"today", "yesterday", "daily", "weekly", "monthly", "quarterly", "yearly"}
 	for _, p := range periods {
 		report, err := reportSvc.GenerateFinancialReport(ctx, p)
 		if err != nil {
@@ -48,9 +49,21 @@ func TestReportService(t *testing.T) {
 		if len(report.HourlyAnalytics) != 24 {
 			t.Errorf("expected 24 hourly points in time series, got %d", len(report.HourlyAnalytics))
 		}
+	}
 
-		if report.TotalOrders == 0 {
-			t.Errorf("expected at least 1 total order for period '%s', got 0", p)
-		}
+	// Test Dynamic Multi-Dimensional Filtering
+	filter := models.ReportFilter{
+		Period:            "today",
+		PaymentMethod:     "UPI",
+		FulfillmentMethod: "Dine-in",
+		OrderStatus:       "Pending",
+	}
+
+	filteredReport, err := reportSvc.GenerateFilteredFinancialReport(ctx, filter)
+	if err != nil {
+		t.Fatalf("failed generating filtered report: %v", err)
+	}
+	if filteredReport.TotalOrders != 1 {
+		t.Errorf("expected 1 filtered order, got %d", filteredReport.TotalOrders)
 	}
 }

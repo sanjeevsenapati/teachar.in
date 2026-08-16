@@ -19,9 +19,11 @@ type User struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	MobileNumber string    `json:"mobile_number"`
+	Address      string    `json:"address"`
+	Avatar       string    `json:"avatar"`
 	PasswordHash string    `json:"password_hash"`
 	Salt         string    `json:"salt"`
-	Role         string    `json:"role"` // "client" or "admin"
+	Role         string    `json:"role"` // "client", "admin", "superadmin", "staff"
 	CreatedAt    time.Time `json:"created_at"`
 }
 
@@ -157,10 +159,23 @@ type HourlyPoint struct {
 	IsSlow     bool    `json:"is_slow"`
 }
 
+// ReportFilter represents user-selected parameters for dynamic sales & financial reporting.
+type ReportFilter struct {
+	Period            string `json:"period"`             // "today", "yesterday", "weekly", "monthly", "quarterly", "yearly", "custom"
+	StartDateStr      string `json:"start_date_str"`     // "YYYY-MM-DD"
+	EndDateStr        string `json:"end_date_str"`       // "YYYY-MM-DD"
+	FulfillmentMethod string `json:"fulfillment_method"` // "all", "dine-in", "takeaway", "delivery"
+	PaymentMethod     string `json:"payment_method"`     // "all", "upi", "card", "netbanking", "cod"
+	OrderStatus       string `json:"order_status"`       // "all", "completed", "pending", "cancelled"
+	Category          string `json:"category"`           // "all", "tea", "coffee", "snacks", "beverages"
+	SearchQuery       string `json:"search_query"`       // Item name or order ID search
+}
+
 // FinancialReportData holds complete auditing, period-filtered, and time-series metrics.
 type FinancialReportData struct {
-	Period            string                `json:"period"`            // "today", "daily", "weekly", "monthly", "yearly"
-	PeriodLabel       string                `json:"period_label"`      // e.g. "Today (Live)", "FY 2026-27"
+	Period            string                `json:"period"`            // "today", "daily", "weekly", "monthly", "yearly", "custom"
+	PeriodLabel       string                `json:"period_label"`      // e.g. "Today (Live Data)", "Custom Range (Aug 01 - Aug 16)"
+	Filter            ReportFilter          `json:"filter"`
 	StartDate         time.Time             `json:"start_date"`
 	EndDate           time.Time             `json:"end_date"`
 	GrossRevenue      float64               `json:"gross_revenue"`

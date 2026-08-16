@@ -319,18 +319,101 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 	http.Redirect(w, r, referer, http.StatusSeeOther)
 }
 
+type customerUserViewModel struct {
+	User             models.User
+	TotalOrders      int
+	ActivePassName   string
+	ActivePassID     string
+	DailyCupsClaimed int
+}
+
+type staffUserViewModel struct {
+	User               models.User
+	TotalOrdersHandled int
+}
+
 func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request) {
+	tab := r.URL.Query().Get("tab")
+	if tab != "customers" {
+		tab = "staff"
+	}
+
 	users, err := app.AuthService.GetAllUsers(r.Context())
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
+	allOrders, _ := app.OrderService.GetAllOrders(r.Context())
+	customerOrdersCount := make(map[int64]int)
+	staffOrdersCount := make(map[string]int)
+
+	for _, o := range allOrders {
+		if o.UserID > 0 {
+			customerOrdersCount[o.UserID]++
+		}
+		if o.AssignedStaffName != "" {
+			staffOrdersCount[o.AssignedStaffName]++
+		}
+	}
+
+	var activeSubs []models.UserSubscription
+	if app.MembershipService != nil {
+		activeSubs, _ = app.MembershipService.GetAllSubscriptions(r.Context())
+	}
+	userSubMap := make(map[int64]*models.UserSubscription)
+	activeMemberCount := 0
+
+	for i := range activeSubs {
+		sub := activeSubs[i]
+		if sub.Status == "Active" {
+			userSubMap[sub.UserID] = &sub
+			activeMemberCount++
+		}
+	}
+
+	var staffList []staffUserViewModel
+	var customerList []customerUserViewModel
+
+	for _, u := range users {
+		if u.Role == "staff" || u.Role == "admin" || u.Role == "superadmin" {
+			handledCount := staffOrdersCount[u.Name]
+			staffList = append(staffList, staffUserViewModel{
+				User:               u,
+				TotalOrdersHandled: handledCount,
+			})
+		} else {
+			ordersCount := customerOrdersCount[u.ID]
+			passName := "Standard Customer"
+			passID := ""
+			dailyCups := 0
+
+			if sub, exists := userSubMap[u.ID]; exists {
+				passName = sub.TierName
+				passID = sub.TierID
+				dailyCups = sub.CupsClaimedToday
+			}
+
+			customerList = append(customerList, customerUserViewModel{
+				User:             u,
+				TotalOrders:      ordersCount,
+				ActivePassName:   passName,
+				ActivePassID:     passID,
+				DailyCupsClaimed: dailyCups,
+			})
+		}
+	}
+
 	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
 
 	data := models.PageData{
-		"Title":               "Staff & Registered Users",
-		"Users":               users,
+		"Title":               "Account Management Portal",
+		"ActiveTab":           tab,
+		"StaffList":           staffList,
+		"CustomerList":        customerList,
+		"TotalStaffCount":     len(staffList),
+		"TotalCustomerCount":  len(customerList),
+		"ActiveMemberCount":   activeMemberCount,
 		"CancellationReasons": reasons,
 	}
 	app.render(w, r, http.StatusOK, "admin_users.html", data)
@@ -353,7 +436,7 @@ func (app *Application) adminAddCancellationReasonHandler(w http.ResponseWriter,
 		app.AuditService.LogEvent(r.Context(), actor, "REASON_ADDED", "Added cancellation reason: '"+reason+"'", services.GetClientIP(r))
 	}
 
-	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+	http.Redirect(w, r, "/admin/cafe-settings", http.StatusSeeOther)
 }
 
 func (app *Application) adminDeleteCancellationReasonHandler(w http.ResponseWriter, r *http.Request) {
@@ -373,7 +456,22 @@ func (app *Application) adminDeleteCancellationReasonHandler(w http.ResponseWrit
 		app.AuditService.LogEvent(r.Context(), actor, "REASON_DELETED", "Deleted cancellation reason: '"+reason+"'", services.GetClientIP(r))
 	}
 
-	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+	http.Redirect(w, r, "/admin/cafe-settings", http.StatusSeeOther)
+}
+
+func (app *Application) adminCafeSettingsHandler(w http.ResponseWriter, r *http.Request) {
+	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
+
+	data := models.PageData{
+		"Title":               "Daily Cafe Settings",
+		"CancellationReasons": reasons,
+		"StoreName":           "TEACHAR Flagship Cafe Sanctuary",
+		"StoreAddress":        "42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001",
+		"BrewingHours":        "6:00 AM – 11:30 PM",
+		"StorePhone":          "+91 98765 43210",
+		"CurrencySymbol":      "₹",
+	}
+	app.render(w, r, http.StatusOK, "admin_cafe_settings.html", data)
 }
 
 func (app *Application) adminCreateStaffHandler(w http.ResponseWriter, r *http.Request) {
@@ -427,13 +525,27 @@ func (app *Application) adminAuditLogsHandler(w http.ResponseWriter, r *http.Req
 	app.render(w, r, http.StatusOK, "admin_audit_logs.html", data)
 }
 
-func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Request) {
+func parseReportFilter(r *http.Request) models.ReportFilter {
 	period := r.URL.Query().Get("period")
 	if period == "" {
 		period = "today"
 	}
+	return models.ReportFilter{
+		Period:            period,
+		StartDateStr:      r.URL.Query().Get("start_date"),
+		EndDateStr:        r.URL.Query().Get("end_date"),
+		FulfillmentMethod: r.URL.Query().Get("fulfillment_method"),
+		PaymentMethod:     r.URL.Query().Get("payment_method"),
+		OrderStatus:       r.URL.Query().Get("order_status"),
+		Category:          r.URL.Query().Get("category"),
+		SearchQuery:       r.URL.Query().Get("q"),
+	}
+}
 
-	report, err := app.ReportService.GenerateFinancialReport(r.Context(), period)
+func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Request) {
+	filter := parseReportFilter(r)
+
+	report, err := app.ReportService.GenerateFilteredFinancialReport(r.Context(), filter)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
@@ -442,24 +554,22 @@ func (app *Application) adminReportsHandler(w http.ResponseWriter, r *http.Reque
 	data := models.PageData{
 		"Title":         "Executive Financial & Time-Series Reports",
 		"Report":        report,
-		"CurrentPeriod": period,
+		"CurrentPeriod": report.Period,
+		"Filter":        report.Filter,
 	}
 	app.render(w, r, http.StatusOK, "admin_reports.html", data)
 }
 
 func (app *Application) adminReportsExportHandler(w http.ResponseWriter, r *http.Request) {
-	period := r.URL.Query().Get("period")
-	if period == "" {
-		period = "today"
-	}
+	filter := parseReportFilter(r)
 
-	report, err := app.ReportService.GenerateFinancialReport(r.Context(), period)
+	report, err := app.ReportService.GenerateFilteredFinancialReport(r.Context(), filter)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
 
-	filename := fmt.Sprintf("teachar_financial_report_%s.csv", period)
+	filename := fmt.Sprintf("teachar_financial_report_%s.csv", report.Period)
 	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
 
@@ -520,9 +630,24 @@ func (app *Application) adminCouponsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	now := time.Now()
+	var activeCount, redeemedCount, expiredCount int
+	for _, c := range coupons {
+		if c.IsUsed {
+			redeemedCount++
+		} else if c.ExpiryDate.Before(now) {
+			expiredCount++
+		} else {
+			activeCount++
+		}
+	}
+
 	data := models.PageData{
-		"Title":   "Offers & Single-Use Coupons",
-		"Coupons": coupons,
+		"Title":         "Offers & Single-Use Coupons",
+		"Coupons":       coupons,
+		"ActiveCount":   activeCount,
+		"RedeemedCount": redeemedCount,
+		"ExpiredCount":  expiredCount,
 	}
 	app.render(w, r, http.StatusOK, "admin_coupons.html", data)
 }

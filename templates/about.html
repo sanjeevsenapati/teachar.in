@@ -1,101 +1,193 @@
 {{define "main"}}
-<!-- About Hero -->
-<section class="page-header-section text-center">
-    <div class="container">
-        <span class="section-tag">Established 2024</span>
-        <h1 class="page-title">The Story Behind TEACHAR</h1>
-        <p class="page-subtitle">Blending century-old tea brewing traditions with modern digital hospitality.</p>
-    </div>
-</section>
-
-<section class="about-detail-section">
-    <div class="container">
-        <div class="about-grid">
-            <div class="about-content-col">
-                <span class="section-tag">Our Vision</span>
-                <h2>Bringing People Together, One Cup At A Time</h2>
-                <p>TEACHAR was born from a simple belief: in a fast-paced world, everyone deserves a quiet moment of warmth, comfort, and connection over a fresh cup of tea.</p>
-                <p>We source our tea leaves directly from high-altitude gardens in Darjeeling and Assam. Every spice is crushed in-house, and every snack is hand-prepared daily by our expert chefs.</p>
-                
-                <div class="about-values-grid">
-                    <div class="value-item">
-                        <div class="value-icon"><i class="fa-solid fa-leaf"></i></div>
-                        <div>
-                            <h4>Pure Ingredients</h4>
-                            <p>100% natural spices, zero artificial colors or preservatives.</p>
-                        </div>
-                    </div>
-                    <div class="value-item">
-                        <div class="value-icon"><i class="fa-solid fa-heart"></i></div>
-                        <div>
-                            <h4>Warm Hospitality</h4>
-                            <p>Every customer is family. Served with a smile every single time.</p>
-                        </div>
-                    </div>
-                    <div class="value-item">
-                        <div class="value-icon"><i class="fa-solid fa-recycle"></i></div>
-                        <div>
-                            <h4>Eco-Friendly</h4>
-                            <p>Served in eco-sustainable earthenware clay kulhads.</p>
-                        </div>
-                    </div>
+<!-- Hero Section matching Home & Membership Theme -->
+<section class="hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="container hero-container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fa-solid fa-heart"></i> Born From A Lifelong Romance With Tea
+            </div>
+            <h1 class="hero-title">
+                The Living Story of <br><span class="highlight-text">TEACHAR</span>
+            </h1>
+            <p class="hero-subtitle">
+                Chai isn't just something we brew — it is our morning ritual, our silent companion, and how we welcome people as family.
+            </p>
+            <div class="hero-actions">
+                <a href="/menu" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-utensils"></i> Explore Our Menu
+                </a>
+                <a href="/membership" class="btn btn-secondary btn-lg">
+                    <i class="fa-solid fa-crown text-primary"></i> Coffee & Chai Passes
+                </a>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">100k+</span>
+                    <span class="stat-label">Kulhads Brewed</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Whole Estate Leaves</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">4.9 <i class="fa-solid fa-star star-icon"></i></span>
+                    <span class="stat-label">Tea Lover Ratings</span>
                 </div>
             </div>
+        </div>
 
-            <div class="about-visual-col">
-                <div class="about-image-card">
-                    <img src="/static/images/masala-tea.jpg" alt="Artisanal Tea Preparation" class="about-main-img">
-                    <div class="experience-badge">
-                        <span class="exp-number">100k+</span>
-                        <span class="exp-text">Cups Served</span>
+        <div class="hero-visual">
+            <div class="hero-image-card">
+                <img src="/static/images/hero-banner.jpg" alt="Artisanal Kulhad Tea Preparation" class="hero-img">
+                <div class="floating-card top-right-card">
+                    <i class="fa-solid fa-fire text-primary"></i>
+                    <div>
+                        <strong>Slow Simmered</strong>
+                        <span>Hand-Crushed Spices</span>
                     </div>
+                </div>
+                <div class="floating-card bottom-left-card">
+                    <div class="rating-stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span>"The soul of real Indian Chai"</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Visit Us Info Section -->
+<!-- Brand Story Narrative Section -->
+<section class="about-detail-section" style="padding: 5rem 0; background: var(--bg-main);">
+    <div class="container">
+        
+        <div class="about-grid">
+            <div class="about-content-col">
+                <span class="section-tag"><i class="fa-solid fa-sparkles me-1"></i> Our Heritage</span>
+                <h2>Chai Isn't Just A Drink — It's How We Live.</h2>
+                
+                <p>
+                    TEACHAR wasn't conceived in a corporate boardroom or born from a market spreadsheet. It was born in the quiet, fragrant dawn of a home kitchen where the kettle was always simmering, and the door was always open.
+                </p>
+
+                <p>
+                    Our founder grew up in a home where every emotion had its own brew. Morning clarity came with strong Assam CTC and freshly bruised ginger root. Family reunions were celebrated over cardamom-infused Masala Chai. Long rainy afternoons were spent sipping piping hot Lemon Tea in hand-fired earthen <em>Kulhads</em>.
+                </p>
+
+                <div class="story-quote-box" style="background: var(--primary-light); border-left: 4px solid var(--primary); padding: 1.25rem 1.5rem; border-radius: var(--border-radius-md); margin: 1.25rem 0;">
+                    <p style="font-style: italic; font-weight: 700; color: var(--primary); font-size: 1.05rem; margin: 0; line-height: 1.6;">
+                        "We realized that in a fast world rushing toward instant powders and vending machines, the soul of authentic Chai was fading. So we built TEACHAR — a sanctuary for everyone who loves tea and lives with it."
+                    </p>
+                </div>
+            </div>
+
+            <div class="about-visual-col">
+                <div class="about-image-card">
+                    <img src="/static/images/masala-tea.jpg" alt="Artisanal Kulhad Tea" class="about-main-img">
+                    <div class="experience-badge">
+                        <span class="exp-number">100%</span>
+                        <span class="exp-text">Pure Fresh Brews</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- 4 Sacred Promises Grid -->
+<section class="features-section" style="padding-top: 0;">
+    <div class="container">
+        
+        <div class="section-header text-center">
+            <span class="section-tag">Our Sacred Promises</span>
+            <h2 class="section-title">Why Tea Lovers Live With Us</h2>
+            <p class="section-subtitle">Crafted with century-old brewing wisdom, fresh hand-pounded spices, and pure dedication.</p>
+        </div>
+
+        <div class="features-grid">
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
+                <h3>Direct Garden Pick</h3>
+                <p>100% single-origin whole leaves sourced directly from high-altitude estates in Assam and Darjeeling.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><div class="icon-inner"><i class="fa-solid fa-mortar-pestle"></i></div></div>
+                <h3>Hand-Crushed Spices</h3>
+                <p>Zero artificial syrups or premixes. Green cardamom, fresh ginger root, lemongrass, and tulsi are crushed live for every order.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-whiskey-glass"></i></div>
+                <h3>Traditional Earth Kulhad</h3>
+                <p>Served in eco-friendly hand-fired clay Kulhads that impart an authentic, earthy aroma with every single sip.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-heart"></i></div>
+                <h3>Warm Hospitality</h3>
+                <p>Every customer is family. Our cafe is a sanctuary where conversations flourish and warm memories are brewed daily.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Flagship Location Section matching Theme -->
 <section class="location-section">
     <div class="container">
         <div class="location-card">
             <div class="location-info">
-                <h2>Visit Our Store</h2>
-                <p>Come experience the aroma of fresh spices and warm ambiance in person.</p>
+                <span class="section-tag"><i class="fa-solid fa-store me-1"></i> Flagship Sanctuary</span>
+                <h2>Visit Our Cafe Sanctuary</h2>
+                <p>Come experience the aroma of fresh spices, boiling kettles, and warm ambient hospitality in person.</p>
                 
                 <div class="info-list">
                     <div class="info-item">
                         <i class="fa-solid fa-location-dot"></i>
                         <div>
                             <strong>Location</strong>
-                            <span>42 Chai Galleria, MG Road, Tech Hub District, Bangalore</span>
+                            <span>42 Chai Galleria, MG Road, Tech Hub District, Bangalore, 560001</span>
                         </div>
                     </div>
                     <div class="info-item">
                         <i class="fa-solid fa-clock"></i>
                         <div>
-                            <strong>Opening Hours</strong>
-                            <span>Monday – Sunday: 7:00 AM – 11:00 PM</span>
+                            <strong>Brewing Hours</strong>
+                            <span>Monday – Sunday: 6:00 AM – 11:30 PM</span>
                         </div>
                     </div>
                     <div class="info-item">
                         <i class="fa-solid fa-phone"></i>
                         <div>
-                            <strong>Phone & WhatsApp Orders</strong>
-                            <span>+91 98765 43210</span>
+                            <strong>Direct Order & Inquiries</strong>
+                            <span>+91 98765 43210 / order@teachar.in</span>
                         </div>
                     </div>
                 </div>
                 
-                <a href="/menu" class="btn btn-primary mt-4">Order Online For Pickup</a>
+                <a href="/menu" class="btn btn-primary mt-4">
+                    <i class="fa-solid fa-mug-hot"></i> Browse Menu & Order Online
+                </a>
             </div>
             
             <div class="location-map-visual">
                 <div class="map-placeholder">
                     <i class="fa-solid fa-map-location-dot map-icon"></i>
                     <h3>TEACHAR Flagship Store</h3>
-                    <p>MG Road, Bangalore</p>
-                    <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Open Now</span>
+                    <p>MG Road, Tech Hub District, Bangalore</p>
+                    <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Open Now • Fresh Brewing</span>
                 </div>
             </div>
         </div>

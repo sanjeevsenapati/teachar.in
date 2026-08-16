@@ -1,5 +1,5 @@
 {
-  "next_order_id": 25,
+  "next_order_id": 26,
   "cancellation_reasons": [
     "Item out of stock",
     "Kitchen load exceeded / High volume",
@@ -924,8 +924,11 @@
       "transaction_id": "TXN26847404",
       "subtotal_price": 110,
       "total_price": 115.5,
-      "assigned_staff_id": 0,
-      "assigned_staff_name": "",
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Super Admin",
+      "assigned_at": "2026-08-16T22:40:57.221554+05:30",
+      "estimated_minutes": 20,
       "cancellation_reason": "",
       "rating": 0,
       "review": "",
@@ -965,7 +968,7 @@
       "order_type": "Takeaway",
       "table_number": "",
       "delivery_address": "",
-      "status": "Pending",
+      "status": "Cancelled",
       "payment_method": "COD",
       "payment_status": "Pending",
       "transaction_id": "TXN17817681",
@@ -973,7 +976,7 @@
       "total_price": 189,
       "assigned_staff_id": 0,
       "assigned_staff_name": "",
-      "cancellation_reason": "",
+      "cancellation_reason": "Item out of stock",
       "rating": 0,
       "review": "",
       "items": [
@@ -1011,6 +1014,65 @@
         }
       ],
       "created_at": "2026-08-16T18:16:20.220991+05:30"
+    },
+    {
+      "id": 25,
+      "user_id": 3,
+      "customer_name": "Client Customer",
+      "customer_phone": "9876543210",
+      "order_type": "Dine-in",
+      "table_number": "Table 4",
+      "delivery_address": "",
+      "status": "Completed",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "transaction_id": "TXN36276538",
+      "subtotal_price": 130,
+      "total_price": 136.5,
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "assigned_by": "Self Claimed",
+      "assigned_at": "2026-08-16T22:44:57.539934+05:30",
+      "completed_at": "2026-08-16T22:45:45.107788+05:30",
+      "fulfillment_minutes": 1,
+      "cancellation_reason": "",
+      "rating": 5,
+      "review": "",
+      "items": [
+        {
+          "id": 1,
+          "order_id": 25,
+          "menu_item_id": 1,
+          "item_name": "Masala Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 2,
+          "order_id": 25,
+          "menu_item_id": 2,
+          "item_name": "Ginger Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 3,
+          "order_id": 25,
+          "menu_item_id": 3,
+          "item_name": "Lemon Tea",
+          "quantity": 1,
+          "price": 30
+        },
+        {
+          "id": 4,
+          "order_id": 25,
+          "menu_item_id": 5,
+          "item_name": "Hot Coffee",
+          "quantity": 1,
+          "price": 40
+        }
+      ],
+      "created_at": "2026-08-16T22:44:16.890448+05:30"
     }
   ]
 }

@@ -60,41 +60,49 @@ type apiKeysSchema struct {
 	APIKeys      []models.APIKey `json:"api_keys"`
 }
 
+type membershipsSchema struct {
+	NextSubscriptionID int64                     `json:"next_subscription_id"`
+	Subscriptions      []models.UserSubscription `json:"subscriptions"`
+}
+
 // MultiFileRepository provides domain-isolated, fine-grained locking, O(1) in-memory indexed storage using standard library packages.
 type MultiFileRepository struct {
 	dataDir string
 
 	// Domain Mutexes for Concurrent Access
-	usersMu     sync.RWMutex
-	sessionsMu  sync.RWMutex
-	menuMu      sync.RWMutex
-	ordersMu    sync.RWMutex
-	auditLogsMu sync.RWMutex
-	couponsMu   sync.RWMutex
-	inventoryMu sync.RWMutex
-	expensesMu  sync.RWMutex
-	apiKeysMu   sync.RWMutex
+	usersMu       sync.RWMutex
+	sessionsMu    sync.RWMutex
+	menuMu        sync.RWMutex
+	ordersMu      sync.RWMutex
+	auditLogsMu   sync.RWMutex
+	couponsMu     sync.RWMutex
+	inventoryMu   sync.RWMutex
+	expensesMu    sync.RWMutex
+	apiKeysMu     sync.RWMutex
+	membershipsMu sync.RWMutex
 
 	// Data File Paths
-	usersFile     string
-	sessionsFile  string
-	menuFile      string
-	ordersFile    string
-	auditLogsFile string
-	couponsFile   string
-	inventoryFile string
-	expensesFile  string
-	apiKeysFile   string
+	usersFile       string
+	sessionsFile    string
+	menuFile        string
+	ordersFile      string
+	auditLogsFile   string
+	couponsFile     string
+	inventoryFile   string
+	expensesFile    string
+	apiKeysFile     string
+	membershipsFile string
 
 	// O(1) In-Memory Fast Lookup Maps & Caches
-	usersByEmail       map[string]*models.User
-	usersByID          map[int64]*models.User
-	sessionsByToken    map[string]*models.Session
-	menuItemsByID      map[int64]*models.MenuItem
-	ordersByID         map[int64]*models.Order
-	couponsByCode      map[string]*models.Coupon
-	inventoryItemsByID map[int64]*models.InventoryItem
-	apiKeysByHash      map[string]*models.APIKey
+	usersByEmail          map[string]*models.User
+	usersByID             map[int64]*models.User
+	sessionsByToken       map[string]*models.Session
+	menuItemsByID         map[int64]*models.MenuItem
+	ordersByID            map[int64]*models.Order
+	couponsByCode         map[string]*models.Coupon
+	inventoryItemsByID    map[int64]*models.InventoryItem
+	apiKeysByHash         map[string]*models.APIKey
+	subscriptionsByUserID map[int64]*models.UserSubscription
 
 	// Domain Data Arrays
 	users               []models.User
@@ -107,16 +115,18 @@ type MultiFileRepository struct {
 	inventoryItems      []models.InventoryItem
 	expenses            []models.ExpenseEntry
 	apiKeys             []models.APIKey
+	subscriptions       []models.UserSubscription
 
 	// Atomic Sequence Counters for High-Concurrency ID Generation
-	nextUserID      atomic.Int64
-	nextMenuItemID  atomic.Int64
-	nextOrderID     atomic.Int64
-	nextAuditLogID  atomic.Int64
-	nextCouponID    atomic.Int64
-	nextInventoryID atomic.Int64
-	nextExpenseID   atomic.Int64
-	nextAPIKeyID    atomic.Int64
+	nextUserID         atomic.Int64
+	nextMenuItemID     atomic.Int64
+	nextOrderID        atomic.Int64
+	nextAuditLogID     atomic.Int64
+	nextCouponID       atomic.Int64
+	nextInventoryID    atomic.Int64
+	nextExpenseID      atomic.Int64
+	nextAPIKeyID       atomic.Int64
+	nextSubscriptionID atomic.Int64
 }
 
 // NewMultiFileRepository initializes and loads domain-isolated files, with automatic migration from old db.json if present.
@@ -134,16 +144,18 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 		auditLogsFile:      filepath.Join(dataDir, "audit_logs.json"),
 		couponsFile:        filepath.Join(dataDir, "coupons.json"),
 		inventoryFile:      filepath.Join(dataDir, "inventory.json"),
-		expensesFile:       filepath.Join(dataDir, "expenses.json"),
-		apiKeysFile:        filepath.Join(dataDir, "api_keys.json"),
-		usersByEmail:       make(map[string]*models.User),
-		usersByID:          make(map[int64]*models.User),
-		sessionsByToken:    make(map[string]*models.Session),
-		menuItemsByID:      make(map[int64]*models.MenuItem),
-		ordersByID:         make(map[int64]*models.Order),
-		couponsByCode:      make(map[string]*models.Coupon),
-		inventoryItemsByID: make(map[int64]*models.InventoryItem),
-		apiKeysByHash:      make(map[string]*models.APIKey),
+		expensesFile:          filepath.Join(dataDir, "expenses.json"),
+		apiKeysFile:           filepath.Join(dataDir, "api_keys.json"),
+		membershipsFile:       filepath.Join(dataDir, "memberships.json"),
+		usersByEmail:          make(map[string]*models.User),
+		usersByID:             make(map[int64]*models.User),
+		sessionsByToken:       make(map[string]*models.Session),
+		menuItemsByID:         make(map[int64]*models.MenuItem),
+		ordersByID:            make(map[int64]*models.Order),
+		couponsByCode:         make(map[string]*models.Coupon),
+		inventoryItemsByID:    make(map[int64]*models.InventoryItem),
+		apiKeysByHash:         make(map[string]*models.APIKey),
+		subscriptionsByUserID: make(map[int64]*models.UserSubscription),
 	}
 
 	// Check if migration from legacy db.json is required
@@ -177,6 +189,15 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 	}
 	if err := repo.loadInventory(); err != nil {
 		return nil, fmt.Errorf("failed loading inventory storage: %w", err)
+	}
+	if err := repo.loadExpenses(); err != nil {
+		return nil, fmt.Errorf("failed loading expenses storage: %w", err)
+	}
+	if err := repo.loadAPIKeys(); err != nil {
+		return nil, fmt.Errorf("failed loading API keys storage: %w", err)
+	}
+	if err := repo.loadMemberships(); err != nil {
+		return nil, fmt.Errorf("failed loading memberships storage: %w", err)
 	}
 	if err := repo.loadExpenses(); err != nil {
 		return nil, fmt.Errorf("failed loading expenses storage: %w", err)
@@ -361,6 +382,37 @@ func (r *MultiFileRepository) CreateUser(ctx context.Context, user models.User) 
 		return nil, err
 	}
 	return savedUser, nil
+}
+
+func (r *MultiFileRepository) UpdateUser(ctx context.Context, user models.User) (*models.User, error) {
+	r.usersMu.Lock()
+	defer r.usersMu.Unlock()
+
+	for i, u := range r.users {
+		if u.ID == user.ID {
+			// Update email map if email changed
+			oldEmailLower := strings.ToLower(u.Email)
+			newEmailLower := strings.ToLower(user.Email)
+
+			if oldEmailLower != newEmailLower {
+				if _, exists := r.usersByEmail[newEmailLower]; exists {
+					return nil, errors.New("user with this email already exists")
+				}
+				delete(r.usersByEmail, oldEmailLower)
+			}
+
+			r.users[i] = user
+			savedUser := &r.users[i]
+			r.usersByEmail[newEmailLower] = savedUser
+			r.usersByID[user.ID] = savedUser
+
+			if err := r.saveUsersLocked(); err != nil {
+				return nil, err
+			}
+			return savedUser, nil
+		}
+	}
+	return nil, errors.New("user not found")
 }
 
 func (r *MultiFileRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
@@ -1498,4 +1550,168 @@ func (r *MultiFileRepository) RevokeAPIKey(ctx context.Context, id int64) error 
 		}
 	}
 	return errors.New("API key not found")
+}
+
+func (r *MultiFileRepository) loadMemberships() error {
+	r.membershipsMu.Lock()
+	defer r.membershipsMu.Unlock()
+
+	if _, err := os.Stat(r.membershipsFile); os.IsNotExist(err) {
+		r.subscriptions = []models.UserSubscription{}
+		r.nextSubscriptionID.Store(1)
+		return r.saveMembershipsLocked()
+	}
+
+	data, err := os.ReadFile(r.membershipsFile)
+	if err != nil {
+		return err
+	}
+
+	var schema membershipsSchema
+	if err := json.Unmarshal(data, &schema); err != nil {
+		return err
+	}
+
+	r.subscriptions = schema.Subscriptions
+	r.nextSubscriptionID.Store(schema.NextSubscriptionID)
+	if r.nextSubscriptionID.Load() <= 0 {
+		r.nextSubscriptionID.Store(1)
+	}
+
+	r.subscriptionsByUserID = make(map[int64]*models.UserSubscription)
+	for i := range r.subscriptions {
+		if r.subscriptions[i].Status == "Active" {
+			r.subscriptionsByUserID[r.subscriptions[i].UserID] = &r.subscriptions[i]
+		}
+	}
+
+	return nil
+}
+
+func (r *MultiFileRepository) saveMembershipsLocked() error {
+	schema := membershipsSchema{
+		NextSubscriptionID: r.nextSubscriptionID.Load(),
+		Subscriptions:      r.subscriptions,
+	}
+	data, err := json.MarshalIndent(schema, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	tmpFile := r.membershipsFile + ".tmp"
+	if err := os.WriteFile(tmpFile, data, 0644); err != nil {
+		return err
+	}
+	return os.Rename(tmpFile, r.membershipsFile)
+}
+
+func (r *MultiFileRepository) GetAllSubscriptions(ctx context.Context) ([]models.UserSubscription, error) {
+	r.membershipsMu.RLock()
+	defer r.membershipsMu.RUnlock()
+
+	result := make([]models.UserSubscription, len(r.subscriptions))
+	copy(result, r.subscriptions)
+	return result, nil
+}
+
+func (r *MultiFileRepository) GetSubscriptionByUserID(ctx context.Context, userID int64) (*models.UserSubscription, error) {
+	r.membershipsMu.RLock()
+	defer r.membershipsMu.RUnlock()
+
+	if sub, ok := r.subscriptionsByUserID[userID]; ok {
+		if sub.Status == "Active" && time.Now().Before(sub.EndDate) {
+			return sub, nil
+		}
+	}
+	for _, sub := range r.subscriptions {
+		if sub.UserID == userID && sub.Status == "Active" && time.Now().Before(sub.EndDate) {
+			return &sub, nil
+		}
+	}
+	return nil, errors.New("no active subscription found")
+}
+
+func (r *MultiFileRepository) GetSubscriptionByID(ctx context.Context, id int64) (*models.UserSubscription, error) {
+	r.membershipsMu.RLock()
+	defer r.membershipsMu.RUnlock()
+
+	for _, sub := range r.subscriptions {
+		if sub.ID == id {
+			return &sub, nil
+		}
+	}
+	return nil, errors.New("subscription not found")
+}
+
+func (r *MultiFileRepository) SaveSubscription(ctx context.Context, sub models.UserSubscription) (*models.UserSubscription, error) {
+	r.membershipsMu.Lock()
+	defer r.membershipsMu.Unlock()
+
+	if sub.ID == 0 {
+		sub.ID = r.nextSubscriptionID.Add(1) - 1
+		r.subscriptions = append(r.subscriptions, sub)
+		saved := &r.subscriptions[len(r.subscriptions)-1]
+		if saved.Status == "Active" {
+			r.subscriptionsByUserID[saved.UserID] = saved
+		}
+		if err := r.saveMembershipsLocked(); err != nil {
+			return nil, err
+		}
+		return saved, nil
+	}
+
+	for i, s := range r.subscriptions {
+		if s.ID == sub.ID {
+			r.subscriptions[i] = sub
+			if sub.Status == "Active" {
+				r.subscriptionsByUserID[sub.UserID] = &r.subscriptions[i]
+			}
+			if err := r.saveMembershipsLocked(); err != nil {
+				return nil, err
+			}
+			return &r.subscriptions[i], nil
+		}
+	}
+	return nil, errors.New("subscription not found")
+}
+
+func (r *MultiFileRepository) ClaimDailyCup(ctx context.Context, subscriptionID int64) error {
+	r.membershipsMu.Lock()
+	defer r.membershipsMu.Unlock()
+
+	now := time.Now()
+	for i, sub := range r.subscriptions {
+		if sub.ID == subscriptionID {
+			// Check if new day reset applies
+			if sub.LastClaimDate == nil || sub.LastClaimDate.Day() != now.Day() || sub.LastClaimDate.Month() != now.Month() {
+				r.subscriptions[i].CupsClaimedToday = 0
+			}
+
+			if r.subscriptions[i].CupsClaimedToday >= sub.DailyFreeCupLimit {
+				return errors.New("daily free cup limit reached for today")
+			}
+
+			r.subscriptions[i].CupsClaimedToday++
+			r.subscriptions[i].LastClaimDate = &now
+			if sub.Status == "Active" {
+				r.subscriptionsByUserID[sub.UserID] = &r.subscriptions[i]
+			}
+			return r.saveMembershipsLocked()
+		}
+	}
+	return errors.New("subscription not found")
+}
+
+func (r *MultiFileRepository) CancelSubscription(ctx context.Context, subscriptionID int64) error {
+	r.membershipsMu.Lock()
+	defer r.membershipsMu.Unlock()
+
+	for i, sub := range r.subscriptions {
+		if sub.ID == subscriptionID {
+			r.subscriptions[i].Status = "Cancelled"
+			delete(r.subscriptionsByUserID, sub.UserID)
+			return r.saveMembershipsLocked()
+		}
+	}
+	return errors.New("subscription not found")
 }
