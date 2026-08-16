@@ -12,7 +12,7 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
 
 ## 🌟 Overview
 
-**TEACHAR.in** is a digital platform for an artisanal tea, coffee, and gourmet snack house. It demonstrates the power, performance, and completeness of Go's standard library for web development—featuring domain-isolated persistent JSON storage, cryptographic authentication, role-based access control, an interactive customer shopping cart, multi-channel payment gateway, real-time order tracking, live staff order search, printable GST tax invoices, customer rating & review system, store inventory & capital asset register, operating expenditure log, financial year tax audit reports, and a comprehensive superadmin executive dashboard.
+**TEACHAR.in** is a digital platform for an artisanal tea, coffee, and gourmet snack house. It demonstrates the power, performance, and completeness of Go's standard library for web development—featuring domain-isolated persistent JSON storage, cryptographic authentication, role-based access control, an interactive customer shopping cart, multi-channel payment gateway, real-time order tracking, live staff order search, printable GST tax invoices, customer rating & review system, store inventory & capital asset register, operating expenditure log, financial year tax audit reports, developer API Key authentication system, TLS/SSL HTTPS engine, IP rate limiting, and a comprehensive superadmin executive dashboard.
 
 ---
 
@@ -36,37 +36,55 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
 
 ---
 
+### 🔒 Security, TLS/SSL & API Key System
+
+#### 🔑 API Key Authentication (`/admin/api-keys`)
+- **Key Generation & SHA-256 Hashing**: Issue cryptographically secure secret tokens (`tch_live_<32 hex bytes>`). Secret keys are displayed **ONCE** upon generation, with SHA-256 hashes stored in domain persistence (`data/api_keys.json`).
+- **Standard Auth Headers**: Authenticate REST requests via `X-API-Key: tch_live_...` or `Authorization: Bearer tch_live_...`.
+- **Superadmin API Portal**: Issue, inspect, and revoke API keys for external POS terminals, partner platforms, or mobile clients.
+
+#### 🛡️ TLS / HTTPS / SSL Engine
+- **Dual Server Support**: Configurable via `ENABLE_TLS`, `SSL_CERT_FILE`, `SSL_KEY_FILE`, and `SSL_PORT` environment variables.
+- **Automated Certificate Generator**: Built-in ECDSA/RSA P-256 TLS certificate generator (`services.GenerateSelfSignedCert()`) using `crypto/x509` and `crypto/rsa` for local HTTPS testing (`https://localhost:8443`).
+
+#### ⚡ Rate Limiting & Security Hardening
+- **Sliding Window Rate Limiter (`middleware/rate_limiter.go`)**: Thread-safe IP & API-Key rate limiting preventing DDoS attacks, brute-force logins, and API scraping (returns `HTTP 429 Too Many Requests` with `Retry-After: 60`).
+- **Hardened Security Headers**:
+  - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` (HSTS)
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: deny`
+  - `X-XSS-Protection: 1; mode=block`
+  - `Referrer-Policy: origin-when-cross-origin`
+  - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+
+---
+
 ### 🛡️ Admin, Staff & Superadmin Features
 
 #### 👥 Staff Portal (`/admin/orders`)
 - **Real-Time Live Search**: Search orders instantly by Table Number, Customer Registered Mobile Number, Customer Name, or Order/TXN ID.
 - **Staff-Defined Estimated Prep Duration**: Staff/Admin inputs estimated prep duration (`10m`, `15m`, `20m`, `25m`, `30m`) when picking up or assigning an order. Customer receipts display clean status updates without internal timers.
-- **Duplicate-Order Protection (Staff Claim Tagging)**: When a staff member picks up or updates an order, it is automatically tagged with the Staff's Name and Staff ID (`AssignedStaffID`, `AssignedStaffName`), preventing duplicate processing.
-- **Superadmin Order Assignment Privilege**: Superadmins and Admins can assign unclaimed orders to specific staff members with custom prep durations. Superadmins are restricted from directly fulfilling orders themselves.
-- **Mandatory Order Cancellation Reasons**: When marking an order as *Cancelled*, staff must select a reason from a predefined dropdown list or enter a custom reason.
-- **Printable & Downloadable GST Tax Invoices**:
-  - Click **"Generate Bill"** on any order row to open a formatted **GST Tax Invoice Modal** with 5% GST breakdown, subtotal, and net payable amount.
-  - **Thermal Print & PDF Download**: Printable thermal receipt (`window.print()`) and PDF download support (`downloadBillAsPDF()`).
+- **Duplicate-Order Protection (Staff Claim Tagging)**: Automatically tagged with Staff Name & ID (`AssignedStaffID`, `AssignedStaffName`), preventing duplicate processing.
+- **Superadmin Order Assignment Privilege**: Superadmins and Admins can assign unclaimed orders to specific staff members with custom prep durations.
+- **Mandatory Order Cancellation Reasons**: Select predefined cancellation reasons from a dropdown list or enter custom reasons.
+- **Printable & Downloadable GST Tax Invoices**: Thermal printable receipt (`window.print()`) and PDF download support (`downloadBillAsPDF()`).
 
 #### 👑 Superadmin & Executive Management Portal (`/admin`)
-- **Role-Based Access Control (RBAC)**: Support for `superadmin`, `admin`, `staff`, and `client` roles with strict middleware enforcement.
+- **Role-Based Access Control (RBAC)**: Support for `superadmin`, `admin`, `staff`, and `client` roles.
 - **Executive Dashboard (`/admin`)**: Business metrics including Total Revenue (₹), Total Orders Count, Active Orders Count, and Total Menu Items.
 - **Store Inventory & Capital Asset Register (`/admin/inventory`)**:
-  - Track **Raw Materials** (Tea, Coffee, Sugar, Milk, Spices), **Consumables**, **Machinery & Equipment**, and **Furniture & Fixtures**.
+  - Track **Raw Materials**, **Consumables**, **Machinery & Equipment**, and **Furniture & Fixtures**.
   - Real-time stock levels, unit costs, reorder alert thresholds (`In Stock`, `Low Stock`, `Out of Stock`, `Active Asset`), and serial number tracking.
-  - Formatted in a side-by-side 4-column horizontal card grid matching TEACHAR.in warm cream & artisanal terracotta theme.
-- **Operating Expenditure Log (`/admin/expenses`)**:
-  - Track cafe rent, electricity & water utilities, equipment maintenance, transportation/freight, and raw material purchases.
-  - Log vendor/supplier names, invoice numbers, payment methods (Bank Transfer, UPI, Cash, Cheque, Card), and expense dates.
+  - Side-by-side 4-column horizontal card grid matching TEACHAR.in warm cream & artisanal terracotta theme.
+- **Operating Expenditure Log (`/admin/expenses`)**: Track rent, electricity/water utilities, equipment maintenance, transportation/freight, and raw material purchases.
 - **Financial Year Tax Audit Engine & CSV Export (`/admin/inventory/export`)**:
-  - Automated financial audit metrics: Gross Sales Revenue (live sales from completed customer orders), Cost of Goods Sold (COGS), Operating Expenses (OpEx), Capital Asset Valuation, Net EBITDA Profit/Loss, 5% Output GST, and 25% Income Tax estimates.
+  - Automated financial audit metrics: Gross Sales Revenue, COGS, OpEx, Capital Asset Valuation, Net EBITDA Profit/Loss, 5% Output GST, and 25% Income Tax estimates.
   - **One-Click CA Audit CSV Export**: Download itemized audit spreadsheets for tax filings (`teachar_store_inventory_tax_audit_fy.csv`).
-- **Staff Speed, SLA & Satisfaction Analytics (`/admin/staff-performance`)**:
-  - Track staff preparation speed against custom estimated SLAs, on-time fulfillment rates, and customer 5-star ratings formatted in horizontal metric grids.
+- **Staff Speed, SLA & Satisfaction Analytics (`/admin/staff-performance`)**: Track staff prep speed against custom SLAs, on-time fulfillment rates, and customer 5-star ratings.
+- **API Keys & Security Portal (`/admin/api-keys`)**: Issue and revoke API authentication keys for developer integrations.
 - **Offers & Coupon Management (`/admin/coupons`)**: Create, validate, and manage discount promo codes.
 - **Staff & Admin User Management (`/admin/users`)**: Create and manage staff/admin user accounts.
-- **Predefined Cancellation Reasons Management**: Add and delete system-wide cancellation reasons.
-- **System Audit Logs Trail (`/admin/audit-logs`)**: Immutable audit trail logging user registrations, logins, status changes, inventory additions, and expense records.
+- **System Audit Logs Trail (`/admin/audit-logs`)**: Immutable audit trail logging user registrations, logins, status changes, inventory additions, expense records, and API key generation.
 - **Menu Item Management (`/admin/menu`)**: Add menu items with image uploads, edit details, toggle availability (*Available* / *Sold Out*), or delete items.
 
 ---
@@ -77,7 +95,7 @@ For testing all roles and user flows:
 
 | Role | Email | Password | Access Level |
 |---|---|---|---|
-| **Superadmin** | `superadmin@teachar.in` | `SuperAdmin@123` | Full System Access, Store Inventory, Tax Audit, User Management, Audit Logs |
+| **Superadmin** | `superadmin@teachar.in` | `SuperAdmin@123` | Full System Access, API Keys, Store Inventory, Tax Audit, User Management, Audit Logs |
 | **Admin** | `admin@teachar.in` | `Admin@123` | Executive Dashboard, Order Management, Menu Management, Store Inventory & Expenses |
 | **Staff** | `staff@teachar.in` | `Staff@123` | Order Search, Order Claim Tagging, Custom Prep SLA Input, Status Updates, Bill Generation |
 | **Client** | `client@teachar.in` | `Client@123` | Menu Browsing, Checkout, Order Tracking, Rating & Review |
@@ -91,24 +109,24 @@ The application uses a **Multi-File Domain-Isolated Architecture** (`MultiFileRe
 ```text
 HTTP Request
      ↓
-Middleware Layer (Logging, Security Headers, Session Authentication, Role Authorization)
+Middleware Layer (Rate Limiter, Security Headers, HSTS, Session Authentication, API Key Auth, Role Authorization)
      ↓
-Handlers Layer (Web Pages, Auth, Client Portal, Staff Order Search, Admin Portal, Store Inventory & Expenses, Payment APIs)
+Handlers Layer (Web Pages, Auth, Client Portal, Staff Order Search, Admin Portal, Store Inventory, API Keys, Payment APIs)
      ↓
-Services Layer (MenuService, AuthService, OrderService, AuditService, ReportService, InventoryService, CouponService)
+Services Layer (MenuService, AuthService, OrderService, AuditService, ReportService, InventoryService, SecurityService, CouponService)
      ↓
 Multi-File Repository Layer (MultiFileRepository with Fine-Grained RWMutexes & O(1) Memory Maps)
      ↓
-Domain Storage Files (data/users.json, data/sessions.json, data/orders.json, data/menu.json, data/inventory.json, data/expenses.json, data/audit_logs.json)
+Domain Storage Files (data/users.json, data/sessions.json, data/orders.json, data/menu.json, data/inventory.json, data/expenses.json, data/api_keys.json, data/audit_logs.json)
 ```
 
 ### High-Concurrency Features:
-- **Domain-Isolated JSON Files**: Isolated storage for `users.json`, `sessions.json`, `orders.json`, `menu.json`, `inventory.json`, `expenses.json`, and `audit_logs.json`.
-- **Fine-Grained Domain Mutexes**: Independent RWMutex locks (`usersMu`, `sessionsMu`, `ordersMu`, `menuMu`, `inventoryMu`, `expensesMu`, `auditLogsMu`) so user logins do not block menu reads, inventory updates, or order creation.
-- **Fast O(1) In-Memory Indexing**: Hash maps (`usersByEmail`, `usersByID`, `sessionsByToken`, `ordersByID`, `menuItemsByID`) for instant sub-millisecond lookups.
+- **Domain-Isolated JSON Files**: Isolated storage for `users.json`, `sessions.json`, `orders.json`, `menu.json`, `inventory.json`, `expenses.json`, `api_keys.json`, and `audit_logs.json`.
+- **Fine-Grained Domain Mutexes**: Independent RWMutex locks (`usersMu`, `sessionsMu`, `ordersMu`, `menuMu`, `inventoryMu`, `expensesMu`, `apiKeysMu`, `auditLogsMu`).
+- **Fast O(1) In-Memory Indexing**: Hash maps (`usersByEmail`, `usersByID`, `sessionsByToken`, `ordersByID`, `menuItemsByID`, `apiKeysByHash`) for instant sub-millisecond lookups.
 - **Atomic ID Generation**: Uses `sync/atomic` (`atomic.Int64`) for lock-free sequence ID increments.
 - **Crash-Resistant Atomic Writes**: Atomic write-to-temp and rename (`os.WriteFile` -> `.tmp` -> `os.Rename`).
-- **100% Native Standard Library**: Built strictly with standard Go packages (`sync`, `sync/atomic`, `os`, `encoding/json`, `path/filepath`, `crypto/rand`, `crypto/sha256`).
+- **100% Native Standard Library**: Built strictly with standard Go packages (`crypto/rand`, `crypto/sha256`, `crypto/x509`, `crypto/rsa`, `sync`, `sync/atomic`, `os`, `encoding/json`, `net/http`).
 
 ---
 
@@ -116,21 +134,23 @@ Domain Storage Files (data/users.json, data/sessions.json, data/orders.json, dat
 
 ```text
 teachar.in/
-├── main.go                 # Application entry point & service initialization
+├── main.go                 # Application entry point, TLS HTTPS server & service initialization
 ├── README.MD               # Project documentation
 │
-├── config/                 # Environment configuration loading
+├── config/                 # Environment & TLS configuration loading
 │   ├── config.go
 │   └── config_test.go
 │
-├── models/                 # Data structures (MenuItem, User, Session, Order, InventoryItem, ExpenseEntry, TaxAuditReport, AuditLog)
+├── models/                 # Data structures (MenuItem, User, Session, Order, InventoryItem, ExpenseEntry, APIKey, AuditLog)
 │   ├── menu.go
 │   ├── inventory.go
+│   ├── security.go
 │   └── store.go
 │
 ├── repository/             # Data access layer (Interfaces, MultiFileRepository & JSONRepository)
 │   ├── menu_repository.go
 │   ├── inventory_repository.go
+│   ├── security_repository.go
 │   ├── multi_file_repository.go
 │   ├── multi_file_repository_test.go
 │   ├── json_repository.go
@@ -141,17 +161,20 @@ teachar.in/
 │   ├── auth_service.go
 │   ├── order_service.go
 │   ├── inventory_service.go
-│   ├── inventory_service_test.go
+│   ├── security_service.go
+│   ├── security_service_test.go
 │   ├── audit_service.go
 │   ├── report_service.go
 │   ├── coupon_service.go
 │   └── menu_service_test.go
 │
-├── middleware/             # HTTP middleware (Logging, Security, Auth, RequireAdmin, RequireRole)
+├── middleware/             # HTTP middleware (Rate Limiter, Security Headers, HSTS, Auth, RequireAPIKey, RequireAdmin, RequireRole)
 │   ├── middleware.go
+│   ├── rate_limiter.go
+│   ├── rate_limiter_test.go
 │   └── middleware_test.go
 │
-├── handlers/               # HTTP handlers for web pages, client, auth, staff, admin, store inventory & tax audit
+├── handlers/               # HTTP handlers for web pages, client, auth, staff, admin, API keys, store inventory & tax audit
 │   ├── handlers.go
 │   ├── pages.go
 │   ├── api.go
@@ -159,6 +182,7 @@ teachar.in/
 │   ├── client.go
 │   ├── admin.go
 │   ├── inventory.go
+│   ├── security.go
 │   └── handlers_test.go
 │
 ├── templates/              # HTML5 Semantic Templates
@@ -177,6 +201,7 @@ teachar.in/
 │   ├── admin_inventory.html# Store Inventory & Capital Asset Register
 │   ├── admin_expenses.html # Operating Expenditure Log & Tax Audit Statement
 │   ├── admin_staff_performance.html # Staff speed, SLA compliance & 5-star ratings board
+│   ├── admin_api_keys.html # API Authentication Keys & Developer Access portal
 │   ├── admin_reports.html  # Executive sales analytics & period filters
 │   └── admin_coupons.html  # Promo codes & discount coupon management
 │
@@ -192,6 +217,7 @@ teachar.in/
     ├── menu.json           # Menu items
     ├── inventory.json      # Raw materials & capital asset inventory
     ├── expenses.json       # Operating expenditure vouchers
+    ├── api_keys.json       # SHA-256 hashed API authentication keys
     └── audit_logs.json     # System audit trail logs
 ```
 
@@ -256,6 +282,10 @@ The application is configured using environment variables with sensible defaults
 | `APP_HOST` | Host address to bind to | `0.0.0.0` |
 | `APP_PORT` | Port number to listen on | `8080` |
 | `APP_ENV` | Application environment | `development` |
+| `ENABLE_TLS` | Enable HTTPS TLS Server | `false` |
+| `SSL_CERT_FILE` | Path to TLS certificate PEM file | `data/certs/cert.pem` |
+| `SSL_KEY_FILE` | Path to TLS private key PEM file | `data/certs/key.pem` |
+| `SSL_PORT` | HTTPS port number | `8443` |
 
 ---
 
