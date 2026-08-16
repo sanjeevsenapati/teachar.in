@@ -18,18 +18,22 @@ import (
 )
 
 type dbSchema struct {
-	NextUserID          int64             `json:"next_user_id"`
-	NextMenuItemID      int64             `json:"next_menu_item_id"`
-	NextOrderID         int64             `json:"next_order_id"`
-	NextAuditLogID      int64             `json:"next_audit_log_id"`
-	NextCouponID        int64             `json:"next_coupon_id"`
-	Users               []models.User     `json:"users"`
-	Sessions            []models.Session  `json:"sessions"`
-	MenuItems           []models.MenuItem `json:"menu_items"`
-	Orders              []models.Order    `json:"orders"`
-	AuditLogs           []models.AuditLog `json:"audit_logs"`
-	Coupons             []models.Coupon   `json:"coupons"`
-	CancellationReasons []string          `json:"cancellation_reasons"`
+	NextUserID          int64                  `json:"next_user_id"`
+	NextMenuItemID      int64                  `json:"next_menu_item_id"`
+	NextOrderID         int64                  `json:"next_order_id"`
+	NextAuditLogID      int64                  `json:"next_audit_log_id"`
+	NextCouponID        int64                  `json:"next_coupon_id"`
+	NextInventoryID     int64                  `json:"next_inventory_id"`
+	NextExpenseID       int64                  `json:"next_expense_id"`
+	Users               []models.User          `json:"users"`
+	Sessions            []models.Session       `json:"sessions"`
+	MenuItems           []models.MenuItem      `json:"menu_items"`
+	Orders              []models.Order         `json:"orders"`
+	AuditLogs           []models.AuditLog      `json:"audit_logs"`
+	Coupons             []models.Coupon        `json:"coupons"`
+	InventoryItems      []models.InventoryItem `json:"inventory_items"`
+	Expenses            []models.ExpenseEntry  `json:"expenses"`
+	CancellationReasons []string               `json:"cancellation_reasons"`
 }
 
 // JSONRepository is a thread-safe, file-backed database using only standard library packages.
@@ -740,5 +744,170 @@ func (r *JSONRepository) DeleteCoupon(ctx context.Context, id int64) error {
 		return errors.New("coupon not found")
 	}
 	r.data.Coupons = updated
+	return r.save()
+}
+
+func (r *JSONRepository) GetAllInventoryItems(ctx context.Context) ([]models.InventoryItem, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	result := make([]models.InventoryItem, len(r.data.InventoryItems))
+	copy(result, r.data.InventoryItems)
+	return result, nil
+}
+
+func (r *JSONRepository) GetInventoryItemByID(ctx context.Context, id int64) (*models.InventoryItem, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	for _, item := range r.data.InventoryItems {
+		if item.ID == id {
+			return &item, nil
+		}
+	}
+	return nil, errors.New("inventory item not found")
+}
+
+func (r *JSONRepository) SaveInventoryItem(ctx context.Context, item models.InventoryItem) (*models.InventoryItem, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	now := time.Now()
+	item.UpdatedAt = now
+	item.TotalValue = item.StockQuantity * item.UnitCost
+
+	if item.Category == "Equipment" || item.Category == "Furniture" {
+		item.Status = "Active Asset"
+	} else if item.StockQuantity <= 0 {
+		item.Status = "Out of Stock"
+	} else if item.StockQuantity <= item.ReorderLevel {
+		item.Status = "Low Stock"
+	} else {
+		item.Status = "In Stock"
+	}
+
+	if item.ID == 0 {
+		if r.data.NextInventoryID <= 0 {
+			r.data.NextInventoryID = 1
+		}
+		item.ID = r.data.NextInventoryID
+		r.data.NextInventoryID++
+		r.data.InventoryItems = append(r.data.InventoryItems, item)
+		if err := r.save(); err != nil {
+			return nil, err
+		}
+		return &r.data.InventoryItems[len(r.data.InventoryItems)-1], nil
+	}
+
+	for i, existing := range r.data.InventoryItems {
+		if existing.ID == item.ID {
+			r.data.InventoryItems[i] = item
+			if err := r.save(); err != nil {
+				return nil, err
+			}
+			return &r.data.InventoryItems[i], nil
+		}
+	}
+	return nil, errors.New("inventory item not found")
+}
+
+func (r *JSONRepository) UpdateStockQuantity(ctx context.Context, id int64, delta float64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for i, item := range r.data.InventoryItems {
+		if item.ID == id {
+			r.data.InventoryItems[i].StockQuantity += delta
+			if r.data.InventoryItems[i].StockQuantity < 0 {
+				r.data.InventoryItems[i].StockQuantity = 0
+			}
+			r.data.InventoryItems[i].TotalValue = r.data.InventoryItems[i].StockQuantity * r.data.InventoryItems[i].UnitCost
+			r.data.InventoryItems[i].UpdatedAt = time.Now()
+
+			if r.data.InventoryItems[i].StockQuantity <= 0 {
+				r.data.InventoryItems[i].Status = "Out of Stock"
+			} else if r.data.InventoryItems[i].StockQuantity <= r.data.InventoryItems[i].ReorderLevel {
+				r.data.InventoryItems[i].Status = "Low Stock"
+			} else {
+				r.data.InventoryItems[i].Status = "In Stock"
+			}
+			return r.save()
+		}
+	}
+	return errors.New("inventory item not found")
+}
+
+func (r *JSONRepository) DeleteInventoryItem(ctx context.Context, id int64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	var updated []models.InventoryItem
+	for _, item := range r.data.InventoryItems {
+		if item.ID != id {
+			updated = append(updated, item)
+		}
+	}
+	r.data.InventoryItems = updated
+	return r.save()
+}
+
+func (r *JSONRepository) GetAllExpenses(ctx context.Context) ([]models.ExpenseEntry, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	result := make([]models.ExpenseEntry, len(r.data.Expenses))
+	copy(result, r.data.Expenses)
+	return result, nil
+}
+
+func (r *JSONRepository) SaveExpense(ctx context.Context, expense models.ExpenseEntry) (*models.ExpenseEntry, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	now := time.Now()
+	expense.CreatedAt = now
+	if expense.ExpenseDate.IsZero() {
+		expense.ExpenseDate = now
+	}
+	if expense.TotalAmount <= 0 && expense.Quantity > 0 && expense.UnitPrice > 0 {
+		expense.TotalAmount = expense.Quantity * expense.UnitPrice
+	}
+
+	if expense.ID == 0 {
+		if r.data.NextExpenseID <= 0 {
+			r.data.NextExpenseID = 1
+		}
+		expense.ID = r.data.NextExpenseID
+		r.data.NextExpenseID++
+		r.data.Expenses = append(r.data.Expenses, expense)
+		if err := r.save(); err != nil {
+			return nil, err
+		}
+		return &r.data.Expenses[len(r.data.Expenses)-1], nil
+	}
+
+	for i, exp := range r.data.Expenses {
+		if exp.ID == expense.ID {
+			r.data.Expenses[i] = expense
+			if err := r.save(); err != nil {
+				return nil, err
+			}
+			return &r.data.Expenses[i], nil
+		}
+	}
+	return nil, errors.New("expense entry not found")
+}
+
+func (r *JSONRepository) DeleteExpense(ctx context.Context, id int64) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	var updated []models.ExpenseEntry
+	for _, exp := range r.data.Expenses {
+		if exp.ID != id {
+			updated = append(updated, exp)
+		}
+	}
+	r.data.Expenses = updated
 	return r.save()
 }

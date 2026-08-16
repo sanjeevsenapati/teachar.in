@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 134,
+  "next_audit_log_id": 145,
   "audit_logs": [
     {
       "id": 1,
@@ -1330,6 +1330,116 @@
       "action": "REVIEW_SUBMITTED",
       "details": "Submitted 3-Star review for Order #20",
       "ip_address": "[::1]:56016"
+    },
+    {
+      "id": 134,
+      "timestamp": "2026-08-16T17:24:25.727134+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56034"
+    },
+    {
+      "id": 135,
+      "timestamp": "2026-08-16T17:32:40.61878+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "INVENTORY_ITEM_SAVED",
+      "details": "Saved Inventory Item 'Tea' (Category: Raw Material, Qty: 5.00 kg)",
+      "ip_address": "[::1]:56134"
+    },
+    {
+      "id": 136,
+      "timestamp": "2026-08-16T17:33:24.562716+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56157"
+    },
+    {
+      "id": 137,
+      "timestamp": "2026-08-16T17:33:29.3021+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "INVENTORY_ITEM_SAVED",
+      "details": "Saved Inventory Item 'Assam CTC Tea Leaves' (Category: Raw Material, Qty: 50.00 kg)",
+      "ip_address": "[::1]:56158"
+    },
+    {
+      "id": 138,
+      "timestamp": "2026-08-16T17:33:38.263342+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "INVENTORY_ITEM_SAVED",
+      "details": "Saved Inventory Item 'Commercial Espresso Machine' (Category: Equipment, Qty: 1.00 units)",
+      "ip_address": "[::1]:56161"
+    },
+    {
+      "id": 139,
+      "timestamp": "2026-08-16T17:33:42.585103+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "EXPENSE_VOUCHER_SAVED",
+      "details": "Logged Expense 'Monthly Cafe Rent for August 2026' (Category: Rent, Amount: ₹35000.00)",
+      "ip_address": "[::1]:56163"
+    },
+    {
+      "id": 140,
+      "timestamp": "2026-08-16T17:40:18.355612+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "INVENTORY_ITEM_SAVED",
+      "details": "Saved Inventory Item 'Table' (Category: Furniture, Qty: 100.00 units)",
+      "ip_address": "[::1]:56248"
+    },
+    {
+      "id": 141,
+      "timestamp": "2026-08-16T17:48:43.646853+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "EXPENSE_VOUCHER_SAVED",
+      "details": "Logged Expense 'Table' (Category: Raw Materials, Amount: ₹20000.00)",
+      "ip_address": "[::1]:56419"
+    },
+    {
+      "id": 142,
+      "timestamp": "2026-08-16T17:49:17.444548+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56427"
+    },
+    {
+      "id": 143,
+      "timestamp": "2026-08-16T17:52:03.931136+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:56467"
+    },
+    {
+      "id": 144,
+      "timestamp": "2026-08-16T17:52:51.439218+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #21 status to 'Completed' (Handled by: TEACHAR Admin)",
+      "ip_address": "[::1]:56467"
     }
   ]
 }

@@ -1,0 +1,58 @@
+{
+  "next_inventory_id": 5,
+  "inventory_items": [
+    {
+      "id": 1,
+      "category": "Raw Material",
+      "item_name": "Tea",
+      "unit": "kg",
+      "stock_quantity": 5,
+      "reorder_level": 10,
+      "unit_cost": 3000,
+      "total_value": 15000,
+      "supplier": "TATA",
+      "status": "Low Stock",
+      "updated_at": "2026-08-16T17:32:40.617376+05:30"
+    },
+    {
+      "id": 2,
+      "category": "Raw Material",
+      "item_name": "Assam CTC Tea Leaves",
+      "unit": "kg",
+      "stock_quantity": 50,
+      "reorder_level": 10,
+      "unit_cost": 350,
+      "total_value": 17500,
+      "supplier": "Chai Traders Pvt Ltd",
+      "status": "In Stock",
+      "updated_at": "2026-08-16T17:33:29.301688+05:30"
+    },
+    {
+      "id": 3,
+      "category": "Equipment",
+      "item_name": "Commercial Espresso Machine",
+      "unit": "units",
+      "stock_quantity": 1,
+      "reorder_level": 0,
+      "unit_cost": 125000,
+      "total_value": 125000,
+      "supplier": "Cafe Tech India",
+      "serial_number": "EXP-2026-8812",
+      "status": "Active Asset",
+      "updated_at": "2026-08-16T17:33:38.263028+05:30"
+    },
+    {
+      "id": 4,
+      "category": "Furniture",
+      "item_name": "Table",
+      "unit": "units",
+      "stock_quantity": 100,
+      "reorder_level": 10,
+      "unit_cost": 200,
+      "total_value": 20000,
+      "supplier": "Nilkamal",
+      "status": "Active Asset",
+      "updated_at": "2026-08-16T17:40:18.353723+05:30"
+    }
+  ]
+}

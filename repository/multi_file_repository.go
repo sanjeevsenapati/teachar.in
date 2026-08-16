@@ -45,6 +45,16 @@ type couponsSchema struct {
 	Coupons      []models.Coupon `json:"coupons"`
 }
 
+type inventorySchema struct {
+	NextInventoryID int64                  `json:"next_inventory_id"`
+	InventoryItems  []models.InventoryItem `json:"inventory_items"`
+}
+
+type expensesSchema struct {
+	NextExpenseID int64                 `json:"next_expense_id"`
+	Expenses      []models.ExpenseEntry `json:"expenses"`
+}
+
 // MultiFileRepository provides domain-isolated, fine-grained locking, O(1) in-memory indexed storage using standard library packages.
 type MultiFileRepository struct {
 	dataDir string
@@ -56,6 +66,8 @@ type MultiFileRepository struct {
 	ordersMu    sync.RWMutex
 	auditLogsMu sync.RWMutex
 	couponsMu   sync.RWMutex
+	inventoryMu sync.RWMutex
+	expensesMu  sync.RWMutex
 
 	// Data File Paths
 	usersFile     string
@@ -64,14 +76,17 @@ type MultiFileRepository struct {
 	ordersFile    string
 	auditLogsFile string
 	couponsFile   string
+	inventoryFile string
+	expensesFile  string
 
 	// O(1) In-Memory Fast Lookup Maps & Caches
-	usersByEmail    map[string]*models.User
-	usersByID       map[int64]*models.User
-	sessionsByToken map[string]*models.Session
-	menuItemsByID   map[int64]*models.MenuItem
-	ordersByID      map[int64]*models.Order
-	couponsByCode   map[string]*models.Coupon
+	usersByEmail       map[string]*models.User
+	usersByID          map[int64]*models.User
+	sessionsByToken    map[string]*models.Session
+	menuItemsByID      map[int64]*models.MenuItem
+	ordersByID         map[int64]*models.Order
+	couponsByCode      map[string]*models.Coupon
+	inventoryItemsByID map[int64]*models.InventoryItem
 
 	// Domain Data Arrays
 	users               []models.User
@@ -81,6 +96,8 @@ type MultiFileRepository struct {
 	auditLogs           []models.AuditLog
 	coupons             []models.Coupon
 	cancellationReasons []string
+	inventoryItems      []models.InventoryItem
+	expenses            []models.ExpenseEntry
 
 	// Atomic Sequence Counters for High-Concurrency ID Generation
 	nextUserID     atomic.Int64
@@ -88,6 +105,8 @@ type MultiFileRepository struct {
 	nextOrderID    atomic.Int64
 	nextAuditLogID atomic.Int64
 	nextCouponID   atomic.Int64
+	nextInventoryID atomic.Int64
+	nextExpenseID   atomic.Int64
 }
 
 // NewMultiFileRepository initializes and loads domain-isolated files, with automatic migration from old db.json if present.
@@ -97,19 +116,22 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 	}
 
 	repo := &MultiFileRepository{
-		dataDir:         dataDir,
-		usersFile:       filepath.Join(dataDir, "users.json"),
-		sessionsFile:    filepath.Join(dataDir, "sessions.json"),
-		menuFile:        filepath.Join(dataDir, "menu.json"),
-		ordersFile:      filepath.Join(dataDir, "orders.json"),
-		auditLogsFile:   filepath.Join(dataDir, "audit_logs.json"),
-		couponsFile:     filepath.Join(dataDir, "coupons.json"),
-		usersByEmail:    make(map[string]*models.User),
-		usersByID:       make(map[int64]*models.User),
-		sessionsByToken: make(map[string]*models.Session),
-		menuItemsByID:   make(map[int64]*models.MenuItem),
-		ordersByID:      make(map[int64]*models.Order),
-		couponsByCode:   make(map[string]*models.Coupon),
+		dataDir:            dataDir,
+		usersFile:          filepath.Join(dataDir, "users.json"),
+		sessionsFile:       filepath.Join(dataDir, "sessions.json"),
+		menuFile:           filepath.Join(dataDir, "menu.json"),
+		ordersFile:         filepath.Join(dataDir, "orders.json"),
+		auditLogsFile:      filepath.Join(dataDir, "audit_logs.json"),
+		couponsFile:        filepath.Join(dataDir, "coupons.json"),
+		inventoryFile:      filepath.Join(dataDir, "inventory.json"),
+		expensesFile:       filepath.Join(dataDir, "expenses.json"),
+		usersByEmail:       make(map[string]*models.User),
+		usersByID:          make(map[int64]*models.User),
+		sessionsByToken:    make(map[string]*models.Session),
+		menuItemsByID:      make(map[int64]*models.MenuItem),
+		ordersByID:         make(map[int64]*models.Order),
+		couponsByCode:      make(map[string]*models.Coupon),
+		inventoryItemsByID: make(map[int64]*models.InventoryItem),
 	}
 
 	// Check if migration from legacy db.json is required
@@ -140,6 +162,12 @@ func NewMultiFileRepository(dataDir string) (*MultiFileRepository, error) {
 	}
 	if err := repo.loadCoupons(); err != nil {
 		return nil, fmt.Errorf("failed loading coupons storage: %w", err)
+	}
+	if err := repo.loadInventory(); err != nil {
+		return nil, fmt.Errorf("failed loading inventory storage: %w", err)
+	}
+	if err := repo.loadExpenses(); err != nil {
+		return nil, fmt.Errorf("failed loading expenses storage: %w", err)
 	}
 
 	return repo, nil
@@ -1055,4 +1083,254 @@ func (r *MultiFileRepository) DeleteCoupon(ctx context.Context, id int64) error 
 	}
 	r.coupons = updated
 	return r.saveCouponsLocked()
+}
+
+// Inventory & Expense domain persistence methods
+func (r *MultiFileRepository) loadInventory() error {
+	r.inventoryMu.Lock()
+	defer r.inventoryMu.Unlock()
+
+	if _, err := os.Stat(r.inventoryFile); os.IsNotExist(err) {
+		r.inventoryItems = []models.InventoryItem{}
+		r.nextInventoryID.Store(1)
+		return r.saveInventoryLocked()
+	}
+
+	bytes, err := os.ReadFile(r.inventoryFile)
+	if err != nil {
+		return err
+	}
+
+	var schema inventorySchema
+	if err := json.Unmarshal(bytes, &schema); err != nil {
+		return err
+	}
+
+	r.inventoryItems = schema.InventoryItems
+	r.inventoryItemsByID = make(map[int64]*models.InventoryItem)
+	var maxID int64
+	for i := range r.inventoryItems {
+		item := &r.inventoryItems[i]
+		r.inventoryItemsByID[item.ID] = item
+		if item.ID > maxID {
+			maxID = item.ID
+		}
+	}
+	if schema.NextInventoryID > maxID {
+		maxID = schema.NextInventoryID - 1
+	}
+	r.nextInventoryID.Store(maxID + 1)
+	return nil
+}
+
+func (r *MultiFileRepository) saveInventoryLocked() error {
+	schema := inventorySchema{
+		NextInventoryID: r.nextInventoryID.Load(),
+		InventoryItems:  r.inventoryItems,
+	}
+	return saveAtomic(r.inventoryFile, schema)
+}
+
+func (r *MultiFileRepository) loadExpenses() error {
+	r.expensesMu.Lock()
+	defer r.expensesMu.Unlock()
+
+	if _, err := os.Stat(r.expensesFile); os.IsNotExist(err) {
+		r.expenses = []models.ExpenseEntry{}
+		r.nextExpenseID.Store(1)
+		return r.saveExpensesLocked()
+	}
+
+	bytes, err := os.ReadFile(r.expensesFile)
+	if err != nil {
+		return err
+	}
+
+	var schema expensesSchema
+	if err := json.Unmarshal(bytes, &schema); err != nil {
+		return err
+	}
+
+	r.expenses = schema.Expenses
+	var maxID int64
+	for _, exp := range r.expenses {
+		if exp.ID > maxID {
+			maxID = exp.ID
+		}
+	}
+	if schema.NextExpenseID > maxID {
+		maxID = schema.NextExpenseID - 1
+	}
+	r.nextExpenseID.Store(maxID + 1)
+	return nil
+}
+
+func (r *MultiFileRepository) saveExpensesLocked() error {
+	schema := expensesSchema{
+		NextExpenseID: r.nextExpenseID.Load(),
+		Expenses:      r.expenses,
+	}
+	return saveAtomic(r.expensesFile, schema)
+}
+
+func (r *MultiFileRepository) GetAllInventoryItems(ctx context.Context) ([]models.InventoryItem, error) {
+	r.inventoryMu.RLock()
+	defer r.inventoryMu.RUnlock()
+
+	result := make([]models.InventoryItem, len(r.inventoryItems))
+	copy(result, r.inventoryItems)
+	return result, nil
+}
+
+func (r *MultiFileRepository) GetInventoryItemByID(ctx context.Context, id int64) (*models.InventoryItem, error) {
+	r.inventoryMu.RLock()
+	defer r.inventoryMu.RUnlock()
+
+	item, exists := r.inventoryItemsByID[id]
+	if !exists {
+		return nil, errors.New("inventory item not found")
+	}
+	cpy := *item
+	return &cpy, nil
+}
+
+func (r *MultiFileRepository) SaveInventoryItem(ctx context.Context, item models.InventoryItem) (*models.InventoryItem, error) {
+	r.inventoryMu.Lock()
+	defer r.inventoryMu.Unlock()
+
+	now := time.Now()
+	item.UpdatedAt = now
+	item.TotalValue = item.StockQuantity * item.UnitCost
+
+	if item.Category == "Equipment" || item.Category == "Furniture" {
+		item.Status = "Active Asset"
+	} else if item.StockQuantity <= 0 {
+		item.Status = "Out of Stock"
+	} else if item.StockQuantity <= item.ReorderLevel {
+		item.Status = "Low Stock"
+	} else {
+		item.Status = "In Stock"
+	}
+
+	if item.ID == 0 {
+		item.ID = r.nextInventoryID.Add(1) - 1
+		r.inventoryItems = append(r.inventoryItems, item)
+		saved := &r.inventoryItems[len(r.inventoryItems)-1]
+		r.inventoryItemsByID[item.ID] = saved
+		if err := r.saveInventoryLocked(); err != nil {
+			return nil, err
+		}
+		return saved, nil
+	}
+
+	existing, exists := r.inventoryItemsByID[item.ID]
+	if !exists {
+		return nil, errors.New("inventory item not found for update")
+	}
+
+	*existing = item
+	if err := r.saveInventoryLocked(); err != nil {
+		return nil, err
+	}
+	return existing, nil
+}
+
+func (r *MultiFileRepository) UpdateStockQuantity(ctx context.Context, id int64, delta float64) error {
+	r.inventoryMu.Lock()
+	defer r.inventoryMu.Unlock()
+
+	item, exists := r.inventoryItemsByID[id]
+	if !exists {
+		return errors.New("inventory item not found")
+	}
+
+	item.StockQuantity += delta
+	if item.StockQuantity < 0 {
+		item.StockQuantity = 0
+	}
+	item.TotalValue = item.StockQuantity * item.UnitCost
+	item.UpdatedAt = time.Now()
+
+	if item.StockQuantity <= 0 {
+		item.Status = "Out of Stock"
+	} else if item.StockQuantity <= item.ReorderLevel {
+		item.Status = "Low Stock"
+	} else {
+		item.Status = "In Stock"
+	}
+
+	return r.saveInventoryLocked()
+}
+
+func (r *MultiFileRepository) DeleteInventoryItem(ctx context.Context, id int64) error {
+	r.inventoryMu.Lock()
+	defer r.inventoryMu.Unlock()
+
+	delete(r.inventoryItemsByID, id)
+	var updated []models.InventoryItem
+	for _, item := range r.inventoryItems {
+		if item.ID != id {
+			updated = append(updated, item)
+		}
+	}
+	r.inventoryItems = updated
+	return r.saveInventoryLocked()
+}
+
+func (r *MultiFileRepository) GetAllExpenses(ctx context.Context) ([]models.ExpenseEntry, error) {
+	r.expensesMu.RLock()
+	defer r.expensesMu.RUnlock()
+
+	result := make([]models.ExpenseEntry, len(r.expenses))
+	copy(result, r.expenses)
+	return result, nil
+}
+
+func (r *MultiFileRepository) SaveExpense(ctx context.Context, expense models.ExpenseEntry) (*models.ExpenseEntry, error) {
+	r.expensesMu.Lock()
+	defer r.expensesMu.Unlock()
+
+	now := time.Now()
+	expense.CreatedAt = now
+	if expense.ExpenseDate.IsZero() {
+		expense.ExpenseDate = now
+	}
+	if expense.TotalAmount <= 0 && expense.Quantity > 0 && expense.UnitPrice > 0 {
+		expense.TotalAmount = expense.Quantity * expense.UnitPrice
+	}
+
+	if expense.ID == 0 {
+		expense.ID = r.nextExpenseID.Add(1) - 1
+		r.expenses = append(r.expenses, expense)
+		saved := &r.expenses[len(r.expenses)-1]
+		if err := r.saveExpensesLocked(); err != nil {
+			return nil, err
+		}
+		return saved, nil
+	}
+
+	for i, exp := range r.expenses {
+		if exp.ID == expense.ID {
+			r.expenses[i] = expense
+			if err := r.saveExpensesLocked(); err != nil {
+				return nil, err
+			}
+			return &r.expenses[i], nil
+		}
+	}
+	return nil, errors.New("expense entry not found")
+}
+
+func (r *MultiFileRepository) DeleteExpense(ctx context.Context, id int64) error {
+	r.expensesMu.Lock()
+	defer r.expensesMu.Unlock()
+
+	var updated []models.ExpenseEntry
+	for _, exp := range r.expenses {
+		if exp.ID != id {
+			updated = append(updated, exp)
+		}
+	}
+	r.expenses = updated
+	return r.saveExpensesLocked()
 }

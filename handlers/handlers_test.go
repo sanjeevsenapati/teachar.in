@@ -32,16 +32,18 @@ func setupTestApp(t *testing.T) http.Handler {
 	orderService := services.NewOrderService(repo, couponService)
 	auditService := services.NewAuditService(repo)
 	reportService := services.NewReportService(repo, repo, repo)
+	inventoryService := services.NewInventoryService(repo, repo)
 
 	app := &handlers.Application{
-		Logger:        logger,
-		Config:        cfg,
-		MenuService:   menuService,
-		AuthService:   authService,
-		OrderService:  orderService,
-		AuditService:  auditService,
-		ReportService: reportService,
-		CouponService: couponService,
+		Logger:           logger,
+		Config:           cfg,
+		MenuService:      menuService,
+		AuthService:      authService,
+		OrderService:     orderService,
+		AuditService:     auditService,
+		ReportService:    reportService,
+		CouponService:    couponService,
+		InventoryService: inventoryService,
 	}
 
 	mux := http.NewServeMux()

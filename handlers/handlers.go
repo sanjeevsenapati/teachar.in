@@ -16,14 +16,15 @@ import (
 
 // Application holds the application-wide dependencies.
 type Application struct {
-	Logger        *slog.Logger
-	Config        *config.Config
-	MenuService   *services.MenuService
-	AuthService   *services.AuthService
-	OrderService  *services.OrderService
-	AuditService  *services.AuditService
-	ReportService *services.ReportService
-	CouponService *services.CouponService
+	Logger           *slog.Logger
+	Config           *config.Config
+	MenuService      *services.MenuService
+	AuthService      *services.AuthService
+	OrderService     *services.OrderService
+	AuditService     *services.AuditService
+	ReportService    *services.ReportService
+	CouponService    *services.CouponService
+	InventoryService *services.InventoryService
 }
 
 // RegisterRoutes sets up all the routes for the application.
@@ -49,24 +50,31 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	router.HandleFunc("POST /register", app.registerSubmitHandler)
 	router.HandleFunc("POST /logout", app.logoutHandler)
 
-	// Client handlers
-	router.HandleFunc("GET /orders", app.clientOrdersHandler)
+	// Client dashboard handlers
 	router.HandleFunc("GET /account", app.clientAccountHandler)
+	router.HandleFunc("GET /orders", app.clientOrdersHandler)
 	router.HandleFunc("POST /api/orders", app.apiCreateOrderHandler)
 	router.HandleFunc("POST /api/orders/review", app.apiSubmitOrderReviewHandler)
 	router.HandleFunc("POST /api/coupons/validate", app.apiValidateCouponHandler)
 
-	// Admin / Staff / Superadmin handlers
+	// Staff and Admin shared handlers
 	router.Handle("GET /admin", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminDashboardHandler)))
 	router.Handle("GET /admin/menu", mw.RequireAdmin(http.HandlerFunc(app.adminMenuHandler)))
 	router.Handle("POST /admin/menu/add", mw.RequireAdmin(http.HandlerFunc(app.adminAddMenuItemHandler)))
-	router.Handle("POST /admin/menu/edit", mw.RequireAdmin(http.HandlerFunc(app.adminEditMenuItemHandler)))
-	router.Handle("POST /admin/menu/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteMenuItemHandler)))
 	router.Handle("POST /admin/menu/toggle", mw.RequireAdmin(http.HandlerFunc(app.adminToggleMenuItemHandler)))
 	router.Handle("GET /admin/orders", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminOrdersHandler)))
 	router.Handle("POST /admin/orders/status", mw.RequireStaffOrAdmin(http.HandlerFunc(app.adminUpdateOrderStatusHandler)))
 	router.Handle("POST /admin/orders/assign", mw.RequireAdmin(http.HandlerFunc(app.adminAssignOrderHandler)))
 	router.Handle("GET /admin/staff-performance", mw.RequireAdmin(http.HandlerFunc(app.adminStaffPerformanceHandler)))
+
+	// Store Inventory & Expenditure routes
+	router.Handle("GET /admin/inventory", mw.RequireAdmin(http.HandlerFunc(app.adminInventoryHandler)))
+	router.Handle("POST /admin/inventory/add", mw.RequireAdmin(http.HandlerFunc(app.adminAddInventoryHandler)))
+	router.Handle("POST /admin/inventory/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteInventoryHandler)))
+	router.Handle("GET /admin/expenses", mw.RequireAdmin(http.HandlerFunc(app.adminExpensesHandler)))
+	router.Handle("POST /admin/expenses/add", mw.RequireAdmin(http.HandlerFunc(app.adminAddExpenseHandler)))
+	router.Handle("POST /admin/expenses/delete", mw.RequireAdmin(http.HandlerFunc(app.adminDeleteExpenseHandler)))
+	router.Handle("GET /admin/inventory/export", mw.RequireAdmin(http.HandlerFunc(app.adminExportInventoryHandler)))
 
 	// Superadmin specific handlers
 	router.Handle("GET /admin/users", mw.RequireSuperadmin(http.HandlerFunc(app.adminUsersHandler)))

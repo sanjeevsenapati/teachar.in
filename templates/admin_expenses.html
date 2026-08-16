@@ -1,0 +1,275 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Financial Year Tax & Audit Portal</span>
+            <h1 class="page-title" style="margin:0; font-size:2.2rem; font-weight:800; color:var(--text-main);">Operating Expenditures & Tax Audit</h1>
+            <p class="text-muted" style="margin-top:0.35rem; font-size:0.95rem;">Track cafe rent, electricity, maintenance, transportation, and raw material purchases for tax filings and CA audit preparation.</p>
+        </div>
+        <div class="admin-nav-btns" style="display:flex; gap:0.75rem;">
+            <a href="/admin/inventory" class="btn btn-secondary"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory</a>
+            <button class="btn btn-primary" onclick="openAddExpenseModal()"><i class="fa-solid fa-plus-circle"></i> Log Expense / Purchase</button>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section" style="padding: 2.5rem 0 6rem; background: var(--bg-main);">
+    <div class="container" style="display:flex; flex-direction:column; gap:2.5rem;">
+        
+        <!-- Tax Audit Statement Card (Matched to TEACHAR.in Design System) -->
+        <div class="admin-table-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-lg); box-shadow:var(--shadow-sm); padding:0; overflow:hidden;">
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding:1.5rem; border-bottom:1px solid var(--border-color); background:var(--bg-surface);">
+                <div>
+                    <h3 style="font-size:1.2rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-scale-balanced text-primary"></i> Financial Year Tax & Audit Statement
+                    </h3>
+                    <small class="text-muted">Automated COGS, OpEx, EBITDA, GST & Income Tax Estimator</small>
+                </div>
+                <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+                    <form method="GET" action="/admin/expenses" style="display:inline-block;">
+                        <select name="period" onchange="this.form.submit()" class="form-select" style="font-weight:700; padding:0.35rem 0.75rem; border:1px solid var(--border-color); border-radius:var(--border-radius-sm); font-size:0.85rem;">
+                            <option value="fy" {{if eq .Period "fy"}}selected{{end}}>Current Financial Year (FY 2025-26)</option>
+                            <option value="monthly" {{if eq .Period "monthly"}}selected{{end}}>Last 30 Days</option>
+                            <option value="today" {{if eq .Period "today"}}selected{{end}}>Today</option>
+                        </select>
+                    </form>
+                    <a href="/admin/inventory/export?period={{.Period}}" class="btn btn-primary btn-sm" style="font-weight:700;"><i class="fa-solid fa-download"></i> Export CA Audit CSV</a>
+                </div>
+            </div>
+
+            <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.5rem;">
+                
+                <!-- 4 Metrics Side-by-Side Horizontal Row Grid -->
+                <div class="reports-metrics-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; width: 100%;">
+                    
+                    <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                        <div class="metric-icon" style="background:#d1fae5; color:#047857; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                        </div>
+                        <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                            <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Gross Revenue</span>
+                            <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#047857; margin:0;">₹{{printf "%.2f" .AuditReport.GrossRevenue}}</h3>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                        <div class="metric-icon" style="background:var(--primary-light); color:var(--primary); width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                            <i class="fa-solid fa-wheat-awn"></i>
+                        </div>
+                        <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                            <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">COGS (Materials)</span>
+                            <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--primary); margin:0;">₹{{printf "%.2f" .AuditReport.COGS}}</h3>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                        <div class="metric-icon" style="background:#fee2e2; color:#dc2626; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                            <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Operating Expenses</span>
+                            <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#dc2626; margin:0;">₹{{printf "%.2f" .AuditReport.OperatingExpenses}}</h3>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                        <div class="metric-icon" style="background:#e0f2fe; color:#0284c7; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                            <i class="fa-solid fa-couch"></i>
+                        </div>
+                        <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                            <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Capital Assets</span>
+                            <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#0284c7; margin:0;">₹{{printf "%.2f" .AuditReport.TotalCapitalAssets}}</h3>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom EBITDA & Tax Estimation Bar -->
+                <div style="background:var(--bg-main); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.25rem; align-items:center;">
+                    <div>
+                        <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Net Operating Profit (EBITDA):</span>
+                        <h3 style="margin:0.2rem 0 0; font-family:var(--font-heading); font-size:1.5rem; font-weight:800; color:{{if ge .AuditReport.NetOperatingProfit 0.0}}#059669{{else}}#dc2626{{end}};">
+                            ₹{{printf "%.2f" .AuditReport.NetOperatingProfit}}
+                        </h3>
+                    </div>
+
+                    <div>
+                        <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Estimated Output GST Payable (5%):</span>
+                        <h3 style="margin:0.2rem 0 0; font-family:var(--font-heading); font-size:1.5rem; font-weight:800; color:#d97706;">
+                            ₹{{printf "%.2f" .AuditReport.EstimatedGST}}
+                        </h3>
+                    </div>
+
+                    <div>
+                        <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Estimated Income Tax (25%):</span>
+                        <h3 style="margin:0.2rem 0 0; font-family:var(--font-heading); font-size:1.5rem; font-weight:800; color:#4338ca;">
+                            ₹{{printf "%.2f" .AuditReport.EstimatedIncomeTax}}
+                        </h3>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Expense Log Table Card -->
+        <div class="admin-table-card">
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin:0;">
+                    <i class="fa-solid fa-file-invoice-dollar text-primary"></i> Operating Expenditure & Purchase Vouchers Log
+                </h3>
+                <span class="category-pill-sm" style="background:var(--primary-light); color:var(--primary); font-weight:700;">
+                    Total Vouchers: {{len .Expenses}}
+                </span>
+            </div>
+
+            {{if not .Expenses}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-receipt p-3" style="font-size: 3rem; color:var(--border-color);"></i>
+                <h3 style="margin-top:0.5rem; font-weight:700;">No Expenditures Recorded Yet</h3>
+                <p>Click "Log Expense / Purchase" to record cafe rent, utilities, maintenance, or raw material invoices.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Voucher</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Vendor / Provider</th>
+                            <th>Amount Paid</th>
+                            <th>Payment Method</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Expenses}}
+                        <tr>
+                            <td>
+                                <strong>{{.ExpenseDate.Format "Jan 02, 2006"}}</strong><br>
+                                {{if .InvoiceNo}}<small class="text-muted"><i class="fa-solid fa-barcode"></i> Inv #{{.InvoiceNo}}</small>{{else}}<small class="text-muted">Voucher #{{.ID}}</small>{{end}}
+                            </td>
+                            <td>
+                                <span class="category-pill-sm" style="font-weight:700;">
+                                    {{if eq .Category "Rent"}}<i class="fa-solid fa-building"></i> Cafe Rent
+                                    {{else if eq .Category "Utilities"}}<i class="fa-solid fa-bolt"></i> Electricity & Water
+                                    {{else if eq .Category "Maintenance"}}<i class="fa-solid fa-wrench"></i> Maintenance
+                                    {{else if eq .Category "Transportation"}}<i class="fa-solid fa-truck"></i> Freight / Transport
+                                    {{else if eq .Category "Raw Materials"}}<i class="fa-solid fa-wheat-awn"></i> Raw Materials
+                                    {{else}}<i class="fa-solid fa-file-invoice"></i> {{.Category}}{{end}}
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color:var(--text-main);">{{.Title}}</strong>
+                                {{if .Notes}}<br><small class="text-muted" style="font-style:italic;">{{.Notes}}</small>{{end}}
+                            </td>
+                            <td>
+                                {{if .SupplierVendor}}
+                                <small class="text-muted"><i class="fa-solid fa-store"></i> {{.SupplierVendor}}</small>
+                                {{else}}
+                                <span class="text-muted" style="font-size:0.8rem;">Direct Expense</span>
+                                {{end}}
+                            </td>
+                            <td><strong style="color:#dc2626; font-size:1.05rem; font-weight:800;">₹{{printf "%.2f" .TotalAmount}}</strong></td>
+                            <td>
+                                <span class="payment-method-pill"><i class="fa-solid fa-credit-card"></i> {{.PaymentMethod}}</span>
+                            </td>
+                            <td>
+                                <form action="/admin/expenses/delete" method="POST" onsubmit="return confirm('Delete this expense voucher?');" style="display:inline;">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.25rem 0.5rem;"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+
+    </div>
+</section>
+
+<!-- Add Expense Modal -->
+<div class="modal-overlay" id="add-expense-modal">
+    <div class="modal-card" style="max-width:560px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-plus-circle text-primary"></i> Log Expenditure or Purchase Voucher</h3>
+            <button class="modal-close-btn" onclick="closeAddExpenseModal()">&times;</button>
+        </div>
+        <form action="/admin/expenses/add" method="POST" class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Category</label>
+                <select name="category" class="form-select" required>
+                    <option value="Rent">Cafe Rent / Lease</option>
+                    <option value="Utilities">Utilities (Electricity, Water, Gas, Internet)</option>
+                    <option value="Maintenance">Equipment Maintenance & Cleaning</option>
+                    <option value="Transportation">Transportation, Freight & Delivery</option>
+                    <option value="Raw Materials" selected>Raw Materials & Ingredients Purchase</option>
+                    <option value="Equipment">Capital Machinery Purchase</option>
+                    <option value="Furniture">Furniture & Fixtures Purchase</option>
+                    <option value="Miscellaneous">Miscellaneous Operating Expenditure</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Expense Description / Item</label>
+                <input type="text" name="title" placeholder="e.g. Monthly Cafe Rent for August 2026" class="form-input" required>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Vendor / Service Provider</label>
+                    <input type="text" name="supplier_vendor" placeholder="e.g. MG Road Realty / BESCOM" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Invoice / Receipt #</label>
+                    <input type="text" name="invoice_no" placeholder="e.g. INV-88421" class="form-input">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Total Amount Paid (₹)</label>
+                    <input type="number" step="0.01" name="total_amount" placeholder="e.g. 35000.00" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Payment Method</label>
+                    <select name="payment_method" class="form-select" required>
+                        <option value="Bank Transfer" selected>Bank Transfer (NEFT/RTGS/IMPS)</option>
+                        <option value="UPI">UPI (GPay/PhonePe/Paytm)</option>
+                        <option value="Cash">Cash Voucher</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Card">Corporate Credit/Debit Card</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Expense Date</label>
+                <input type="date" name="expense_date" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Notes / Audit Explanation</label>
+                <textarea name="notes" placeholder="Optional notes for tax audit record" class="form-input" rows="2"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeAddExpenseModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Expense Voucher</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddExpenseModal() {
+    document.getElementById('add-expense-modal').classList.add('active');
+}
+function closeAddExpenseModal() {
+    document.getElementById('add-expense-modal').classList.remove('active');
+}
+</script>
+{{end}}

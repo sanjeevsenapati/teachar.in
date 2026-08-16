@@ -1,0 +1,32 @@
+{
+  "next_expense_id": 3,
+  "expenses": [
+    {
+      "id": 1,
+      "category": "Rent",
+      "title": "Monthly Cafe Rent for August 2026",
+      "supplier_vendor": "MG Road Realty",
+      "invoice_no": "RENT-AUG-2026",
+      "quantity": 0,
+      "unit_price": 0,
+      "total_amount": 35000,
+      "payment_method": "Bank Transfer",
+      "expense_date": "2026-08-16T17:33:42.584549+05:30",
+      "created_at": "2026-08-16T17:33:42.58455+05:30"
+    },
+    {
+      "id": 2,
+      "category": "Raw Materials",
+      "title": "Table",
+      "supplier_vendor": "OMM",
+      "invoice_no": "78ghjjhhf",
+      "quantity": 0,
+      "unit_price": 0,
+      "total_amount": 20000,
+      "payment_method": "UPI",
+      "expense_date": "2026-08-05T00:00:00Z",
+      "notes": "Purchase New Table",
+      "created_at": "2026-08-16T17:48:43.645447+05:30"
+    }
+  ]
+}

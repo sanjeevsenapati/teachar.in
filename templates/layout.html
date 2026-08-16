@@ -48,6 +48,8 @@
                         <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
                         <a href="/admin/reports" class="dropdown-item"><i class="fa-solid fa-chart-line"></i> Financial Reports</a>
                         <a href="/admin/staff-performance" class="dropdown-item"><i class="fa-solid fa-stopwatch"></i> Staff Speed & Ratings</a>
+                        <a href="/admin/inventory" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory & Assets</a>
+                        <a href="/admin/expenses" class="dropdown-item"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses & Tax Audit</a>
                         <a href="/admin/coupons" class="dropdown-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
                     </div>
                 </li>
@@ -61,6 +63,8 @@
                         <a href="/admin/orders" class="dropdown-item"><i class="fa-solid fa-receipt"></i> Manage Orders</a>
                         {{if .IsAdmin}}<a href="/admin/menu" class="dropdown-item"><i class="fa-solid fa-utensils"></i> Manage Menu</a>{{end}}
                         {{if .IsAdmin}}<a href="/admin/staff-performance" class="dropdown-item"><i class="fa-solid fa-stopwatch"></i> Staff Speed & Ratings</a>{{end}}
+                        {{if .IsAdmin}}<a href="/admin/inventory" class="dropdown-item"><i class="fa-solid fa-boxes-stacked"></i> Store Inventory & Assets</a>{{end}}
+                        {{if .IsAdmin}}<a href="/admin/expenses" class="dropdown-item"><i class="fa-solid fa-file-invoice-dollar"></i> Expenses & Tax Audit</a>{{end}}
                     </div>
                 </li>
                 {{else if .IsAuthenticated}}

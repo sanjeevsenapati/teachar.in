@@ -1,0 +1,233 @@
+{{define "main"}}
+<section class="admin-header-section">
+    <div class="container admin-header-content" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <span class="section-tag" style="display:inline-block; margin-bottom:0.25rem;">Cafe Assets & Supplies Audit</span>
+            <h1 class="page-title" style="margin:0; font-size:2.2rem; font-weight:800; color:var(--text-main);">Store Inventory & Asset Register</h1>
+            <p class="text-muted" style="margin-top:0.35rem; font-size:0.95rem;">Track raw materials, packaging consumables, machinery, and furniture assets for tax filings and store audits.</p>
+        </div>
+        <div class="admin-nav-btns" style="display:flex; gap:0.75rem;">
+            <a href="/admin/expenses" class="btn btn-secondary"><i class="fa-solid fa-file-invoice-dollar"></i> Expense Log & Tax Audit</a>
+            <button class="btn btn-primary" onclick="openAddInventoryModal()"><i class="fa-solid fa-plus"></i> Add New Stock / Asset</button>
+        </div>
+    </div>
+</section>
+
+<section class="admin-body-section" style="padding: 2.5rem 0 6rem; background: var(--bg-main);">
+    <div class="container" style="display:flex; flex-direction:column; gap:2rem;">
+        
+        <!-- Top Metrics Cards Grid (Horizontal Row - Matching TEACHAR.in Design System) -->
+        <div class="reports-metrics-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; width: 100%;">
+            
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:var(--primary-light); color:var(--primary); width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Total Valuation</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--primary); margin:0;">₹{{printf "%.2f" .TotalStockValue}}</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#e0f2fe; color:#0284c7; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-warehouse"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Registered Items</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--text-main); margin:0;">{{len .Inventory}} Items</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#fee2e2; color:#dc2626; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Low Stock Alerts</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:#dc2626; margin:0;">{{.LowStockCount}} Warnings</h3>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; box-shadow:var(--shadow-sm);">
+                <div class="metric-icon" style="background:#fef3c7; color:#d97706; width:48px; height:48px; border-radius:var(--border-radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+                    <i class="fa-solid fa-couch"></i>
+                </div>
+                <div class="metric-info" style="display:flex; flex-direction:column; gap:0.15rem; overflow:hidden;">
+                    <span class="metric-label" style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Capital Assets</span>
+                    <h3 class="metric-value" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; color:var(--text-main); margin:0;">{{.AssetCount}} Assets</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Inventory Master Table Card -->
+        <div class="admin-table-card">
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div>
+                    <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-table-list text-primary"></i> Inventory & Asset Master Table
+                    </h3>
+                    <small class="text-muted">Itemized audit register tracking unit costs, stock quantities, and total valuations.</small>
+                </div>
+                <a href="/admin/inventory/export?period=fy" class="btn btn-secondary btn-sm" style="font-weight:700;"><i class="fa-solid fa-file-csv"></i> Download CSV for Tax Audit</a>
+            </div>
+
+            {{if not .Inventory}}
+            <div class="text-center p-5 text-muted">
+                <i class="fa-solid fa-box-open p-3" style="font-size: 3rem; color:var(--border-color);"></i>
+                <h3 style="margin-top:0.5rem; font-weight:700;">No Inventory Items Added Yet</h3>
+                <p>Click "Add New Stock / Asset" to register raw materials, consumables, machinery, or furniture.</p>
+            </div>
+            {{else}}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name & Category</th>
+                            <th>Current Stock</th>
+                            <th>Reorder Threshold</th>
+                            <th>Unit Cost</th>
+                            <th>Total Valuation</th>
+                            <th>Supplier / Vendor</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Inventory}}
+                        <tr>
+                            <td>
+                                <strong style="font-size:0.95rem; color:var(--text-main);">{{.ItemName}}</strong><br>
+                                <span class="category-pill-sm" style="margin-top:0.2rem; display:inline-block;">
+                                    {{if eq .Category "Raw Material"}}<i class="fa-solid fa-wheat-awn"></i> Raw Material
+                                    {{else if eq .Category "Consumable"}}<i class="fa-solid fa-box-open"></i> Consumable
+                                    {{else if eq .Category "Equipment"}}<i class="fa-solid fa-blender"></i> Equipment
+                                    {{else if eq .Category "Furniture"}}<i class="fa-solid fa-chair"></i> Furniture
+                                    {{else}}<i class="fa-solid fa-box"></i> {{.Category}}{{end}}
+                                </span>
+                                {{if .SerialNumber}}<br><small class="text-muted"><i class="fa-solid fa-barcode"></i> S/N: {{.SerialNumber}}</small>{{end}}
+                            </td>
+                            <td>
+                                <strong style="font-size:1.05rem;">{{printf "%.2f" .StockQuantity}}</strong> <small class="text-muted">{{.Unit}}</small>
+                            </td>
+                            <td>
+                                <span class="text-muted">{{printf "%.2f" .ReorderLevel}} {{.Unit}}</span>
+                            </td>
+                            <td>₹{{printf "%.2f" .UnitCost}} / {{.Unit}}</td>
+                            <td><strong style="color:var(--primary); font-weight:800;">₹{{printf "%.2f" .TotalValue}}</strong></td>
+                            <td>
+                                {{if .Supplier}}
+                                <small class="text-muted"><i class="fa-solid fa-truck"></i> {{.Supplier}}</small>
+                                {{else}}
+                                <span class="text-muted" style="font-size:0.8rem;">General Market</span>
+                                {{end}}
+                            </td>
+                            <td>
+                                {{if eq .Status "In Stock"}}
+                                <span class="category-pill-sm" style="background:#d1fae5; color:#065f46; font-weight:800;"><i class="fa-solid fa-circle-check"></i> In Stock</span>
+                                {{else if eq .Status "Low Stock"}}
+                                <span class="category-pill-sm" style="background:#fef3c7; color:#b45309; font-weight:800;"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</span>
+                                {{else if eq .Status "Out of Stock"}}
+                                <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800;"><i class="fa-solid fa-circle-xmark"></i> Out of Stock</span>
+                                {{else}}
+                                <span class="category-pill-sm" style="background:#e0f2fe; color:#0369a1; font-weight:800;"><i class="fa-solid fa-couch"></i> Active Asset</span>
+                                {{end}}
+                            </td>
+                            <td>
+                                <form action="/admin/inventory/delete" method="POST" onsubmit="return confirm('Delete this inventory item?');" style="display:inline;">
+                                    <input type="hidden" name="id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.25rem 0.5rem;" title="Delete Item">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+
+    </div>
+</section>
+
+<!-- Add Inventory Modal -->
+<div class="modal-overlay" id="add-inventory-modal">
+    <div class="modal-card" style="max-width:560px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-boxes-stacked text-primary"></i> Add Inventory Stock or Asset</h3>
+            <button class="modal-close-btn" onclick="closeAddInventoryModal()">&times;</button>
+        </div>
+        <form action="/admin/inventory/add" method="POST" class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Category</label>
+                <select name="category" class="form-select" required>
+                    <option value="Raw Material" selected>Raw Material (Tea, Coffee, Sugar, Milk, Spices)</option>
+                    <option value="Consumable">Consumable & Packaging (Cups, Napkins, Straws)</option>
+                    <option value="Equipment">Machinery & Equipment (Espresso Machine, Grinder, Fridge)</option>
+                    <option value="Furniture">Furniture & Fixtures (Tables, Chairs, Counter)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Item / Asset Name</label>
+                <input type="text" name="item_name" placeholder="e.g. Assam CTC Tea Leaves 5kg Pack" class="form-input" required>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Stock Quantity</label>
+                    <input type="number" step="0.01" name="stock_quantity" placeholder="e.g. 50" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Unit of Measurement</label>
+                    <select name="unit" class="form-select" required>
+                        <option value="kg" selected>Kilograms (kg)</option>
+                        <option value="liters">Liters (L)</option>
+                        <option value="units">Units / Pieces</option>
+                        <option value="packs">Packs / Boxes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Unit Cost (₹)</label>
+                    <input type="number" step="0.01" name="unit_cost" placeholder="e.g. 350.00" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Reorder Level (Alert Limit)</label>
+                    <input type="number" step="0.01" name="reorder_level" placeholder="e.g. 10" class="form-input" value="10">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Supplier / Vendor Name</label>
+                    <input type="text" name="supplier" placeholder="e.g. Chai Traders Pvt Ltd" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Serial Number (Asset)</label>
+                    <input type="text" name="serial_number" placeholder="Optional S/N" class="form-input">
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeAddInventoryModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Item to Inventory</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddInventoryModal() {
+    document.getElementById('add-inventory-modal').classList.add('active');
+}
+function closeAddInventoryModal() {
+    document.getElementById('add-inventory-modal').classList.remove('active');
+}
+</script>
+{{end}}
