@@ -30,8 +30,19 @@
                 <p>Orders placed by clients will appear here in real-time.</p>
             </div>
             {{else}}
+            <!-- Search & Filter Bar -->
+            <div style="padding:1.1rem 1.5rem; background:#f9fafb; border-bottom:1px solid var(--border-color); display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+                <div style="flex:1; min-width:280px; position:relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
+                    <input type="text" id="order-search-input" onkeyup="filterOrdersTable()" placeholder="Search by Table No, Mobile No, Name, or Order ID..." class="form-input" style="padding-left:2.5rem; width:100%; border-radius:8px; border:1px solid var(--border-color); font-size:0.95rem;">
+                </div>
+                <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">
+                    <i class="fa-solid fa-filter text-primary"></i> Live Order Search
+                </div>
+            </div>
+
             <div class="table-responsive">
-                <table class="admin-table">
+                <table class="admin-table" id="orders-admin-table">
                     <thead>
                         <tr>
                             <th>Order & TXN ID</th>
@@ -40,6 +51,7 @@
                             <th>Payment Method & Status</th>
                             <th>Total Amount</th>
                             <th>Handled By & Status</th>
+                            <th>Actions & Bill</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,6 +126,34 @@
                                 </div>
                                 {{end}}
                             </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-primary btn-sm btn-generate-bill" 
+                                    data-id="{{.ID}}"
+                                    data-name="{{.CustomerName}}"
+                                    data-phone="{{.CustomerPhone}}"
+                                    data-table="{{.TableNumber}}"
+                                    data-type="{{.OrderType}}"
+                                    data-txnid="{{.TransactionID}}"
+                                    data-method="{{.PaymentMethod}}"
+                                    data-paystatus="{{.PaymentStatus}}"
+                                    data-staff="{{.AssignedStaffName}}"
+                                    data-date='{{.CreatedAt.Format "Jan 02, 2006 • 15:04"}}'
+                                    data-total="{{.TotalPrice}}"
+                                    onclick="openBillModalFromBtn(this)"
+                                    style="white-space:nowrap; padding:0.45rem 0.75rem; font-weight:600; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:6px; cursor:pointer;">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i> Generate Bill
+                                </button>
+                                <template id="items-order-{{.ID}}">
+                                    {{range .Items}}
+                                    <tr style="border-bottom:1px solid #f3f4f6;" data-name="{{.ItemName}}" data-qty="{{.Quantity}}" data-price="{{.Price}}">
+                                        <td style="padding:0.45rem 0.4rem; font-weight:600; color:#111827;">{{.ItemName}}</td>
+                                        <td style="padding:0.45rem 0.4rem; text-align:center; font-weight:700; color:#374151;">{{.Quantity}}</td>
+                                        <td style="padding:0.45rem 0.4rem; text-align:right; color:#4b5563;">₹{{printf "%.0f" .Price}}</td>
+                                        <td style="padding:0.45rem 0.4rem; text-align:right; font-weight:700; color:#111827;">₹<span class="item-calc-total"></span></td>
+                                    </tr>
+                                    {{end}}
+                                </template>
+                            </td>
                         </tr>
                         {{end}}
                     </tbody>
@@ -158,7 +198,161 @@
     </div>
 </div>
 
+<!-- Printable GST Tax Invoice / Bill Modal -->
+<div class="modal-overlay" id="bill-invoice-modal">
+    <div class="modal-card bill-modal-card" style="max-width:540px; background:#fff; border-radius:12px; overflow:hidden;">
+        <div class="modal-header no-print" style="padding:1rem 1.25rem; background:#f9fafb; border-bottom:1px solid #f3f4f6;">
+            <h3 style="margin:0; font-size:1.1rem; color:var(--text-main);"><i class="fa-solid fa-receipt text-primary"></i> Customer Tax Invoice & Bill</h3>
+            <button type="button" class="modal-close-btn" onclick="closeBillModal()">&times;</button>
+        </div>
+        <div class="modal-body printable-invoice-content" style="padding:1.5rem; color:#1f2937;">
+            <!-- Invoice Header -->
+            <div style="text-align:center; border-bottom:2px dashed #d1d5db; padding-bottom:0.85rem; margin-bottom:1rem;">
+                <h2 style="font-size:1.5rem; font-weight:900; color:#111827; margin:0; letter-spacing:0.5px;"><i class="fa-solid fa-mug-hot" style="color:var(--primary-color);"></i> TEACHAR CAFE</h2>
+                <p style="font-size:0.8rem; color:#4b5563; margin:0.25rem 0 0 0; font-weight:600;">Premium Tea, Coffee & Gourmet Snacks • GSTIN: 21ABCDE1234F1Z5</p>
+                <p style="font-size:0.75rem; color:#6b7280; margin:0.15rem 0 0 0;">Plot 42, University Road, Tech Park • Helpline: +91 9000000000</p>
+            </div>
+
+            <!-- Invoice Details Bar -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.82rem; border-bottom:1px solid #e5e7eb; padding-bottom:0.75rem; margin-bottom:1rem; background:#f9fafb; padding:0.65rem 0.85rem; border-radius:6px;">
+                <div>
+                    <div><strong>Tax Invoice No:</strong> <span id="bill-inv-id" style="font-weight:700;">#</span></div>
+                    <div><strong>Txn Reference:</strong> <span id="bill-txn-id" style="font-family:monospace;">-</span></div>
+                    <div><strong>Date & Time:</strong> <span id="bill-date">-</span></div>
+                </div>
+                <div style="text-align:right;">
+                    <div><strong>Customer:</strong> <span id="bill-customer-name" style="font-weight:700;">-</span></div>
+                    <div><strong>Mobile:</strong> <span id="bill-customer-phone">-</span></div>
+                    <div><strong>Order Type:</strong> <span id="bill-order-type" style="font-weight:700; color:var(--primary-color);">-</span></div>
+                </div>
+            </div>
+
+            <!-- Invoice Items Table -->
+            <table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:1rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid #e5e7eb; background:#f3f4f6; color:#374151; font-weight:700;">
+                        <th style="text-align:left; padding:0.5rem 0.4rem;">Item Description</th>
+                        <th style="text-align:center; padding:0.5rem 0.4rem;">Qty</th>
+                        <th style="text-align:right; padding:0.5rem 0.4rem;">Price</th>
+                        <th style="text-align:right; padding:0.5rem 0.4rem;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="bill-items-tbody">
+                    <!-- Populated dynamically -->
+                </tbody>
+            </table>
+
+            <!-- Invoice Totals Breakdown -->
+            <div style="border-top:2px dashed #d1d5db; padding-top:0.75rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem; color:#4b5563;">
+                    <span>Item Subtotal:</span>
+                    <span id="bill-subtotal" style="font-weight:600;">₹0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem; color:#4b5563;">
+                    <span>CGST + SGST (5% Included):</span>
+                    <span id="bill-tax" style="font-weight:600;">₹0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:0.5rem; padding-top:0.5rem; border-top:2px solid #111827; font-size:1.15rem; font-weight:900; color:#111827;">
+                    <span>Net Amount Payable:</span>
+                    <span id="bill-net-total" style="color:var(--primary-color);">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- Footer & Staff Tag -->
+            <div style="margin-top:1.25rem; padding-top:0.75rem; border-top:1px dashed #d1d5db; font-size:0.78rem; color:#6b7280; text-align:center;">
+                <p style="margin:0;">Payment Method: <strong id="bill-pay-method" style="color:#111827;">COD</strong> | Payment Status: <strong id="bill-pay-status" style="color:#059669;">Paid</strong></p>
+                <p style="margin:0.2rem 0 0 0;">Billed & Checked By: <strong id="bill-staff-name" style="color:#111827;">Counter Staff</strong></p>
+                <p style="margin:0.6rem 0 0 0; font-weight:800; color:var(--primary-color); font-size:0.82rem;">Thank you for visiting TEACHAR! Please visit us again! ☕</p>
+            </div>
+        </div>
+        <div class="modal-footer no-print" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.25rem; background:#f9fafb; border-top:1px solid #f3f4f6;">
+            <button type="button" class="btn btn-secondary" onclick="closeBillModal()">Close</button>
+            <button type="button" class="btn btn-primary" onclick="window.print()" style="padding:0.65rem 1.35rem; font-weight:700;">
+                <i class="fa-solid fa-print"></i> Print Invoice / Receipt
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+function filterOrdersTable() {
+    const input = document.getElementById('order-search-input');
+    if (!input) return;
+    const filter = input.value.toLowerCase().trim();
+    const table = document.getElementById('orders-admin-table');
+    if (!table) return;
+    const trs = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (let i = 0; i < trs.length; i++) {
+        const row = trs[i];
+        const text = row.innerText.toLowerCase();
+        if (text.includes(filter)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+}
+
+function openBillModalFromBtn(btn) {
+    const id = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name');
+    const phone = btn.getAttribute('data-phone');
+    const table = btn.getAttribute('data-table');
+    const type = btn.getAttribute('data-type');
+    const txnid = btn.getAttribute('data-txnid');
+    const method = btn.getAttribute('data-method');
+    const paystatus = btn.getAttribute('data-paystatus');
+    const staff = btn.getAttribute('data-staff') || 'Counter Staff';
+    const date = btn.getAttribute('data-date');
+    const total = parseFloat(btn.getAttribute('data-total') || '0');
+
+    document.getElementById('bill-inv-id').innerText = '#' + id;
+    document.getElementById('bill-txn-id').innerText = txnid;
+    document.getElementById('bill-date').innerText = date;
+    document.getElementById('bill-customer-name').innerText = name || 'Walk-in Customer';
+    document.getElementById('bill-customer-phone').innerText = phone || 'N/A';
+    
+    let orderTypeDisplay = type;
+    if (table) orderTypeDisplay += ' (' + table + ')';
+    document.getElementById('bill-order-type').innerText = orderTypeDisplay;
+    
+    document.getElementById('bill-pay-method').innerText = method;
+    document.getElementById('bill-pay-status').innerText = paystatus;
+    document.getElementById('bill-staff-name').innerText = staff;
+
+    const subtotal = total / 1.05;
+    const tax = total - subtotal;
+
+    document.getElementById('bill-subtotal').innerText = '₹' + subtotal.toFixed(2);
+    document.getElementById('bill-tax').innerText = '₹' + tax.toFixed(2);
+    document.getElementById('bill-net-total').innerText = '₹' + total.toFixed(2);
+
+    const template = document.getElementById('items-order-' + id);
+    const tbody = document.getElementById('bill-items-tbody');
+    tbody.innerHTML = '';
+
+    if (template) {
+        const clone = template.content.cloneNode(true);
+        const rows = clone.querySelectorAll('tr');
+        rows.forEach(r => {
+            const price = parseFloat(r.getAttribute('data-price') || '0');
+            const qty = parseInt(r.getAttribute('data-qty') || '1', 10);
+            const calcSpan = r.querySelector('.item-calc-total');
+            if (calcSpan) {
+                calcSpan.innerText = (price * qty).toFixed(2);
+            }
+        });
+        tbody.appendChild(clone);
+    }
+
+    document.getElementById('bill-invoice-modal').classList.add('active');
+}
+
+function closeBillModal() {
+    document.getElementById('bill-invoice-modal').classList.remove('active');
+}
+
 let pendingCancelSelect = null;
 let pendingCancelOrderId = null;
 

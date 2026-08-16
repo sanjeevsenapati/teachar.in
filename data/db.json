@@ -2,7 +2,7 @@
   "next_user_id": 7,
   "next_menu_item_id": 13,
   "next_order_id": 10,
-  "next_audit_log_id": 50,
+  "next_audit_log_id": 51,
   "users": [
     {
       "id": 1,
@@ -145,6 +145,11 @@
       "id": "3ad8dfbded7125f884d436eee5ec49c619e8ed66106db5b130f8de8e1b8ff8c5",
       "user_id": 2,
       "expires_at": "2026-08-17T14:09:18.72185+05:30"
+    },
+    {
+      "id": "04076589f2d4827f8ce31fa5b72ac31a4b64dff0cac6941e5bb92268db943b43",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:15:15.693621+05:30"
     }
   ],
   "menu_items": [
@@ -1043,6 +1048,16 @@
       "action": "REVIEW_SUBMITTED",
       "details": "Submitted 3-Star review for Order #5",
       "ip_address": "[::1]:52876"
+    },
+    {
+      "id": 50,
+      "timestamp": "2026-08-16T14:15:15.69414+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52947"
     }
   ],
   "cancellation_reasons": [
