@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"teachar.in/middleware"
@@ -372,6 +373,8 @@ func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request
 		}
 	}
 
+	q := strings.ToLower(strings.TrimSpace(r.URL.Query().Get("q")))
+
 	var staffList []staffUserViewModel
 	var customerList []customerUserViewModel
 
@@ -394,6 +397,13 @@ func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request
 				dailyCups = sub.CupsClaimedToday
 			}
 
+			if q != "" {
+				searchTarget := strings.ToLower(fmt.Sprintf("%s %s %s #cst-%d %s %s", u.Name, u.Email, u.MobileNumber, u.ID, u.Address, passName))
+				if !strings.Contains(searchTarget, q) {
+					continue
+				}
+			}
+
 			customerList = append(customerList, customerUserViewModel{
 				User:             u,
 				TotalOrders:      ordersCount,
@@ -409,6 +419,7 @@ func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request
 	data := models.PageData{
 		"Title":               "Account Management Portal",
 		"ActiveTab":           tab,
+		"SearchQuery":         q,
 		"StaffList":           staffList,
 		"CustomerList":        customerList,
 		"TotalStaffCount":     len(staffList),

@@ -75,9 +75,11 @@
                         <i class="fa-solid fa-shield-halved"></i> Admin <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
-                        {{if .IsSuperadmin}}
+                        {{if .IsAdmin}}
                         <a href="/admin/users?tab=staff" class="dropdown-item"><i class="fa-solid fa-user-tie"></i> Staff & Employee Accounts</a>
                         <a href="/admin/users?tab=customers" class="dropdown-item"><i class="fa-solid fa-users"></i> Customer & Member Accounts</a>
+                        {{end}}
+                        {{if .IsSuperadmin}}
                         <a href="/admin/audit-logs" class="dropdown-item"><i class="fa-solid fa-shield-cat"></i> System Audit Logs</a>
                         <a href="/admin/api-keys" class="dropdown-item"><i class="fa-solid fa-key"></i> API Keys & Security</a>
                         {{end}}

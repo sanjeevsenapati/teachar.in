@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 214,
+  "next_audit_log_id": 220,
   "audit_logs": [
     {
       "id": 1,
@@ -2130,6 +2130,66 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "127.0.0.1:60397"
+    },
+    {
+      "id": 214,
+      "timestamp": "2026-08-17T01:43:05.172549+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60397"
+    },
+    {
+      "id": 215,
+      "timestamp": "2026-08-17T01:45:53.546423+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60397"
+    },
+    {
+      "id": 216,
+      "timestamp": "2026-08-17T01:46:24.747145+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60397"
+    },
+    {
+      "id": 217,
+      "timestamp": "2026-08-17T01:48:34.134627+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60546"
+    },
+    {
+      "id": 218,
+      "timestamp": "2026-08-17T01:49:07.545714+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60546"
+    },
+    {
+      "id": 219,
+      "timestamp": "2026-08-17T01:52:23.210712+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60588"
     }
   ]
 }
