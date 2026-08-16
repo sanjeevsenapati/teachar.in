@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"html/template"
 	"log/slog"
@@ -164,13 +165,16 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, status in
 		data["CanManageOrders"] = false
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(status)
-
-	err = ts.ExecuteTemplate(w, "base", data)
+	buf := new(bytes.Buffer)
+	err = ts.ExecuteTemplate(buf, "base", data)
 	if err != nil {
 		app.serverError(w, r, err)
+		return
 	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(status)
+	buf.WriteTo(w)
 }
 
 // writeJSON is a helper for sending JSON responses.

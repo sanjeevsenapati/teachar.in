@@ -167,8 +167,15 @@ func (m *Manager) Recovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
+				if err == http.ErrAbortHandler {
+					panic(err)
+				}
+				errStr := fmt.Sprintf("%v", err)
+				if strings.Contains(errStr, "http2: stream closed") || strings.Contains(errStr, "connection reset") || strings.Contains(errStr, "broken pipe") {
+					return
+				}
 				w.Header().Set("Connection", "close")
-				m.logger.Error(fmt.Sprintf("%s", err), "method", r.Method, "uri", r.URL.RequestURI())
+				m.logger.Error(errStr, "method", r.Method, "uri", r.URL.RequestURI())
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		}()

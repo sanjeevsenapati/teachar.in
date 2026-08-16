@@ -88,10 +88,12 @@
             </ul>
 
             <div class="header-actions">
+                {{if not .CanManageOrders}}
                 <button class="cart-btn" id="open-cart-btn" aria-label="View Cart">
                     <i class="fa-solid fa-bag-shopping"></i>
                     <span class="cart-badge" id="cart-badge-count">0</span>
                 </button>
+                {{end}}
 
                 {{if .IsAuthenticated}}
                 <div class="user-dropdown">
@@ -120,6 +122,7 @@
         {{template "main" .}}
     </main>
 
+    {{if not .CanManageOrders}}
     <!-- Cart & Payment Drawer -->
     <div class="cart-overlay" id="cart-overlay"></div>
     <aside class="cart-drawer" id="cart-drawer">
@@ -298,6 +301,7 @@
             </button>
         </div>
     </aside>
+    {{end}}
 
     <!-- 3D Secure OTP Payment Verification Modal -->
     <div class="modal-overlay" id="otp-modal">
@@ -316,6 +320,122 @@
                     <span>Authorize Payment</span> <i class="fa-solid fa-check-double"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Single Item Quick Order Modal -->
+    <div class="modal-overlay" id="quick-order-modal">
+        <div class="modal-card" style="max-width:500px; border-radius:var(--border-radius-lg); overflow:hidden;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color:#ffffff; padding:1.1rem 1.5rem;">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-bolt text-warning"></i> Express Item Order
+                </h3>
+                <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeQuickOrderModal()">&times;</button>
+            </div>
+
+            <form id="quick-order-form" onsubmit="handleQuickOrderSubmit(event)" style="padding:1.35rem; display:flex; flex-direction:column; gap:1rem;">
+                <input type="hidden" id="quick-order-item-id" value="">
+                <input type="hidden" id="quick-order-item-name" value="">
+                <input type="hidden" id="quick-order-item-price" value="0">
+
+                <!-- Selected Item Card Preview -->
+                <div style="display:flex; align-items:center; gap:0.9rem; padding:0.75rem; background:#fcf8f5; border:1px solid var(--border-color); border-radius:var(--border-radius-md);">
+                    <img id="quick-order-item-img" src="/static/images/hero-banner.jpg" alt="Item" style="width:60px; height:60px; object-fit:cover; border-radius:var(--border-radius-sm); border:1px solid var(--border-color);">
+                    <div style="flex:1;">
+                        <h4 id="quick-order-item-title" style="margin:0; font-size:1rem; font-weight:800; color:var(--text-main);">Item Name</h4>
+                        <span style="font-size:0.82rem; color:var(--text-muted); display:block;">Unit Price: <strong id="quick-order-unit-price" style="color:var(--primary);">₹0</strong></span>
+                    </div>
+                    <!-- Quantity Controls -->
+                    <div style="display:flex; align-items:center; gap:0.4rem; background:#ffffff; border:1px solid var(--border-color); padding:0.2rem 0.5rem; border-radius:var(--border-radius-sm);">
+                        <button type="button" class="qty-btn" onclick="changeQuickOrderQty(-1)" style="width:24px; height:24px; border:none; background:none; font-weight:800; cursor:pointer;">-</button>
+                        <span id="quick-order-qty" style="font-weight:800; font-size:0.95rem; min-width:18px; text-align:center;">1</span>
+                        <button type="button" class="qty-btn" onclick="changeQuickOrderQty(1)" style="width:24px; height:24px; border:none; background:none; font-weight:800; cursor:pointer;">+</button>
+                    </div>
+                </div>
+
+                <!-- Order Type Selection (Dine-in / Takeaway / Delivery) -->
+                <div class="form-group" style="margin:0;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.35rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-utensils text-primary me-1"></i> Order Type <span class="text-danger">*</span>
+                    </label>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.5rem;">
+                        <label style="border:1.5px solid var(--primary); border-radius:var(--border-radius-sm); padding:0.45rem 0.25rem; text-align:center; cursor:pointer; font-size:0.82rem; font-weight:700; background:var(--primary-light); color:var(--primary);" class="quick-type-label active">
+                            <input type="radio" name="quick_order_type" value="Dine-in" checked style="display:none;" onchange="updateQuickOrderType(this)">
+                            <i class="fa-solid fa-chair d-block mb-1"></i> Dine-in
+                        </label>
+                        <label style="border:1px solid var(--border-color); border-radius:var(--border-radius-sm); padding:0.45rem 0.25rem; text-align:center; cursor:pointer; font-size:0.82rem; font-weight:700; background:#f8fafc; color:var(--text-main);" class="quick-type-label">
+                            <input type="radio" name="quick_order_type" value="Takeaway" style="display:none;" onchange="updateQuickOrderType(this)">
+                            <i class="fa-solid fa-bag-shopping d-block mb-1"></i> Takeaway
+                        </label>
+                        <label style="border:1px solid var(--border-color); border-radius:var(--border-radius-sm); padding:0.45rem 0.25rem; text-align:center; cursor:pointer; font-size:0.82rem; font-weight:700; background:#f8fafc; color:var(--text-main);" class="quick-type-label">
+                            <input type="radio" name="quick_order_type" value="Delivery" style="display:none;" onchange="updateQuickOrderType(this)">
+                            <i class="fa-solid fa-truck-fast d-block mb-1"></i> Delivery
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Conditional Fields -->
+                <!-- Dine-in Table Number -->
+                <div class="form-group" id="quick-dinein-group" style="margin:0;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.3rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-chair text-primary me-1"></i> Table Number <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" id="quick-order-table" placeholder="Enter Table No (e.g. Table 4)..." class="form-input" style="width:100%; padding:0.55rem 0.75rem; font-size:0.85rem;" value="Table 1">
+                </div>
+
+                <!-- Takeaway / Delivery Mobile Number -->
+                <div class="form-group" id="quick-mobile-group" style="margin:0; display:none;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.3rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-phone text-primary me-1"></i> Mobile Number <span class="text-danger">*</span>
+                    </label>
+                    <input type="tel" id="quick-order-phone" placeholder="Enter 10-digit mobile number..." class="form-input" style="width:100%; padding:0.55rem 0.75rem; font-size:0.85rem;" value="{{if .User}}{{.User.MobileNumber}}{{end}}">
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="form-group" id="quick-delivery-group" style="margin:0; display:none;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.3rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-location-dot text-primary me-1"></i> Delivery Address <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" id="quick-order-address" placeholder="Enter full street / apartment address..." class="form-input" style="width:100%; padding:0.55rem 0.75rem; font-size:0.85rem;" value="{{if .User}}{{.User.Address}}{{end}}">
+                </div>
+
+                <!-- Customization / Notes -->
+                <div class="form-group" style="margin:0;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.3rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-mug-hot text-primary me-1"></i> Preparation Preference (Optional)
+                    </label>
+                    <input type="text" id="quick-order-note" placeholder="e.g. Less sugar, extra ginger..." class="form-input" style="width:100%; padding:0.55rem 0.75rem; font-size:0.85rem;">
+                </div>
+
+                <!-- Payment Method Selection (UPI / COD) -->
+                <div class="form-group" style="margin:0;">
+                    <label style="font-weight:700; font-size:0.82rem; margin-bottom:0.3rem; display:block; color:var(--text-main);">
+                        <i class="fa-solid fa-credit-card text-primary me-1"></i> Select Payment Method <span class="text-danger">*</span>
+                    </label>
+                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem;">
+                        <label style="border:1.5px solid var(--primary); border-radius:var(--border-radius-sm); padding:0.45rem; text-align:center; cursor:pointer; font-size:0.82rem; font-weight:700; background:var(--primary-light); color:var(--primary);" class="quick-pay-label active">
+                            <input type="radio" name="quick_payment" value="UPI" checked style="display:none;" onchange="updateQuickPaymentStyle(this)">
+                            <i class="fa-solid fa-qrcode d-block mb-1"></i> UPI Instant Pay
+                        </label>
+                        <label style="border:1px solid var(--border-color); border-radius:var(--border-radius-sm); padding:0.45rem; text-align:center; cursor:pointer; font-size:0.82rem; font-weight:700; background:#f8fafc; color:var(--text-main);" class="quick-pay-label">
+                            <input type="radio" name="quick_payment" value="COD" style="display:none;" onchange="updateQuickPaymentStyle(this)">
+                            <i class="fa-solid fa-money-bill-wave d-block mb-1"></i> Cash on Delivery / Counter
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Total Price Summary & Submit -->
+                <div style="border-top:1px solid var(--border-color); padding-top:0.85rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; display:block;">Total Amount</span>
+                        <strong id="quick-order-total-price" style="font-size:1.4rem; color:var(--primary); font-family:var(--font-heading);">₹0</strong>
+                    </div>
+
+                    <button type="submit" id="quick-order-submit-btn" class="btn btn-primary" style="padding:0.65rem 1.4rem; font-weight:800; font-size:0.95rem;">
+                        <i class="fa-solid fa-circle-check me-1"></i> Place Order
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

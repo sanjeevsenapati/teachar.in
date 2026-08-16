@@ -91,44 +91,46 @@
                 <table class="admin-table" style="width:100%; border-collapse:collapse; min-width:900px;">
                     <thead>
                         <tr>
-                            <th style="padding:1rem; min-width:60px;">ID</th>
-                            <th style="padding:1rem; min-width:140px;">Coupon Code</th>
-                            <th style="padding:1rem; min-width:120px;">Discount Value</th>
-                            <th style="padding:1rem; min-width:120px;">Min Order</th>
-                            <th style="padding:1rem; min-width:160px;">Expiry Date</th>
-                            <th style="padding:1rem; min-width:110px;">Status</th>
-                            <th style="padding:1rem; min-width:120px;">Created By</th>
-                            <th style="padding:1rem; min-width:130px;">Redemption</th>
-                            <th style="padding:1rem; text-align:right; min-width:80px;">Actions</th>
+                            <th style="min-width:60px;">ID</th>
+                            <th style="min-width:140px;">Coupon Code</th>
+                            <th style="min-width:120px;">Discount Value</th>
+                            <th style="min-width:120px;">Min Order</th>
+                            <th style="min-width:160px;">Expiry Date</th>
+                            <th style="min-width:110px;">Status</th>
+                            <th style="min-width:120px;">Created By</th>
+                            <th style="min-width:130px;">Redemption</th>
+                            <th style="text-align:right; min-width:80px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{range .Coupons}}
                         <tr>
-                            <td style="padding:1rem; font-weight:700; color:var(--text-muted);">#{{.ID}}</td>
-                            <td style="padding:1rem;">
+                            <td><strong>#{{.ID}}</strong></td>
+                            <td>
                                 <span class="coupon-badge-code">
                                     <i class="fa-solid fa-ticket"></i> {{.Code}}
                                 </span>
                             </td>
-                            <td style="padding:1rem; font-weight:800; color:var(--primary); font-size:0.95rem;">
-                                {{if eq .DiscountType "flat"}}
-                                ₹{{printf "%.2f" .DiscountValue}} OFF
-                                {{else}}
-                                {{printf "%.0f" .DiscountValue}}% OFF
-                                {{end}}
+                            <td>
+                                <strong style="color:var(--primary); font-size:0.88rem;">
+                                    {{if eq .DiscountType "flat"}}
+                                    ₹{{printf "%.2f" .DiscountValue}} OFF
+                                    {{else}}
+                                    {{printf "%.0f" .DiscountValue}}% OFF
+                                    {{end}}
+                                </strong>
                             </td>
-                            <td style="padding:1rem;">
+                            <td>
                                 {{if gt .MinOrderAmount 0.0}}
                                 <strong style="color:var(--text-main);">₹{{printf "%.2f" .MinOrderAmount}}</strong>
                                 {{else}}
-                                <span class="text-muted" style="font-size:0.85rem;">No Minimum</span>
+                                <span class="text-muted" style="font-size:0.78rem;">No Minimum</span>
                                 {{end}}
                             </td>
-                            <td style="padding:1rem; font-size:0.85rem; color:var(--text-muted);">
-                                <i class="fa-solid fa-clock"></i> {{.ExpiryDate.Format "Jan 02, 2006 • 15:04"}}
+                            <td>
+                                <small class="text-muted"><i class="fa-solid fa-clock me-1"></i> {{.ExpiryDate.Format "Jan 02, 2006 • 15:04"}}</small>
                             </td>
-                            <td style="padding:1rem;">
+                            <td>
                                 {{if .IsUsed}}
                                 <span class="category-pill-sm" style="background:#e5e7eb; color:#374151; font-weight:800;">
                                     <i class="fa-solid fa-circle-check"></i> Redeemed
@@ -139,19 +141,19 @@
                                 </span>
                                 {{end}}
                             </td>
-                            <td style="padding:1rem; font-size:0.85rem; color:var(--text-muted);">{{.CreatedBy}}</td>
-                            <td style="padding:1rem; font-size:0.85rem;">
+                            <td><small class="text-muted">{{.CreatedBy}}</small></td>
+                            <td>
                                 {{if .IsUsed}}
-                                <strong style="color:var(--primary);">Order #{{.UsedByOrderID}}</strong>
+                                <strong style="color:var(--primary); font-size:0.85rem;">Order #{{.UsedByOrderID}}</strong>
                                 {{else}}
-                                <span class="text-muted">Available</span>
+                                <span class="text-muted" style="font-size:0.78rem;">Available</span>
                                 {{end}}
                             </td>
-                            <td style="padding:1rem; text-align:right;">
+                            <td style="text-align:right;">
                                 <form action="/admin/coupons/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete coupon {{.Code}}?');">
                                     <input type="hidden" name="id" value="{{.ID}}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.25rem 0.5rem;" title="Delete Coupon">
-                                        <i class="fa-solid fa-trash-can"></i>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.2rem 0.5rem; font-size:0.75rem;" title="Delete Coupon">
+                                        <i class="fa-solid fa-trash-can"></i> Delete
                                     </button>
                                 </form>
                             </td>

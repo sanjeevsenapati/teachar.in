@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCategoryTabs();
     initSearchFilter();
     initAddToCartButtons();
+    initBuyNowButtons();
     initOtpModal();
 });
 
@@ -348,7 +349,9 @@ async function executeOrderPlacement(paymentMethod, txnID) {
                 coupon_code: appliedCouponCode,
                 items: cart.map(item => ({
                     id: item.id,
+                    menu_item_id: item.id,
                     name: item.name,
+                    item_name: item.name,
                     price: item.price,
                     quantity: item.quantity
                 }))
@@ -521,3 +524,221 @@ function showToast(message) {
         toast.classList.remove('active');
     }, 3000);
 }
+
+window.triggerBuyItem = function(btn) {
+    if (!btn) return;
+    const id = btn.getAttribute('data-id') || btn.dataset.id;
+    const name = btn.getAttribute('data-name') || btn.dataset.name;
+    const price = btn.getAttribute('data-price') || btn.dataset.price;
+    const image = btn.getAttribute('data-image') || btn.dataset.image;
+    if (id && name && price) {
+        openQuickOrderModal(id, name, price, image);
+    }
+};
+
+function initBuyNowButtons() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.buy-now-btn');
+        if (btn) {
+            e.preventDefault();
+            triggerBuyItem(btn);
+        }
+    });
+}
+
+/* ==========================================================================
+   Single Item Quick Order Modal Logic
+   ========================================================================== */
+
+let currentQuickOrderItem = null;
+let currentQuickOrderQty = 1;
+
+window.openQuickOrderModal = function(id, name, price, image) {
+    currentQuickOrderItem = { id: parseInt(id), name: name, price: parseFloat(price), image: image };
+    currentQuickOrderQty = 1;
+
+    document.getElementById('quick-order-item-id').value = id;
+    document.getElementById('quick-order-item-name').value = name;
+    document.getElementById('quick-order-item-price').value = price;
+
+    document.getElementById('quick-order-item-title').textContent = name;
+    document.getElementById('quick-order-unit-price').textContent = `₹${price}`;
+    document.getElementById('quick-order-item-img').src = image || '/static/images/hero-banner.jpg';
+    document.getElementById('quick-order-qty').textContent = '1';
+
+    updateQuickOrderTotals();
+
+    const modal = document.getElementById('quick-order-modal');
+    if (modal) modal.classList.add('active');
+};
+
+window.closeQuickOrderModal = function() {
+    const modal = document.getElementById('quick-order-modal');
+    if (modal) modal.classList.remove('active');
+};
+
+window.changeQuickOrderQty = function(delta) {
+    currentQuickOrderQty += delta;
+    if (currentQuickOrderQty < 1) currentQuickOrderQty = 1;
+    document.getElementById('quick-order-qty').textContent = currentQuickOrderQty;
+    updateQuickOrderTotals();
+};
+
+function updateQuickOrderTotals() {
+    if (!currentQuickOrderItem) return;
+    const itemTotal = currentQuickOrderItem.price * currentQuickOrderQty;
+    const tax = Math.round(itemTotal * 0.05);
+    const grandTotal = itemTotal + tax;
+    document.getElementById('quick-order-total-price').textContent = `₹${grandTotal}`;
+}
+
+window.updateQuickOrderType = function(radio) {
+    document.querySelectorAll('.quick-type-label').forEach(label => {
+        label.classList.remove('active');
+        label.style.borderColor = 'var(--border-color)';
+        label.style.background = '#f8fafc';
+        label.style.color = 'var(--text-main)';
+    });
+
+    const parentLabel = radio.closest('.quick-type-label');
+    if (parentLabel) {
+        parentLabel.classList.add('active');
+        parentLabel.style.borderColor = 'var(--primary)';
+        parentLabel.style.background = 'var(--primary-light)';
+        parentLabel.style.color = 'var(--primary)';
+    }
+
+    const orderType = radio.value;
+    const dineinGroup = document.getElementById('quick-dinein-group');
+    const mobileGroup = document.getElementById('quick-mobile-group');
+    const deliveryGroup = document.getElementById('quick-delivery-group');
+
+    if (orderType === 'Dine-in') {
+        if (dineinGroup) dineinGroup.style.display = 'block';
+        if (mobileGroup) mobileGroup.style.display = 'none';
+        if (deliveryGroup) deliveryGroup.style.display = 'none';
+    } else if (orderType === 'Takeaway') {
+        if (dineinGroup) dineinGroup.style.display = 'none';
+        if (mobileGroup) mobileGroup.style.display = 'block';
+        if (deliveryGroup) deliveryGroup.style.display = 'none';
+    } else if (orderType === 'Delivery') {
+        if (dineinGroup) dineinGroup.style.display = 'none';
+        if (mobileGroup) mobileGroup.style.display = 'block';
+        if (deliveryGroup) deliveryGroup.style.display = 'block';
+    }
+};
+
+window.updateQuickPaymentStyle = function(radio) {
+    document.querySelectorAll('.quick-pay-label').forEach(label => {
+        label.classList.remove('active');
+        label.style.borderColor = 'var(--border-color)';
+        label.style.background = '#f8fafc';
+        label.style.color = 'var(--text-main)';
+    });
+
+    const parentLabel = radio.closest('.quick-pay-label');
+    if (parentLabel) {
+        parentLabel.classList.add('active');
+        parentLabel.style.borderColor = 'var(--primary)';
+        parentLabel.style.background = 'var(--primary-light)';
+        parentLabel.style.color = 'var(--primary)';
+    }
+};
+
+window.handleQuickOrderSubmit = async function(event) {
+    event.preventDefault();
+    if (!currentQuickOrderItem) return;
+
+    const submitBtn = document.getElementById('quick-order-submit-btn');
+    const orderType = document.querySelector('input[name="quick_order_type"]:checked')?.value || 'Dine-in';
+    const paymentMethod = document.querySelector('input[name="quick_payment"]:checked')?.value || 'UPI';
+    const note = document.getElementById('quick-order-note').value.trim();
+
+    let tableNumber = '';
+    let phone = '';
+    let address = '';
+
+    if (orderType === 'Dine-in') {
+        tableNumber = document.getElementById('quick-order-table').value.trim();
+        if (!tableNumber) {
+            alert('Please enter your table number for Dine-in orders.');
+            return;
+        }
+    } else if (orderType === 'Takeaway') {
+        phone = document.getElementById('quick-order-phone').value.trim();
+        if (!phone) {
+            alert('Please enter your mobile number for Takeaway orders.');
+            return;
+        }
+    } else if (orderType === 'Delivery') {
+        phone = document.getElementById('quick-order-phone').value.trim();
+        address = document.getElementById('quick-order-address').value.trim();
+        if (!phone) {
+            alert('Please enter your mobile number for Delivery orders.');
+            return;
+        }
+        if (!address) {
+            alert('Please enter your delivery address.');
+            return;
+        }
+    }
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Placing Order...';
+    }
+
+    const itemTotal = currentQuickOrderItem.price * currentQuickOrderQty;
+    const tax = Math.round(itemTotal * 0.05);
+
+    const payload = {
+        order_type: orderType,
+        table_number: tableNumber,
+        customer_phone: phone,
+        delivery_address: address,
+        address: address,
+        items: [{
+            id: currentQuickOrderItem.id,
+            menu_item_id: currentQuickOrderItem.id,
+            name: currentQuickOrderItem.name,
+            item_name: currentQuickOrderItem.name,
+            quantity: currentQuickOrderQty,
+            price: currentQuickOrderItem.price
+        }],
+        subtotal: itemTotal,
+        subtotal_price: itemTotal,
+        total: itemTotal + tax,
+        total_price: itemTotal + tax,
+        payment_method: paymentMethod
+    };
+
+    try {
+        const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            closeQuickOrderModal();
+            showToast('Order placed successfully!');
+            setTimeout(() => {
+                window.location.href = '/orders';
+            }, 800);
+        } else {
+            const errorText = await response.text();
+            alert(`Order placement error: ${errorText}`);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i> Place Order';
+            }
+        }
+    } catch (err) {
+        alert(`Network error: ${err.message}`);
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i> Place Order';
+        }
+    }
+};

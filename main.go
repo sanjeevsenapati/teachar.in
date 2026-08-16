@@ -97,11 +97,10 @@ func main() {
 	app.RegisterRoutes(mux)
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-		Handler:      mux,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		Addr:              fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
+		Handler:           mux,
+		IdleTimeout:       120 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	// Graceful shutdown goroutine.

@@ -21,10 +21,12 @@ type createOrderRequest struct {
 	TransactionID   string `json:"transaction_id"`
 	CouponCode      string `json:"coupon_code"`
 	Items           []struct {
-		ID       int64   `json:"id"`
-		Name     string  `json:"name"`
-		Price    float64 `json:"price"`
-		Quantity int     `json:"quantity"`
+		ID         int64   `json:"id"`
+		MenuItemID int64   `json:"menu_item_id"`
+		Name       string  `json:"name"`
+		ItemName   string  `json:"item_name"`
+		Price      float64 `json:"price"`
+		Quantity   int     `json:"quantity"`
 	} `json:"items"`
 }
 
@@ -93,9 +95,17 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 
 	var orderItems []models.OrderItem
 	for _, item := range req.Items {
+		itemID := item.MenuItemID
+		if itemID == 0 {
+			itemID = item.ID
+		}
+		itemName := item.ItemName
+		if itemName == "" {
+			itemName = item.Name
+		}
 		orderItems = append(orderItems, models.OrderItem{
-			MenuItemID: item.ID,
-			ItemName:   item.Name,
+			MenuItemID: itemID,
+			ItemName:   itemName,
 			Price:      item.Price,
 			Quantity:   item.Quantity,
 		})
@@ -129,44 +139,28 @@ func (app *Application) apiCreateOrderHandler(w http.ResponseWriter, r *http.Req
 	app.writeJSON(w, r, http.StatusCreated, createdOrder, nil)
 }
 
-type submitReviewRequest struct {
-	OrderID int64  `json:"order_id"`
-	Rating  int    `json:"rating"`
-	Review  string `json:"review"`
-}
-
 func (app *Application) apiSubmitOrderReviewHandler(w http.ResponseWriter, r *http.Request) {
-	var req submitReviewRequest
-	if r.Header.Get("Content-Type") == "application/json" {
-		json.NewDecoder(r.Body).Decode(&req)
-	} else {
-		r.ParseForm()
-		req.OrderID, _ = strconv.ParseInt(r.FormValue("order_id"), 10, 64)
-		req.Rating, _ = strconv.Atoi(r.FormValue("rating"))
-		req.Review = r.FormValue("review")
+	if r.Method != http.MethodPost {
+		app.methodNotAllowedError(w, r)
+		return
 	}
 
 	user := middleware.GetUserFromContext(r)
-	var userID int64
-	if user != nil {
-		userID = user.ID
-	}
-
-	if err := app.OrderService.SubmitOrderReview(r.Context(), req.OrderID, userID, req.Rating, req.Review); err != nil {
-		app.badRequestError(w, r, err)
+	if user == nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
-	if app.AuditService != nil {
-		details := "Submitted " + strconv.Itoa(req.Rating) + "-Star review for Order #" + strconv.FormatInt(req.OrderID, 10)
-		app.AuditService.LogEvent(r.Context(), user, "REVIEW_SUBMITTED", details, services.GetClientIP(r))
+	orderIDStr := r.FormValue("order_id")
+	ratingStr := r.FormValue("rating")
+	review := r.FormValue("review")
+
+	orderID, _ := strconv.ParseInt(orderIDStr, 10, 64)
+	rating, _ := strconv.Atoi(ratingStr)
+
+	if orderID > 0 && rating >= 1 && rating <= 5 {
+		_ = app.OrderService.SubmitOrderReview(r.Context(), orderID, user.ID, rating, review)
 	}
 
-	referer := r.Header.Get("Referer")
-	if referer != "" && r.Header.Get("X-Requested-With") == "" {
-		http.Redirect(w, r, referer, http.StatusSeeOther)
-		return
-	}
-
-	app.writeJSON(w, r, http.StatusOK, map[string]string{"message": "Review submitted successfully"}, nil)
+	http.Redirect(w, r, "/orders", http.StatusSeeOther)
 }

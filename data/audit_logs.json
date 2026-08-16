@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 182,
+  "next_audit_log_id": 214,
   "audit_logs": [
     {
       "id": 1,
@@ -1810,6 +1810,326 @@
       "action": "REVIEW_SUBMITTED",
       "details": "Submitted 5-Star review for Order #25",
       "ip_address": "127.0.0.1:59201"
+    },
+    {
+      "id": 182,
+      "timestamp": "2026-08-16T22:48:33.643758+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:59225"
+    },
+    {
+      "id": 183,
+      "timestamp": "2026-08-16T22:48:58.20295+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #26 (Dine-in, Total: ₹1008.00)",
+      "ip_address": "127.0.0.1:59225"
+    },
+    {
+      "id": 184,
+      "timestamp": "2026-08-16T22:49:38.368179+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:59284"
+    },
+    {
+      "id": 185,
+      "timestamp": "2026-08-16T23:03:39.728475+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #27 (Single Item Quick Order, Total: ₹52.50)",
+      "ip_address": "[::1]:59469"
+    },
+    {
+      "id": 186,
+      "timestamp": "2026-08-16T23:05:53.548454+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_CUP_CLAIMED",
+      "details": "Claimed daily free beverage credit",
+      "ip_address": "127.0.0.1:59476"
+    },
+    {
+      "id": 187,
+      "timestamp": "2026-08-16T23:16:10.970386+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #28 (Dine-in, Total: ₹52.50)",
+      "ip_address": "[::1]:59601"
+    },
+    {
+      "id": 188,
+      "timestamp": "2026-08-16T23:16:14.363368+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #29 (Takeaway, Total: ₹52.50)",
+      "ip_address": "[::1]:59602"
+    },
+    {
+      "id": 189,
+      "timestamp": "2026-08-16T23:21:33.784097+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #30 (Dine-in, Total: ₹63.00)",
+      "ip_address": "[::1]:59661"
+    },
+    {
+      "id": 190,
+      "timestamp": "2026-08-16T23:22:44.906277+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #27 to staff Order Staff 1 (ID: 6)",
+      "ip_address": "127.0.0.1:59672"
+    },
+    {
+      "id": 191,
+      "timestamp": "2026-08-16T23:22:50.532602+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #30 to staff Counter Staff (ID: 4)",
+      "ip_address": "127.0.0.1:59672"
+    },
+    {
+      "id": 192,
+      "timestamp": "2026-08-16T23:23:10.64486+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #29 to staff Order Staff 1 (ID: 6)",
+      "ip_address": "127.0.0.1:59672"
+    },
+    {
+      "id": 193,
+      "timestamp": "2026-08-16T23:23:17.838844+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "ORDER_ASSIGNED_TO_STAFF",
+      "details": "Super Admin assigned Order #28 to staff Order Staff 1 (ID: 6)",
+      "ip_address": "127.0.0.1:59672"
+    },
+    {
+      "id": 194,
+      "timestamp": "2026-08-16T23:35:28.263706+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #31 (Dine-in, Total: ₹31.50)",
+      "ip_address": "[::1]:59906"
+    },
+    {
+      "id": 195,
+      "timestamp": "2026-08-16T23:36:21.746015+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #32 (Dine-in, Total: ₹63.00)",
+      "ip_address": "[::1]:59914"
+    },
+    {
+      "id": 196,
+      "timestamp": "2026-08-16T23:36:27.17173+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #33 (Takeaway, Total: ₹52.50)",
+      "ip_address": "[::1]:59915"
+    },
+    {
+      "id": 197,
+      "timestamp": "2026-08-16T23:36:32.808904+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #34 (Delivery, Total: ₹168.00)",
+      "ip_address": "[::1]:59916"
+    },
+    {
+      "id": 198,
+      "timestamp": "2026-08-16T23:37:33.506988+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:59919"
+    },
+    {
+      "id": 199,
+      "timestamp": "2026-08-16T23:40:30.357487+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #35 (Dine-in, Total: ₹252.00)",
+      "ip_address": "[::1]:59983"
+    },
+    {
+      "id": 200,
+      "timestamp": "2026-08-16T23:40:43.120621+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:59983"
+    },
+    {
+      "id": 201,
+      "timestamp": "2026-08-16T23:44:30.38946+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #36 (Dine-in, Total: ₹31.50)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 202,
+      "timestamp": "2026-08-16T23:44:54.827124+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #37 (Dine-in, Total: ₹36.75)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 203,
+      "timestamp": "2026-08-16T23:45:34.63535+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 204,
+      "timestamp": "2026-08-16T23:46:04.358385+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #30 status to 'Cancelled' [Reason: Item out of stock] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 205,
+      "timestamp": "2026-08-16T23:46:55.907001+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #37 status to 'Cancelled' [Reason: End of operational hours / Store closing] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 206,
+      "timestamp": "2026-08-16T23:47:00.436068+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #36 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 207,
+      "timestamp": "2026-08-16T23:47:12.370513+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #33 status to 'Cancelled' [Reason: Equipment maintenance - Espresso machine cleaning] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 208,
+      "timestamp": "2026-08-16T23:47:16.638213+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #34 status to 'Ready' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 209,
+      "timestamp": "2026-08-16T23:47:24.540371+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #31 status to 'Cancelled' [Reason: Delivery location unreachable] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 210,
+      "timestamp": "2026-08-16T23:48:04.33559+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #38 (Dine-in, Total: ₹52.50)",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 211,
+      "timestamp": "2026-08-16T23:49:30.044982+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:60071"
+    },
+    {
+      "id": 212,
+      "timestamp": "2026-08-17T01:36:10.455869+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:60304"
+    },
+    {
+      "id": 213,
+      "timestamp": "2026-08-17T01:40:17.635943+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60397"
     }
   ]
 }
