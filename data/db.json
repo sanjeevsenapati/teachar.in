@@ -1,25 +1,25 @@
 {
   "next_user_id": 3,
-  "next_menu_item_id": 11,
-  "next_order_id": 2,
+  "next_menu_item_id": 13,
+  "next_order_id": 1,
   "users": [
     {
       "id": 1,
       "name": "TEACHAR Admin",
       "email": "admin@teachar.in",
-      "password_hash": "6222e0fb6e251e7a98de4844147383fccf4b5b161301847078fd1be42e7bda24",
-      "salt": "fd0a237113c48a92b1d7c159e36a0dbc",
+      "password_hash": "b00ab214e5f11a963c4b95a12e24db293fa77cdfe09afcd033e9a6aefc3495cc",
+      "salt": "5c7fa96d763aee13ce9ac32f540ee8c6",
       "role": "admin",
-      "created_at": "2026-08-16T02:02:36.148423+05:30"
+      "created_at": "2026-08-16T10:16:07.585081+05:30"
     },
     {
       "id": 2,
       "name": "Sample Client",
       "email": "client@teachar.in",
-      "password_hash": "2738559de74d7ddc16ebb82f0f27b3acdae186875bd91dab4a4312254dfe0a6e",
-      "salt": "5755aca52168671683d340a068de7736",
+      "password_hash": "46a94ba558b65a14649e27bfb375689dc39a0b059b86a34534b2b50380ae48f4",
+      "salt": "127ad518779095d235fa168d14f2280b",
       "role": "client",
-      "created_at": "2026-08-16T02:02:36.148423+05:30"
+      "created_at": "2026-08-16T10:16:07.585082+05:30"
     }
   ],
   "sessions": [],
@@ -113,31 +113,25 @@
       "price": 30,
       "image": "/static/images/popped-rice.jpg",
       "available": true
+    },
+    {
+      "id": 11,
+      "name": "Vanilla Popped Rice",
+      "description": "Sweet and crunchy puffed rice delicately infused with vanilla bean and honey glaze.",
+      "category": "Snacks",
+      "price": 35,
+      "image": "/static/images/vanilla-popped-rice.jpg",
+      "available": true
+    },
+    {
+      "id": 12,
+      "name": "Red Tea \u0026 Popped Rice Combo",
+      "description": "A comforting cup of crimson Red Tea served with a separate small sachet of crispy Popped Rice to sprinkle on top.",
+      "category": "Tea",
+      "price": 50,
+      "image": "/static/images/red-tea-combo.jpg",
+      "available": true
     }
   ],
-  "orders": [
-    {
-      "id": 1,
-      "user_id": 0,
-      "customer_name": "Guest Customer",
-      "customer_phone": "",
-      "delivery_address": "",
-      "status": "Pending",
-      "payment_method": "COD",
-      "payment_status": "Pending",
-      "transaction_id": "TXN82291558",
-      "total_price": 84,
-      "items": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "menu_item_id": 4,
-          "item_name": "Cold Coffee",
-          "quantity": 1,
-          "price": 80
-        }
-      ],
-      "created_at": "2026-08-16T09:30:29.847456+05:30"
-    }
-  ]
+  "orders": []
 }

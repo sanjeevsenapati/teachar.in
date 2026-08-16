@@ -96,7 +96,7 @@ func (r *JSONRepository) seedDefaultData() {
 
 	r.data = dbSchema{
 		NextUserID:     3,
-		NextMenuItemID: 11,
+		NextMenuItemID: 13,
 		NextOrderID:    1,
 		Users: []models.User{
 			{
@@ -130,6 +130,8 @@ func (r *JSONRepository) seedDefaultData() {
 			{ID: 8, Name: "Coke", Description: "Chilled Coca-Cola.", Category: "Cold Drinks", Price: 40, Image: "/static/images/coke.jpg", Available: true},
 			{ID: 9, Name: "Red Tea", Description: "Fragrant and antioxidant-rich crimson herbal tea brew.", Category: "Tea", Price: 35, Image: "/static/images/red-tea.jpg", Available: true},
 			{ID: 10, Name: "Popped Rice", Description: "Crispy roasted puffed rice tossed with peanuts, spices, and fresh herbs.", Category: "Snacks", Price: 30, Image: "/static/images/popped-rice.jpg", Available: true},
+			{ID: 11, Name: "Vanilla Popped Rice", Description: "Sweet and crunchy puffed rice delicately infused with vanilla bean and honey glaze.", Category: "Snacks", Price: 35, Image: "/static/images/vanilla-popped-rice.jpg", Available: true},
+			{ID: 12, Name: "Red Tea & Popped Rice Combo", Description: "A comforting cup of crimson Red Tea served with a separate small sachet of crispy Popped Rice to sprinkle on top.", Category: "Tea", Price: 50, Image: "/static/images/red-tea-combo.jpg", Available: true},
 		},
 		Orders: []models.Order{},
 	}
