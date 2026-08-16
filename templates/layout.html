@@ -305,6 +305,31 @@
     </aside>
     {{end}}
 
+    <!-- Theme-Aligned Confirmation Modal -->
+    <div class="modal-overlay" id="theme-confirm-modal" style="z-index:10000;">
+        <div class="modal-card" style="max-width:440px; border-radius:var(--border-radius-lg); overflow:hidden; box-shadow:var(--shadow-xl);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color:#ffffff; padding:1.1rem 1.4rem;">
+                <h3 id="theme-confirm-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.55rem;">
+                    <i class="fa-solid fa-circle-exclamation text-warning"></i> Confirm Action
+                </h3>
+                <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeThemeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:1.4rem; text-align:center;">
+                <div style="width:54px; height:54px; border-radius:50%; background:#fee2e2; color:#dc2626; display:inline-flex; align-items:center; justify-content:center; font-size:1.6rem; margin-bottom:0.9rem; border:2px solid #fca5a5;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <p id="theme-confirm-message" style="font-size:0.95rem; color:var(--text-main); font-weight:600; line-height:1.4; margin:0 0 0.5rem;"></p>
+                <small style="color:var(--text-muted); font-size:0.78rem;">This action cannot be undone.</small>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.6rem; padding:0.9rem 1.25rem; background:#f8fafc; border-top:1px solid var(--border-color);">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeThemeConfirmModal()" style="font-weight:700; padding:0.5rem 1rem;">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" id="theme-confirm-btn" style="font-weight:800; padding:0.5rem 1.2rem; background:#dc2626; color:#ffffff;">
+                    <i class="fa-solid fa-check me-1"></i> Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- 3D Secure OTP Payment Verification Modal -->
     <div class="modal-overlay" id="otp-modal">
         <div class="modal-card" style="max-width:420px; text-align:center;">

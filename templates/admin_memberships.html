@@ -20,11 +20,22 @@
 
         <!-- Master Memberships Table -->
         <div class="admin-table-card">
-            <div class="table-card-header">
-                <h3><i class="fa-solid fa-crown text-primary"></i> Active & Past Subscriptions Register ({{len .Subscriptions}})</h3>
-                <button class="btn btn-primary btn-sm" onclick="openGrantMembershipModal()">
-                    <i class="fa-solid fa-plus me-1"></i> Grant Pass
-                </button>
+            <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div>
+                    <h3 style="margin:0;"><i class="fa-solid fa-crown text-primary"></i> Subscriptions Register (<span id="sub-count">{{len .Subscriptions}}</span>)</h3>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; flex:1; max-width:540px; justify-content:flex-end;">
+                    <!-- Real-Time Subscriptions Search Bar -->
+                    <div style="position:relative; flex:1; min-width:260px;">
+                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--primary); font-size:0.85rem;"></i>
+                        <input type="text" id="sub-search-input" onkeyup="filterSubscriptionsTable()" placeholder="Search subscriber, email, tier, or status..." class="form-input" style="padding-left:2.2rem; padding-top:0.45rem; padding-bottom:0.45rem; font-size:0.85rem; width:100%; border-radius:var(--border-radius-full); border:1.5px solid var(--border-color);">
+                    </div>
+
+                    <button class="btn btn-primary btn-sm" onclick="openGrantMembershipModal()" style="font-weight:800; white-space:nowrap;">
+                        <i class="fa-solid fa-plus me-1"></i> Grant Pass
+                    </button>
+                </div>
             </div>
 
             {{if not .Subscriptions}}
@@ -34,84 +45,97 @@
                 <p>Click "Grant Pass" above to grant a pass to an existing user, or customers can purchase passes online.</p>
             </div>
             {{else}}
-            <div class="table-responsive">
-                <table class="admin-table">
+            <div class="table-responsive" style="overflow-x:hidden;">
+                <table class="admin-table" style="width:100%; border-collapse:collapse; table-layout:auto;">
                     <thead>
                         <tr>
-                            <th>Pass ID</th>
-                            <th>Subscriber Name</th>
-                            <th>Email Address</th>
-                            <th>Pass Tier</th>
-                            <th>Price / Channel</th>
-                            <th>Discount</th>
-                            <th>Free Cups</th>
-                            <th>Valid Period</th>
-                            <th>Status</th>
-                            <th style="text-align:right;">Actions</th>
+                            <th style="padding:0.85rem 0.6rem;">Pass ID</th>
+                            <th style="padding:0.85rem 0.6rem;">Subscriber Profile</th>
+                            <th style="padding:0.85rem 0.6rem;">Pass Tier</th>
+                            <th style="padding:0.85rem 0.6rem;">Price & Channel</th>
+                            <th style="padding:0.85rem 0.6rem;">Discount</th>
+                            <th style="padding:0.85rem 0.6rem;">Free Daily Cups</th>
+                            <th style="padding:0.85rem 0.6rem;">Validity Period</th>
+                            <th style="padding:0.85rem 0.6rem;">Status</th>
+                            <th style="text-align:right; padding:0.85rem 0.6rem;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="sub-table-body">
                         {{range .Subscriptions}}
-                        <tr>
-                            <td><strong style="font-family:monospace; color:var(--primary);">#SUB-{{.ID}}</strong></td>
-                            <td><strong>{{.UserName}}</strong></td>
-                            <td><i class="fa-solid fa-envelope text-muted me-1"></i> {{.UserEmail}}</td>
-                            <td>
+                        <tr class="sub-table-row">
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
+                                <strong style="font-family:monospace; color:var(--primary); font-size:0.85rem;">#SUB-{{.ID}}</strong>
+                            </td>
+                            
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
+                                <div style="display:flex; flex-direction:column; gap:0.2rem;">
+                                    <strong style="color:var(--text-main); font-size:0.88rem; line-height:1.2;">{{.UserName}}</strong>
+                                    <small class="text-muted" style="font-size:0.75rem; word-break:break-word;"><i class="fa-solid fa-envelope me-1" style="color:var(--primary);"></i> {{.UserEmail}}</small>
+                                </div>
+                            </td>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
                                 {{if eq .TierID "silver"}}
-                                <span class="category-pill-sm" style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:800; font-size:0.75rem; padding:0.3rem 0.5rem;">
                                     <i class="fa-solid fa-crown me-1" style="color:#64748b;"></i> {{.TierName}}
                                 </span>
                                 {{else if eq .TierID "gold"}}
-                                <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:800; font-size:0.75rem; padding:0.3rem 0.5rem;">
                                     <i class="fa-solid fa-crown me-1" style="color:#d97706;"></i> {{.TierName}}
                                 </span>
                                 {{else if eq .TierID "platinum"}}
-                                <span class="category-pill-sm" style="background:#f3e8ff; color:#6b21a8; border:1px solid #e9d5ff; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#f3e8ff; color:#6b21a8; border:1px solid #e9d5ff; font-weight:800; font-size:0.75rem; padding:0.3rem 0.5rem;">
                                     <i class="fa-solid fa-gem me-1" style="color:#7c3aed;"></i> {{.TierName}}
                                 </span>
                                 {{else}}
-                                <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; border:1px solid #d97706; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#fef3c7; color:#92400e; border:1px solid #d97706; font-weight:800; font-size:0.75rem; padding:0.3rem 0.5rem;">
                                     <i class="fa-solid fa-crown me-1"></i> {{.TierName}}
                                 </span>
                                 {{end}}
                             </td>
-                            <td>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
                                 {{if gt .PricePaid 0.0}}
-                                <strong style="color:var(--primary);">₹{{printf "%.2f" .PricePaid}}</strong>
-                                <small class="text-muted" style="display:block; font-size:0.75rem;">{{.PaymentMethod}}</small>
+                                <strong style="color:var(--primary); font-size:0.85rem;">₹{{printf "%.2f" .PricePaid}}</strong>
+                                <small class="text-muted" style="display:block; font-size:0.72rem;">{{.PaymentMethod}}</small>
                                 {{else}}
-                                <span class="category-pill-sm" style="background:#e0f2fe; color:#0369a1; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#e0f2fe; color:#0369a1; font-weight:800; font-size:0.72rem; padding:0.25rem 0.45rem;">
                                     <i class="fa-solid fa-gift me-1"></i> Admin Grant
                                 </span>
                                 {{end}}
                             </td>
-                            <td><strong style="color:#047857;">{{printf "%.0f" .DiscountPercent}}% OFF</strong></td>
-                            <td><strong style="color:#92400e;">{{.DailyFreeCupLimit}} Cup/Day</strong></td>
-                            <td>
-                                <small style="display:block; font-weight:600; color:var(--text-main);">{{.StartDate.Format "Jan 02, 2006"}}</small>
-                                <small class="text-muted" style="font-size:0.75rem;">to {{.EndDate.Format "Jan 02, 2006"}}</small>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;"><strong style="color:#047857; font-size:0.82rem;">{{printf "%.0f" .DiscountPercent}}% OFF</strong></td>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;"><strong style="color:#92400e; font-size:0.82rem;"><i class="fa-solid fa-mug-hot me-1 text-primary"></i> {{.DailyFreeCupLimit}} Cup/Day</strong></td>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
+                                <small style="display:block; font-weight:700; color:var(--text-main); font-size:0.78rem; line-height:1.2;">{{.StartDate.Format "Jan 02, 2006"}}</small>
+                                <small class="text-muted" style="font-size:0.72rem;">until {{.EndDate.Format "Jan 02, 2006"}}</small>
                             </td>
-                            <td>
+
+                            <td style="padding:0.85rem 0.6rem; vertical-align:middle;">
                                 {{if eq .Status "Active"}}
-                                <span class="category-pill-sm" style="background:#d1fae5; color:#047857; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#d1fae5; color:#047857; font-weight:800; font-size:0.75rem; padding:0.25rem 0.5rem;">
                                     <i class="fa-solid fa-circle-check me-1"></i> Active
                                 </span>
                                 {{else}}
-                                <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800;">
+                                <span class="category-pill-sm" style="background:#fee2e2; color:#991b1b; font-weight:800; font-size:0.75rem; padding:0.25rem 0.5rem;">
                                     <i class="fa-solid fa-circle-xmark me-1"></i> {{.Status}}
                                 </span>
                                 {{end}}
                             </td>
-                            <td style="text-align:right;">
+
+                            <td style="text-align:right; padding:0.85rem 0.6rem; vertical-align:middle;">
                                 {{if eq .Status "Active"}}
-                                <form action="/admin/memberships/cancel" method="POST" style="display:inline;" onsubmit="return confirm('Cancel subscription for {{.UserName}}?');">
+                                <form action="/admin/memberships/cancel" method="POST" style="display:inline;" onsubmit="return confirmFormAction(this, 'Cancel Pass Subscription', 'Are you sure you want to cancel the pass subscription for {{.UserName}}?', 'Cancel Pass');">
                                     <input type="hidden" name="id" value="{{.ID}}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.25rem 0.5rem; font-size:0.75rem; font-weight:700;" title="Cancel Subscription">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.3rem 0.6rem; font-size:0.75rem; font-weight:700;" title="Cancel Subscription">
                                         <i class="fa-solid fa-ban me-1"></i> Cancel
                                     </button>
                                 </form>
                                 {{else}}
-                                <span class="text-muted" style="font-size:0.78rem;">Inactive</span>
+                                <span class="text-muted" style="font-size:0.75rem; font-weight:600;">Expired / Inactive</span>
                                 {{end}}
                             </td>
                         </tr>
@@ -119,43 +143,106 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Empty Search Results Container -->
+            <div id="no-sub-results" style="display:none; padding:2.5rem; text-align:center; background:#fafafa; border-top:1px solid var(--border-color);">
+                <i class="fa-solid fa-id-card" style="font-size:2.5rem; color:var(--text-muted); margin-bottom:0.75rem;"></i>
+                <h4 style="margin:0 0 0.3rem; color:var(--text-main); font-weight:800;">No Subscriptions Match Your Search</h4>
+                <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Try searching with a different subscriber name, email, or pass tier.</p>
+            </div>
             {{end}}
         </div>
+
+        <script>
+        function filterSubscriptionsTable() {
+            const input = document.getElementById('sub-search-input');
+            if (!input) return;
+            const filter = input.value.trim().toLowerCase();
+            const rows = document.querySelectorAll('.sub-table-row');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (filter === '' || text.includes(filter)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            const countEl = document.getElementById('sub-count');
+            if (countEl) countEl.textContent = visibleCount;
+
+            const noResultsEl = document.getElementById('no-sub-results');
+            if (noResultsEl) {
+                if (visibleCount === 0 && rows.length > 0) {
+                    noResultsEl.style.display = 'block';
+                } else {
+                    noResultsEl.style.display = 'none';
+                }
+            }
+        }
+        </script>
 
     </div>
 </section>
 
 <!-- Grant Membership Modal -->
-<div class="modal-overlay" id="grant-membership-modal">
-    <div class="modal-card" style="max-width:500px;">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-user-shield text-primary"></i> Grant User Membership Pass</h3>
-            <button type="button" class="modal-close-btn" onclick="closeGrantMembershipModal()">&times;</button>
+<div class="modal-overlay" id="grant-membership-modal" style="z-index:10000;">
+    <div class="modal-card" style="max-width:520px; border-radius:var(--border-radius-lg); overflow:hidden; box-shadow:var(--shadow-xl);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color:#ffffff; padding:1.1rem 1.5rem;">
+            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.55rem;">
+                <i class="fa-solid fa-user-shield text-warning"></i> Grant User Membership Pass
+            </h3>
+            <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeGrantMembershipModal()">&times;</button>
         </div>
-        <form action="/admin/memberships/grant" method="POST" class="modal-body" style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+        <form action="/admin/memberships/grant" method="POST" class="modal-body" style="padding:1.4rem; display:flex; flex-direction:column; gap:1.1rem;">
             
+            <!-- User Search & Selection Field -->
             <div class="form-group">
-                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Select Registered User <span class="text-danger">*</span></label>
-                <select name="user_id" class="form-select" required style="padding:0.75rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                    <label style="font-weight:700; font-size:0.88rem; color:var(--text-main); margin:0;">
+                        <i class="fa-solid fa-user text-primary me-1"></i> Select Registered User <span class="text-danger">*</span>
+                    </label>
+                    <span id="grant-user-match-count" class="category-pill-sm" style="background:#fef3c7; color:#92400e; font-weight:700; font-size:0.75rem; border:1px solid #fde68a;">
+                        {{len .Users}} users total
+                    </span>
+                </div>
+
+                <!-- Live User Search Bar -->
+                <div style="position:relative; margin-bottom:0.5rem;">
+                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--primary); font-size:0.85rem;"></i>
+                    <input type="text" id="grant-user-search" onkeyup="filterGrantUserList()" placeholder="Type user name, email, or mobile to filter..." class="form-input" style="padding-left:2.2rem; padding-top:0.5rem; padding-bottom:0.5rem; font-size:0.88rem; width:100%; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md);">
+                </div>
+
+                <!-- Filterable User Dropdown -->
+                <select name="user_id" id="grant-user-select" class="form-select" required style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     <option value="" disabled selected>-- Select Registered Customer / User --</option>
                     {{range .Users}}
-                    <option value="{{.ID}}">{{.Name}} ({{.Email}} - {{.Role}})</option>
+                    <option value="{{.ID}}">{{.Name}} ({{.Email}}{{if .MobileNumber}} • {{.MobileNumber}}{{end}})</option>
                     {{end}}
                 </select>
             </div>
 
+            <!-- Pass Tier Selector -->
             <div class="form-group">
-                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Select Pass Tier <span class="text-danger">*</span></label>
-                <select name="tier_id" class="form-select" required style="padding:0.75rem;">
+                <label style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
+                    <i class="fa-solid fa-crown text-primary me-1"></i> Select Pass Tier <span class="text-danger">*</span>
+                </label>
+                <select name="tier_id" class="form-select" required style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     {{range .Tiers}}
                     <option value="{{.ID}}">{{.Name}} ({{printf "%.0f" .DiscountPercentage}}% OFF + {{.DailyFreeCupLimit}} Free Cup/Day)</option>
                     {{end}}
                 </select>
             </div>
 
+            <!-- Validity Duration -->
             <div class="form-group">
-                <label style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Pass Validity Duration <span class="text-danger">*</span></label>
-                <select name="duration_months" class="form-select" required style="padding:0.75rem;">
+                <label style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
+                    <i class="fa-solid fa-calendar-days text-primary me-1"></i> Pass Validity Duration <span class="text-danger">*</span>
+                </label>
+                <select name="duration_months" class="form-select" required style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     <option value="1" selected>1 Month (30 Days)</option>
                     <option value="3">3 Months (Quarterly Pass)</option>
                     <option value="6">6 Months (Half-Yearly Pass)</option>
@@ -163,9 +250,9 @@
                 </select>
             </div>
 
-            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.5rem;">
-                <button type="button" class="btn btn-secondary" onclick="closeGrantMembershipModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-crown"></i> Issue & Grant Pass</button>
+            <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:0.5rem; padding-top:0.85rem; border-top:1px dashed var(--border-color);">
+                <button type="button" class="btn btn-secondary" onclick="closeGrantMembershipModal()" style="font-weight:700; padding:0.55rem 1.1rem;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="font-weight:800; padding:0.55rem 1.25rem;"><i class="fa-solid fa-crown me-1"></i> Issue & Grant Pass</button>
             </div>
         </form>
     </div>
@@ -174,9 +261,54 @@
 <script>
 function openGrantMembershipModal() {
     document.getElementById('grant-membership-modal').classList.add('active');
+    setTimeout(() => {
+        const searchInput = document.getElementById('grant-user-search');
+        if (searchInput) searchInput.focus();
+    }, 150);
 }
+
 function closeGrantMembershipModal() {
     document.getElementById('grant-membership-modal').classList.remove('active');
+}
+
+function filterGrantUserList() {
+    const input = document.getElementById('grant-user-search');
+    if (!input) return;
+    const filter = input.value.trim().toLowerCase();
+    const select = document.getElementById('grant-user-select');
+    if (!select) return;
+    const options = select.options;
+    let matchCount = 0;
+    let firstMatch = null;
+
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        if (opt.value === "") continue; // Skip placeholder
+        
+        const text = opt.textContent.toLowerCase();
+        if (filter === "" || text.includes(filter)) {
+            opt.style.display = "";
+            opt.disabled = false;
+            matchCount++;
+            if (!firstMatch) firstMatch = opt;
+        } else {
+            opt.style.display = "none";
+            opt.disabled = true;
+        }
+    }
+
+    const badge = document.getElementById('grant-user-match-count');
+    if (badge) {
+        if (filter === "") {
+            badge.textContent = `${options.length - 1} users total`;
+        } else {
+            badge.textContent = `${matchCount} matched`;
+        }
+    }
+
+    if (firstMatch && filter !== "") {
+        select.value = firstMatch.value;
+    }
 }
 </script>
 {{end}}

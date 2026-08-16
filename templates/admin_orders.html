@@ -219,34 +219,50 @@
 </section>
 
 <!-- Cancellation Reason Selection Modal -->
-<div class="modal-overlay" id="cancellation-modal">
-    <div class="modal-card" style="max-width:480px;">
-        <div class="modal-header">
-            <h3 style="color:#dc2626;"><i class="fa-solid fa-circle-exclamation"></i> Select Cancellation Reason</h3>
-            <button type="button" class="modal-close-btn" onclick="closeCancelModal()">&times;</button>
+<div class="modal-overlay" id="cancellation-modal" style="z-index:10000;">
+    <div class="modal-card" style="max-width:500px; border-radius:var(--border-radius-lg); overflow:hidden; box-shadow:var(--shadow-xl);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color:#ffffff; padding:1.1rem 1.5rem;">
+            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.55rem;">
+                <i class="fa-solid fa-ban text-danger"></i> Cancel Order Options
+            </h3>
+            <button type="button" class="modal-close-btn" style="color:#ffffff;" onclick="closeCancelModal()">&times;</button>
         </div>
-        <div class="modal-body" style="padding:1.25rem;">
-            <p style="margin-bottom:1rem; color:var(--text-muted);">Select a predefined cancellation reason for <strong id="modal-order-title">Order #</strong>:</p>
-            
+        <div class="modal-body" style="padding:1.35rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; padding:0.75rem; background:#fff5f5; border:1px solid #fed7d7; border-radius:var(--border-radius-md); margin-bottom:1.1rem;">
+                <i class="fa-solid fa-receipt text-danger" style="font-size:1.4rem;"></i>
+                <div>
+                    <strong id="modal-order-title" style="color:#9b2c2c; font-size:1rem; display:block;">Order #</strong>
+                    <small style="color:#c53030; font-weight:600;">Please select a valid cancellation reason to notify customer & update inventory.</small>
+                </div>
+            </div>
+
             <div class="form-group" style="margin-bottom:1rem;">
-                <label for="modal-reason-select" style="font-weight:700; font-size:0.9rem; margin-bottom:0.4rem; display:block;">Reason Preset</label>
-                <select id="modal-reason-select" class="form-select" onchange="toggleCustomReasonInput(this)" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; font-size:0.95rem;">
+                <label for="modal-reason-select" style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
+                    <i class="fa-solid fa-list-check text-primary me-1"></i> Predefined Cancellation Reason
+                </label>
+                <select id="modal-reason-select" class="form-select" onchange="toggleCustomReasonInput(this)" style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem; font-weight:600;">
                     {{range .CancellationReasons}}
                     <option value="{{.}}">{{.}}</option>
                     {{end}}
-                    <option value="__custom__">Other (Enter custom reason below)</option>
+                    <option value="__custom__">Other (Enter custom reason below)...</option>
                 </select>
             </div>
 
-            <div class="form-group hidden" id="custom-reason-container" style="margin-top:0.75rem;">
-                <label for="modal-custom-reason" style="font-weight:700; font-size:0.9rem; margin-bottom:0.4rem; display:block;">Custom Reason Explanation</label>
-                <input type="text" id="modal-custom-reason" class="form-input" placeholder="Specify exact reason..." style="width:100%; padding:0.7rem; border:1px solid var(--border-color); border-radius:6px;">
+            <div class="form-group hidden" id="custom-reason-container" style="margin-top:0.85rem;">
+                <label for="modal-custom-reason" style="font-weight:700; font-size:0.88rem; margin-bottom:0.4rem; display:block; color:var(--text-main);">
+                    <i class="fa-solid fa-pen text-primary me-1"></i> Custom Explanation <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="modal-custom-reason" class="form-input" placeholder="Enter detailed reason for cancellation..." style="width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-color); border-radius:var(--border-radius-md); font-size:0.9rem;">
+            </div>
+            
+            <div id="cancel-modal-error" style="display:none; color:#dc2626; font-size:0.82rem; font-weight:700; margin-top:0.6rem; background:#fee2e2; padding:0.5rem 0.75rem; border-radius:var(--border-radius-sm); border:1px solid #fca5a5;">
+                <i class="fa-solid fa-circle-exclamation me-1"></i> Please specify a custom reason before confirming cancellation.
             </div>
         </div>
-        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.5rem; padding:1rem 1.25rem; background:#f9fafb; border-top:1px solid #f3f4f6;">
-            <button type="button" class="btn btn-secondary" onclick="closeCancelModal()">Abort</button>
-            <button type="button" class="btn btn-danger" onclick="confirmCancelModal()" style="background:#dc2626; color:#fff; border:none; padding:0.65rem 1.25rem; border-radius:6px; font-weight:700; cursor:pointer;">
-                <i class="fa-solid fa-ban"></i> Confirm Cancellation
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.6rem; padding:1rem 1.35rem; background:#f8fafc; border-top:1px solid var(--border-color);">
+            <button type="button" class="btn btn-secondary" onclick="closeCancelModal()" style="font-weight:700; padding:0.55rem 1.1rem;">Keep Order</button>
+            <button type="button" class="btn btn-danger" onclick="confirmCancelModal()" style="background:#dc2626; color:#ffffff; border:none; padding:0.55rem 1.25rem; font-weight:800; border-radius:var(--border-radius-sm); cursor:pointer;">
+                <i class="fa-solid fa-ban me-1"></i> Confirm Cancellation
             </button>
         </div>
     </div>
@@ -483,12 +499,15 @@ function confirmCancelModal() {
     if (!pendingCancelSelect || !pendingCancelOrderId) return;
     
     const reasonSelect = document.getElementById('modal-reason-select');
+    const errorEl = document.getElementById('cancel-modal-error');
+    if (errorEl) errorEl.style.display = 'none';
+
     let chosenReason = reasonSelect.value;
     
     if (chosenReason === '__custom__') {
         chosenReason = document.getElementById('modal-custom-reason').value.trim();
         if (!chosenReason) {
-            alert("Please enter a custom explanation for cancelling this order.");
+            if (errorEl) errorEl.style.display = 'block';
             return;
         }
     }

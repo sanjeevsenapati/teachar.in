@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 220,
+  "next_audit_log_id": 231,
   "audit_logs": [
     {
       "id": 1,
@@ -2190,6 +2190,116 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 220,
+      "timestamp": "2026-08-17T01:53:56.771362+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 221,
+      "timestamp": "2026-08-17T01:57:57.232496+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_DELETED",
+      "details": "Deleted coupon ID #2",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 222,
+      "timestamp": "2026-08-17T01:58:36.899692+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "COUPON_CREATED",
+      "details": "Created single-use coupon 'FIRST20'",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 223,
+      "timestamp": "2026-08-17T02:02:14.895225+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_CANCELLED",
+      "details": "Cancelled Subscription #4",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 224,
+      "timestamp": "2026-08-17T02:02:47.383813+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_CANCELLED",
+      "details": "Cancelled Subscription #3",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 225,
+      "timestamp": "2026-08-17T02:02:48.252566+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_CANCELLED",
+      "details": "Cancelled Subscription #2",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 226,
+      "timestamp": "2026-08-17T02:02:49.245166+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_CANCELLED",
+      "details": "Cancelled Subscription #1",
+      "ip_address": "127.0.0.1:60588"
+    },
+    {
+      "id": 227,
+      "timestamp": "2026-08-17T02:05:32.580661+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "MEMBERSHIP_GRANTED",
+      "details": "Granted Gold Coffee Pass to Sanjeev Senapati (sanjeev@gmail.com) for 1 month(s)",
+      "ip_address": "127.0.0.1:60677"
+    },
+    {
+      "id": 228,
+      "timestamp": "2026-08-17T02:18:40.846951+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:60762"
+    },
+    {
+      "id": 229,
+      "timestamp": "2026-08-17T02:18:53.136111+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_SUBSCRIBED",
+      "details": "Subscribed to Silver Chai Pass (Txn #SUB-1786913333-3, Amount ₹499.00)",
+      "ip_address": "127.0.0.1:60762"
+    },
+    {
+      "id": 230,
+      "timestamp": "2026-08-17T02:19:00.858588+05:30",
+      "actor_id": 3,
+      "actor_name": "Client Customer",
+      "actor_role": "client",
+      "action": "MEMBERSHIP_CUP_CLAIMED",
+      "details": "Claimed daily free beverage credit",
+      "ip_address": "127.0.0.1:60762"
     }
   ]
 }

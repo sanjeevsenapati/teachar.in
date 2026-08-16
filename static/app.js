@@ -741,4 +741,46 @@ window.handleQuickOrderSubmit = async function(event) {
             submitBtn.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i> Place Order';
         }
     }
+}
+
+// Global Theme-Aligned Confirmation Modal Handlers
+let pendingConfirmCallback = null;
+
+window.showConfirmModal = function(title, message, confirmText, callback) {
+    const modal = document.getElementById('theme-confirm-modal');
+    if (!modal) {
+        if (confirm(message)) callback();
+        return;
+    }
+
+    const titleEl = document.getElementById('theme-confirm-title');
+    if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-circle-exclamation text-warning me-1"></i> ${title || 'Confirm Action'}`;
+
+    const msgEl = document.getElementById('theme-confirm-message');
+    if (msgEl) msgEl.textContent = message || 'Are you sure you want to proceed?';
+    
+    const confirmBtn = document.getElementById('theme-confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> ${confirmText || 'Confirm'}`;
+        confirmBtn.onclick = function() {
+            closeThemeConfirmModal();
+            if (callback) callback();
+        };
+    }
+
+    pendingConfirmCallback = callback;
+    modal.classList.add('active');
 };
+
+window.closeThemeConfirmModal = function() {
+    const modal = document.getElementById('theme-confirm-modal');
+    if (modal) modal.classList.remove('active');
+    pendingConfirmCallback = null;
+};
+
+window.confirmFormAction = function(formElem, title, message, confirmText) {
+    window.showConfirmModal(title, message, confirmText, function() {
+        formElem.submit();
+    });
+    return false;
+};;

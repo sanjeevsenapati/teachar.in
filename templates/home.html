@@ -1,136 +1,88 @@
 {{define "main"}}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-bg-overlay"></div>
-    <div class="container hero-container">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fa-solid fa-fire-flame-curved"></i> Artisanal Tea & Fresh Brews
-            </div>
-            <h1 class="hero-title">Experience Real Chai, <br><span class="highlight-text">Freshly Brewed</span> Everyday.</h1>
-            <p class="hero-subtitle">Handcrafted Indian chai, aromatic coffee, and crispy golden snacks made with authentic spices and zero artificial ingredients.</p>
-            <div class="hero-actions">
-                <a href="/menu" class="btn btn-primary btn-lg">
-                    <i class="fa-solid fa-utensils"></i> Explore Full Menu
-                </a>
-                <a href="#featured" class="btn btn-secondary btn-lg">
-                    <i class="fa-solid fa-star"></i> Featured Items
-                </a>
-            </div>
-            
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Organic Spices</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number">4.9 <i class="fa-solid fa-star star-icon"></i></span>
-                    <span class="stat-label">50,000+ Reviews</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number">15 Mins</span>
-                    <span class="stat-label">Quick Serving</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-visual">
-            <div class="hero-image-card">
-                <img src="/static/images/hero-banner.jpg" alt="Artisanal Chai at TEACHAR" class="hero-img">
-                <div class="floating-card top-right-card">
-                    <i class="fa-solid fa-heart text-danger"></i>
-                    <div>
-                        <strong>#1 Best Seller</strong>
-                        <span>Kulhad Masala Chai</span>
-                    </div>
-                </div>
-                <div class="floating-card bottom-left-card">
-                    <div class="rating-stars">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <span>"Best tea in town!"</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Signature Hero Item Spotlight Banner: Red Tea & Popped Rice Combo -->
-<section class="combo-spotlight-section" style="padding: 3.5rem 0; background: linear-gradient(135deg, #1c130e 0%, #3a2214 100%); color: #ffffff; position: relative; overflow: hidden; border-top: 3px solid #d97706; border-bottom: 3px solid #d97706; box-shadow: var(--shadow-md);">
-    <div class="hero-bg-overlay" style="background: radial-gradient(circle at right center, rgba(217, 119, 6, 0.22) 0%, transparent 70%);"></div>
-    <div class="container" style="position: relative; z-index: 2;">
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center;">
+<!-- Exact 1:1 Replica Showcase Hero Section matching User Design -->
+<section class="exact-showcase-hero" style="padding: 5rem 0 4rem; background: #fbf4eb; font-family: 'Outfit', sans-serif;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: center;">
             
             <!-- Left Info Column -->
-            <div style="display: flex; flex-direction: column; gap: 1.15rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                    <span class="category-pill" style="background: #fbbf24; color: #78350f; font-weight: 800; font-size: 0.82rem; padding: 0.35rem 0.85rem; border-radius: var(--border-radius-full); text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid #d97706;">
-                        <i class="fa-solid fa-fire me-1"></i> HERO SIGNATURE ITEM
-                    </span>
-                    <span style="background: rgba(255,255,255,0.15); color: #fef3c7; border: 1px solid rgba(255,255,255,0.25); padding: 0.3rem 0.75rem; border-radius: var(--border-radius-full); font-size: 0.8rem; font-weight: 700;">
-                        <i class="fa-solid fa-mug-hot me-1"></i> Hot Crimson Herbal Brew
-                    </span>
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                
+                <!-- Pill Tag -->
+                <div style="background: #ffffff; border: 1px solid rgba(180, 83, 9, 0.25); padding: 0.45rem 1.15rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; color: #b45309; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                    <i class="fa-solid fa-fire-flame-curved" style="color: #b45309;"></i> Artisanal Tea & Fresh Brews
                 </div>
 
-                <h2 style="font-family: var(--font-heading); font-size: 2.7rem; font-weight: 800; color: #ffffff; line-height: 1.15; margin: 0;">
-                    Red Tea & <span style="color: #fbbf24;">Popped Rice</span> Combo
-                </h2>
+                <!-- Big Headline with Highlight -->
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 3.5rem; font-weight: 800; color: #1c130e; line-height: 1.12; margin: 0 0 1.25rem; letter-spacing: -0.02em;">
+                    Experience Real Chai, <br>
+                    <span style="color: #b45309;">Freshly Brewed</span> <br>
+                    Everyday.
+                </h1>
 
-                <p style="font-size: 1.05rem; color: #fef3c7; line-height: 1.6; margin: 0; opacity: 0.95;">
-                    Experience our authentic tea lover's ritual: Fragrant crimson Lal Cha brewed with fresh ginger, served alongside a sachet of crispy hand-roasted puffed rice (Khai) to sprinkle directly into your tea!
+                <!-- Subtitle -->
+                <p style="font-size: 1.08rem; color: #6b7280; line-height: 1.65; margin: 0 0 2.25rem; max-width: 520px;">
+                    Handcrafted Indian chai, aromatic coffee, and crispy golden snacks made with authentic spices and zero artificial ingredients.
                 </p>
 
-                <!-- Key Highlights Badges -->
-                <div style="display: flex; gap: 1.5rem; margin: 0.3rem 0; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; color: #ffffff; font-weight: 600;">
-                        <i class="fa-solid fa-circle-check" style="color:#fbbf24;"></i> <span>100% Herbal & Natural</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; color: #ffffff; font-weight: 600;">
-                        <i class="fa-solid fa-circle-check" style="color:#fbbf24;"></i> <span>Hand-Roasted Puffed Rice</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; color: #ffffff; font-weight: 600;">
-                        <i class="fa-solid fa-circle-check" style="color:#fbbf24;"></i> <span>Traditional Indian Pairing</span>
-                    </div>
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 3.5rem; flex-wrap: wrap;">
+                    <a href="/menu" style="background: #b45309; color: #ffffff; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 20px rgba(180, 83, 9, 0.35); transition: all 0.2s;">
+                        <i class="fa-solid fa-utensils"></i> Explore Full Menu
+                    </a>
+                    <a href="#featured" style="background: #ffffff; color: #1c130e; border: 1px solid #e5e7eb; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;">
+                        <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Featured Items
+                    </a>
                 </div>
 
-                <!-- Price Tag & CTA -->
-                <div style="display: flex; align-items: center; gap: 1.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="font-size: 0.78rem; text-transform: uppercase; color: #fde68a; font-weight: 700; letter-spacing: 0.05em;">Special Combo Offer</span>
-                        <div style="display: flex; align-items: baseline; gap: 0.6rem;">
-                            <span style="font-size: 2.4rem; font-weight: 800; color: #ffffff; font-family: var(--font-heading);">₹50</span>
-                            <span style="font-size: 1.1rem; text-decoration: line-through; color: #9ca3af; font-weight: 600;">₹70</span>
-                            <span style="background:#059669; color:#ffffff; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: var(--border-radius-sm); font-weight: 800;">SAVE 28%</span>
+                <!-- Bottom Stats Bar -->
+                <div style="display: flex; align-items: center; gap: 2.25rem; width: 100%; padding-top: 1.75rem; border-top: 1px solid #e5e7eb;">
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">100%</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Organic Spices</div>
+                    </div>
+
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1; display: flex; align-items: center; gap: 0.35rem;">
+                            4.9 <i class="fa-solid fa-star" style="color: #f59e0b; font-size: 1.1rem;"></i>
                         </div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">50,000+ Reviews</div>
                     </div>
 
-                    <button type="button" class="btn btn-primary btn-lg buy-now-btn" data-id="12" data-name="Red Tea & Popped Rice Combo" data-price="50" data-image="/static/images/red-tea-combo.jpg" onclick="triggerBuyItem(this)" style="padding: 0.85rem 2rem; font-size: 1.05rem; font-weight: 800; box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);">
-                        <i class="fa-solid fa-bolt me-2"></i> Buy Hero Combo Now
-                    </button>
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">15 Mins</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Quick Serving</div>
+                    </div>
                 </div>
+
             </div>
 
-            <!-- Right Visual Image Card -->
-            <div style="position: relative;">
-                <div style="background: #ffffff; padding: 0.75rem; border-radius: var(--border-radius-lg); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); border: 2.5px solid #fbbf24; transform: rotate(1.5deg);">
-                    <img src="/static/images/red-tea-combo.jpg" alt="Red Tea & Popped Rice Combo" style="width: 100%; height: 320px; object-fit: cover; border-radius: var(--border-radius-md);">
+            <!-- Right Visual Image Column -->
+            <div style="position: relative; width: 100%;">
+                <div style="position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);">
+                    <img src="/static/images/hero-banner.jpg" alt="Kulhad Masala Chai" style="width: 100%; height: 460px; object-fit: cover; border-radius: 28px; display: block;">
                 </div>
 
-                <!-- Floating Banner Pill -->
-                <div style="position: absolute; bottom: -18px; left: -15px; background: #ffffff; border: 2px solid #d97706; border-radius: var(--border-radius-md); padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.85rem; box-shadow: var(--shadow-lg);">
-                    <div style="width: 44px; height: 44px; background: #fef3c7; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                        <i class="fa-solid fa-heart text-danger"></i>
+                <!-- Top Right Floating Pill Badge -->
+                <div style="position: absolute; top: 22px; right: -12px; background: #ffffff; padding: 0.75rem 1.3rem; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(0,0,0,0.05); font-size: 0.88rem; z-index: 10;">
+                    <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+                    <strong style="color: #1c130e; font-weight: 800;">#1 Best Seller</strong>
+                    <span style="color: #6b7280; font-weight: 500;">Kulhad Masala Chai</span>
+                </div>
+
+                <!-- Bottom Left Floating Review Card -->
+                <div style="position: absolute; bottom: -18px; left: -16px; background: #ffffff; padding: 1rem 1.4rem; border-radius: 20px; box-shadow: 0 12px 35px rgba(0,0,0,0.12); display: flex; flex-direction: column; gap: 0.35rem; border: 1px solid rgba(0,0,0,0.05); z-index: 10;">
+                    <div style="color: #1c130e; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
                     </div>
-                    <div>
-                        <strong style="display: block; color: var(--text-main); font-size: 0.92rem; line-height: 1.2;">TEACHAR Signature Ritual</strong>
-                        <small style="color: var(--text-muted); font-size: 0.78rem;">Loved by 12,000+ Tea Aficionados</small>
-                    </div>
+                    <span style="font-weight: 700; color: #1c130e; font-size: 0.92rem;">"Best tea in town!"</span>
                 </div>
             </div>
 
@@ -138,30 +90,184 @@
     </div>
 </section>
 
-<!-- Features Grid -->
-<section class="features-section">
-    <div class="container">
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-seedling"></i></div>
-                <h3>100% Authentic Spices</h3>
-                <p>Real crushed cardamom, ginger, cloves, and cinnamon cooked fresh in every batch.</p>
+<!-- Running Showcase Section 2: Crispy Golden Snacks & Savories (Reverse Layout) -->
+<section class="exact-showcase-hero" style="padding: 5rem 0 4rem; background: #ffffff; font-family: 'Outfit', sans-serif; border-top: 1px solid #f3f4f6;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+        <div style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 4rem; align-items: center;">
+            
+            <!-- Left Visual Image Column -->
+            <div style="position: relative; width: 100%;">
+                <div style="position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);">
+                    <img src="/static/images/samosa.jpg" alt="Crispy Golden Samosas" style="width: 100%; height: 440px; object-fit: cover; border-radius: 28px; display: block;">
+                </div>
+
+                <!-- Top Left Floating Pill Badge -->
+                <div style="position: absolute; top: 22px; left: -12px; background: #ffffff; padding: 0.75rem 1.3rem; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(0,0,0,0.05); font-size: 0.88rem; z-index: 10;">
+                    <i class="fa-solid fa-fire" style="color: #f59e0b;"></i>
+                    <strong style="color: #1c130e; font-weight: 800;">Freshly Fried</strong>
+                    <span style="color: #6b7280; font-weight: 500;">Crispy Masala Samosa</span>
+                </div>
+
+                <!-- Bottom Right Floating Review Card -->
+                <div style="position: absolute; bottom: -18px; right: -16px; background: #ffffff; padding: 1rem 1.4rem; border-radius: 20px; box-shadow: 0 12px 35px rgba(0,0,0,0.12); display: flex; flex-direction: column; gap: 0.35rem; border: 1px solid rgba(0,0,0,0.05); z-index: 10;">
+                    <div style="color: #1c130e; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span style="font-weight: 700; color: #1c130e; font-size: 0.92rem;">"Piping hot & delicious!"</span>
+                </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-mug-hot"></i></div>
-                <h3>Freshly Brewed To Order</h3>
-                <p>Never re-heated or pre-stored. Every cup is brewed right when you order it.</p>
+
+            <!-- Right Info Column -->
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                
+                <!-- Pill Tag -->
+                <div style="background: #ffffff; border: 1px solid rgba(180, 83, 9, 0.25); padding: 0.45rem 1.15rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; color: #b45309; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                    <i class="fa-solid fa-cookie-bite" style="color: #b45309;"></i> Crispy Golden Snacks & Savories
+                </div>
+
+                <!-- Big Headline with Highlight -->
+                <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 3.5rem; font-weight: 800; color: #1c130e; line-height: 1.12; margin: 0 0 1.25rem; letter-spacing: -0.02em;">
+                    Piping Hot Snacks, <br>
+                    <span style="color: #b45309;">Fried Fresh</span> <br>
+                    Every Hour.
+                </h2>
+
+                <!-- Subtitle -->
+                <p style="font-size: 1.08rem; color: #6b7280; line-height: 1.65; margin: 0 0 2.25rem; max-width: 520px;">
+                    From crispy golden samosas to buttery maska buns, our artisanal snacks are handcrafted using authentic traditional recipes to complement your hot chai.
+                </p>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 3.5rem; flex-wrap: wrap;">
+                    <a href="/menu" style="background: #b45309; color: #ffffff; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 20px rgba(180, 83, 9, 0.35); transition: all 0.2s;">
+                        <i class="fa-solid fa-bolt"></i> Order Snacks Now
+                    </a>
+                    <a href="/about" style="background: #ffffff; color: #1c130e; border: 1px solid #e5e7eb; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;">
+                        <i class="fa-solid fa-leaf" style="color: #10b981;"></i> Pure Ingredients
+                    </a>
+                </div>
+
+                <!-- Bottom Stats Bar -->
+                <div style="display: flex; align-items: center; gap: 2.25rem; width: 100%; padding-top: 1.75rem; border-top: 1px solid #e5e7eb;">
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">100%</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Made Fresh Daily</div>
+                    </div>
+
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1; display: flex; align-items: center; gap: 0.35rem;">
+                            4.8 <i class="fa-solid fa-star" style="color: #f59e0b; font-size: 1.1rem;"></i>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">35,000+ Orders</div>
+                    </div>
+
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">Zero</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Preservatives</div>
+                    </div>
+                </div>
+
             </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
-                <h3>Single-Origin Leaves</h3>
-                <p>Directly sourced CTC and Orthodox tea leaves from Assam & Darjeeling estates.</p>
+
+        </div>
+    </div>
+</section>
+
+<!-- Running Showcase Section 3: VIP Chai Subscriber Pass -->
+<section class="exact-showcase-hero" style="padding: 5rem 0 4rem; background: #fbf4eb; font-family: 'Outfit', sans-serif; border-top: 1px solid #f3f4f6;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: center;">
+            
+            <!-- Left Info Column -->
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                
+                <!-- Pill Tag -->
+                <div style="background: #ffffff; border: 1px solid rgba(180, 83, 9, 0.25); padding: 0.45rem 1.15rem; border-radius: 50px; font-size: 0.85rem; font-weight: 700; color: #b45309; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                    <i class="fa-solid fa-crown" style="color: #f59e0b;"></i> VIP Chai Subscriber Pass
+                </div>
+
+                <!-- Big Headline with Highlight -->
+                <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 3.5rem; font-weight: 800; color: #1c130e; line-height: 1.12; margin: 0 0 1.25rem; letter-spacing: -0.02em;">
+                    Your Daily Ritual, <br>
+                    <span style="color: #b45309;">Unlimited Perks</span> <br>
+                    & Discounts.
+                </h2>
+
+                <!-- Subtitle -->
+                <p style="font-size: 1.08rem; color: #6b7280; line-height: 1.65; margin: 0 0 2.25rem; max-width: 520px;">
+                    Subscribe to TEACHAR Club Pass for up to 30% OFF every single order, free daily chai cup claims, and instant priority counter serving.
+                </p>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 3.5rem; flex-wrap: wrap;">
+                    <a href="/admin/memberships" style="background: #b45309; color: #ffffff; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 20px rgba(180, 83, 9, 0.35); transition: all 0.2s;">
+                        <i class="fa-solid fa-crown"></i> Get VIP Pass
+                    </a>
+                    <a href="/menu" style="background: #ffffff; color: #1c130e; border: 1px solid #e5e7eb; padding: 0.9rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 0.98rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;">
+                        <i class="fa-solid fa-gift" style="color: #3b82f6;"></i> View Member Perks
+                    </a>
+                </div>
+
+                <!-- Bottom Stats Bar -->
+                <div style="display: flex; align-items: center; gap: 2.25rem; width: 100%; padding-top: 1.75rem; border-top: 1px solid #e5e7eb;">
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">30% OFF</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">On All Orders</div>
+                    </div>
+
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1; display: flex; align-items: center; gap: 0.35rem;">
+                            1 Cup/Day
+                        </div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Free Daily Claim</div>
+                    </div>
+
+                    <div style="width: 1px; height: 38px; background: #e5e7eb;"></div>
+
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; color: #1c130e; line-height: 1.1;">VIP</div>
+                        <div style="font-size: 0.8rem; color: #9ca3af; font-weight: 600; margin-top: 0.2rem;">Priority Serving</div>
+                    </div>
+                </div>
+
             </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
-                <h3>Lightning Fast Service</h3>
-                <p>Enjoy hot chai and crispy snacks piping hot at your table or delivered quickly.</p>
+
+            <!-- Right Visual Image Column -->
+            <div style="position: relative; width: 100%;">
+                <div style="position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);">
+                    <img src="/static/images/masala-tea.jpg" alt="VIP Pass Membership" style="width: 100%; height: 460px; object-fit: cover; border-radius: 28px; display: block;">
+                </div>
+
+                <!-- Top Right Floating Pill Badge -->
+                <div style="position: absolute; top: 22px; right: -12px; background: #ffffff; padding: 0.75rem 1.3rem; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(0,0,0,0.05); font-size: 0.88rem; z-index: 10;">
+                    <i class="fa-solid fa-gem" style="color: #8b5cf6;"></i>
+                    <strong style="color: #1c130e; font-weight: 800;">VIP Platinum Pass</strong>
+                    <span style="color: #6b7280; font-weight: 500;">Exclusive Perks</span>
+                </div>
+
+                <!-- Bottom Left Floating Review Card -->
+                <div style="position: absolute; bottom: -18px; left: -16px; background: #ffffff; padding: 1rem 1.4rem; border-radius: 20px; box-shadow: 0 12px 35px rgba(0,0,0,0.12); display: flex; flex-direction: column; gap: 0.35rem; border: 1px solid rgba(0,0,0,0.05); z-index: 10;">
+                    <div style="color: #1c130e; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span style="font-weight: 700; color: #1c130e; font-size: 0.92rem;">"Saved ₹1,200 this month!"</span>
+                </div>
             </div>
+
         </div>
     </div>
 </section>

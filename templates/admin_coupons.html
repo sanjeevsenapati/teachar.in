@@ -150,8 +150,8 @@
                                 {{end}}
                             </td>
                             <td style="text-align:right;">
-                                <form action="/admin/coupons/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete coupon {{.Code}}?');">
-                                    <input type="hidden" name="id" value="{{.ID}}">
+                                <form action="/admin/coupons/delete" method="POST" style="display:inline;" onsubmit="return confirmFormAction(this, 'Delete Coupon Code', 'Are you sure you want to delete coupon code {{.Code}}?', 'Delete Coupon');">
+                                    <input type="hidden" name="code" value="{{.Code}}">
                                     <button type="submit" class="btn btn-outline-danger btn-sm" style="padding:0.2rem 0.5rem; font-size:0.75rem;" title="Delete Coupon">
                                         <i class="fa-solid fa-trash-can"></i> Delete
                                     </button>

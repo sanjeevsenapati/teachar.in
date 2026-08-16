@@ -1,5 +1,5 @@
 {
-  "next_subscription_id": 5,
+  "next_subscription_id": 7,
   "subscriptions": [
     {
       "id": 1,
@@ -8,7 +8,7 @@
       "user_email": "client@teachar.in",
       "tier_id": "gold",
       "tier_name": "Gold Coffee Pass",
-      "status": "Active",
+      "status": "Cancelled",
       "price_paid": 999,
       "discount_percent": 15,
       "daily_free_cup_limit": 1,
@@ -26,7 +26,7 @@
       "user_email": "client@teachar.in",
       "tier_id": "silver",
       "tier_name": "Silver Chai Pass",
-      "status": "Active",
+      "status": "Cancelled",
       "price_paid": 499,
       "discount_percent": 10,
       "daily_free_cup_limit": 1,
@@ -45,7 +45,7 @@
       "user_email": "superadmin@teachar.in",
       "tier_id": "platinum",
       "tier_name": "Platinum Executive VIP Pass",
-      "status": "Active",
+      "status": "Cancelled",
       "price_paid": 0,
       "discount_percent": 20,
       "daily_free_cup_limit": 2,
@@ -63,7 +63,7 @@
       "user_email": "sanjeev@gmail.com",
       "tier_id": "platinum",
       "tier_name": "Platinum Executive VIP Pass",
-      "status": "Active",
+      "status": "Cancelled",
       "price_paid": 0,
       "discount_percent": 20,
       "daily_free_cup_limit": 2,
@@ -73,6 +73,43 @@
       "auto_renew": false,
       "payment_method": "Granted by Super Admin",
       "transaction_id": "GRANT-1786899012-7"
+    },
+    {
+      "id": 5,
+      "user_id": 7,
+      "user_name": "Sanjeev Senapati",
+      "user_email": "sanjeev@gmail.com",
+      "tier_id": "gold",
+      "tier_name": "Gold Coffee Pass",
+      "status": "Active",
+      "price_paid": 0,
+      "discount_percent": 15,
+      "daily_free_cup_limit": 1,
+      "cups_claimed_today": 0,
+      "start_date": "2026-08-17T02:05:32.57959+05:30",
+      "end_date": "2026-09-17T02:05:32.57959+05:30",
+      "auto_renew": false,
+      "payment_method": "Granted by Super Admin",
+      "transaction_id": "GRANT-1786912532-7"
+    },
+    {
+      "id": 6,
+      "user_id": 3,
+      "user_name": "Client Customer",
+      "user_email": "client@teachar.in",
+      "tier_id": "silver",
+      "tier_name": "Silver Chai Pass",
+      "status": "Active",
+      "price_paid": 499,
+      "discount_percent": 10,
+      "daily_free_cup_limit": 1,
+      "cups_claimed_today": 1,
+      "last_claim_date": "2026-08-17T02:19:00.857407+05:30",
+      "start_date": "2026-08-17T02:18:53.134484+05:30",
+      "end_date": "2026-09-17T02:18:53.134484+05:30",
+      "auto_renew": true,
+      "payment_method": "UPI",
+      "transaction_id": "SUB-1786913333-3"
     }
   ]
 }
