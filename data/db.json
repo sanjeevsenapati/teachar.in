@@ -2,7 +2,7 @@
   "next_user_id": 7,
   "next_menu_item_id": 13,
   "next_order_id": 8,
-  "next_audit_log_id": 34,
+  "next_audit_log_id": 40,
   "users": [
     {
       "id": 1,
@@ -120,6 +120,16 @@
       "id": "a0d5edeabe3226d19a64befd7e173d9aff7e5ac362b288e36ca8c795cbe7a961",
       "user_id": 4,
       "expires_at": "2026-08-17T13:54:57.552239+05:30"
+    },
+    {
+      "id": "d75b455d4125a540c0981ff672c19f7663bfb5bbae236814e260bcdc90a2efcc",
+      "user_id": 1,
+      "expires_at": "2026-08-17T14:01:25.525917+05:30"
+    },
+    {
+      "id": "7599169d067f9593f7b76a368961e2b8211fdc241f66e57b8425ccec7f3f5990",
+      "user_id": 4,
+      "expires_at": "2026-08-17T14:01:39.309819+05:30"
     }
   ],
   "menu_items": [
@@ -241,14 +251,14 @@
       "order_type": "Takeaway",
       "table_number": "",
       "delivery_address": "",
-      "status": "Ready",
+      "status": "Cancelled",
       "payment_method": "COD",
       "payment_status": "Pending",
       "transaction_id": "TXN84326091",
       "total_price": 162.75,
-      "assigned_staff_id": 0,
-      "assigned_staff_name": "",
-      "cancellation_reason": "",
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Raw ingredients unavailable",
       "items": [
         {
           "id": 1,
@@ -285,7 +295,7 @@
       "order_type": "Dine-in",
       "table_number": "Table 12",
       "delivery_address": "",
-      "status": "Preparing",
+      "status": "Completed",
       "payment_method": "COD",
       "payment_status": "Pending",
       "transaction_id": "TXN17868661241126",
@@ -341,14 +351,14 @@
       "order_type": "Delivery",
       "table_number": "",
       "delivery_address": "42 Park Street, Bangalore",
-      "status": "Pending",
+      "status": "Cancelled",
       "payment_method": "Card",
       "payment_status": "Paid",
       "transaction_id": "TXN17868661356538",
       "total_price": 84,
-      "assigned_staff_id": 0,
-      "assigned_staff_name": "",
-      "cancellation_reason": "",
+      "assigned_staff_id": 4,
+      "assigned_staff_name": "Counter Staff",
+      "cancellation_reason": "Equipment maintenance - Espresso machine cleaning",
       "items": [
         {
           "id": 1,
@@ -776,6 +786,75 @@
       "action": "ORDER_STATUS_UPDATED",
       "details": "Updated Order #7 status to 'Cancelled' [Reason: Item not availble] (Handled by: Counter Staff)",
       "ip_address": "[::1]:52665"
+    },
+    {
+      "id": 34,
+      "timestamp": "2026-08-16T14:01:25.526439+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52752"
+    },
+    {
+      "id": 35,
+      "timestamp": "2026-08-16T14:01:25.536431+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "REASON_ADDED",
+      "details": "Added cancellation reason: 'Equipment maintenance - Espresso machine cleaning'",
+      "ip_address": "[::1]:52753"
+    },
+    {
+      "id": 36,
+      "timestamp": "2026-08-16T14:01:39.310311+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:52764"
+    },
+    {
+      "id": 37,
+      "timestamp": "2026-08-16T14:01:39.322604+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #4 status to 'Cancelled' [Reason: Equipment maintenance - Espresso machine cleaning] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52765"
+    },
+    {
+      "id": 38,
+      "timestamp": "2026-08-16T14:02:24.554499+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #2 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52773"
+    },
+    {
+      "id": 39,
+      "timestamp": "2026-08-16T14:02:39.987041+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #1 status to 'Cancelled' [Reason: Raw ingredients unavailable] (Handled by: Counter Staff)",
+      "ip_address": "[::1]:52773"
     }
+  ],
+  "cancellation_reasons": [
+    "Item out of stock",
+    "Kitchen load exceeded / High volume",
+    "Customer requested cancellation",
+    "Raw ingredients unavailable",
+    "End of operational hours / Store closing",
+    "Delivery location unreachable",
+    "Equipment maintenance - Espresso machine cleaning"
   ]
 }

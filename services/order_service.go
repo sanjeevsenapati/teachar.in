@@ -128,3 +128,15 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 
 	return s.orderRepo.UpdateOrderStatusWithStaff(ctx, id, status, staffID, staffName, cancellationReason)
 }
+
+func (s *OrderService) GetCancellationReasons(ctx context.Context) ([]string, error) {
+	return s.orderRepo.GetCancellationReasons(ctx)
+}
+
+func (s *OrderService) AddCancellationReason(ctx context.Context, reason string) error {
+	return s.orderRepo.AddCancellationReason(ctx, reason)
+}
+
+func (s *OrderService) DeleteCancellationReason(ctx context.Context, reason string) error {
+	return s.orderRepo.DeleteCancellationReason(ctx, reason)
+}

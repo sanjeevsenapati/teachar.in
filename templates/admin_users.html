@@ -60,6 +60,35 @@
                 </table>
             </div>
         </div>
+
+        <!-- Superadmin Managed Cancellation Reasons -->
+        <div class="admin-table-card mt-4">
+            <div class="table-card-header">
+                <h3><i class="fa-solid fa-list-check text-primary"></i> Predefined Order Cancellation Reasons</h3>
+            </div>
+            <div style="padding:1.25rem;">
+                <form action="/admin/cancellation-reasons/add" method="POST" style="display:flex; gap:0.5rem; margin-bottom:1.25rem;">
+                    <input type="text" name="reason" placeholder="Enter new preset cancellation reason..." required class="form-input" style="flex:1;">
+                    <button type="submit" class="btn btn-primary" style="padding:0.6rem 1.25rem;">
+                        <i class="fa-solid fa-plus"></i> Add Reason
+                    </button>
+                </form>
+
+                <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                    {{range .CancellationReasons}}
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0.85rem; border:1px solid var(--border-color); border-radius:6px; background:#fff;">
+                        <span style="font-weight:600; color:var(--text-main);"><i class="fa-solid fa-circle-dot text-muted" style="font-size:0.75rem; margin-right:0.4rem;"></i> {{.}}</span>
+                        <form action="/admin/cancellation-reasons/delete" method="POST" style="margin:0;">
+                            <input type="hidden" name="reason" value="{{.}}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove preset reason" style="padding:0.25rem 0.6rem; font-size:0.8rem;">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 

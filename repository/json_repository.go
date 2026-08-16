@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -16,15 +17,16 @@ import (
 )
 
 type dbSchema struct {
-	NextUserID     int64             `json:"next_user_id"`
-	NextMenuItemID int64             `json:"next_menu_item_id"`
-	NextOrderID    int64             `json:"next_order_id"`
-	NextAuditLogID int64             `json:"next_audit_log_id"`
-	Users          []models.User     `json:"users"`
-	Sessions       []models.Session  `json:"sessions"`
-	MenuItems      []models.MenuItem `json:"menu_items"`
-	Orders         []models.Order    `json:"orders"`
-	AuditLogs      []models.AuditLog `json:"audit_logs"`
+	NextUserID          int64             `json:"next_user_id"`
+	NextMenuItemID      int64             `json:"next_menu_item_id"`
+	NextOrderID         int64             `json:"next_order_id"`
+	NextAuditLogID      int64             `json:"next_audit_log_id"`
+	Users               []models.User     `json:"users"`
+	Sessions            []models.Session  `json:"sessions"`
+	MenuItems           []models.MenuItem `json:"menu_items"`
+	Orders              []models.Order    `json:"orders"`
+	AuditLogs           []models.AuditLog `json:"audit_logs"`
+	CancellationReasons []string          `json:"cancellation_reasons"`
 }
 
 // JSONRepository is a thread-safe, file-backed database using only standard library packages.
@@ -498,4 +500,82 @@ func (r *JSONRepository) GetAllAuditLogs(ctx context.Context) ([]models.AuditLog
 		result = append(result, r.data.AuditLogs[i])
 	}
 	return result, nil
+}
+
+// --- Cancellation Reasons Management ---
+
+func (r *JSONRepository) GetCancellationReasons(ctx context.Context) ([]string, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	defaults := []string{
+		"Item out of stock",
+		"Kitchen load exceeded / High volume",
+		"Customer requested cancellation",
+		"Raw ingredients unavailable",
+		"End of operational hours / Store closing",
+		"Delivery location unreachable",
+	}
+
+	if len(r.data.CancellationReasons) == 0 {
+		return defaults, nil
+	}
+
+	result := make([]string, len(r.data.CancellationReasons))
+	copy(result, r.data.CancellationReasons)
+	return result, nil
+}
+
+func (r *JSONRepository) AddCancellationReason(ctx context.Context, reason string) error {
+	if reason == "" {
+		return errors.New("cancellation reason cannot be empty")
+	}
+
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if len(r.data.CancellationReasons) == 0 {
+		r.data.CancellationReasons = []string{
+			"Item out of stock",
+			"Kitchen load exceeded / High volume",
+			"Customer requested cancellation",
+			"Raw ingredients unavailable",
+			"End of operational hours / Store closing",
+			"Delivery location unreachable",
+		}
+	}
+
+	for _, existing := range r.data.CancellationReasons {
+		if existing == reason {
+			return nil
+		}
+	}
+
+	r.data.CancellationReasons = append(r.data.CancellationReasons, reason)
+	return r.save()
+}
+
+func (r *JSONRepository) DeleteCancellationReason(ctx context.Context, reason string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if len(r.data.CancellationReasons) == 0 {
+		r.data.CancellationReasons = []string{
+			"Item out of stock",
+			"Kitchen load exceeded / High volume",
+			"Customer requested cancellation",
+			"Raw ingredients unavailable",
+			"End of operational hours / Store closing",
+			"Delivery location unreachable",
+		}
+	}
+
+	var updated []string
+	for _, existing := range r.data.CancellationReasons {
+		if existing != reason {
+			updated = append(updated, existing)
+		}
+	}
+	r.data.CancellationReasons = updated
+	return r.save()
 }

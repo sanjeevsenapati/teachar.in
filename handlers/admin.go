@@ -158,9 +158,12 @@ func (app *Application) adminOrdersHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
+
 	data := models.PageData{
-		"Title":  "Manage Orders",
-		"Orders": orders,
+		"Title":               "Manage Orders",
+		"Orders":              orders,
+		"CancellationReasons": reasons,
 	}
 	app.render(w, r, http.StatusOK, "admin_orders.html", data)
 }
@@ -178,10 +181,12 @@ func (app *Application) adminUpdateOrderStatusHandler(w http.ResponseWriter, r *
 
 	if err := app.OrderService.UpdateOrderStatusWithStaff(r.Context(), id, status, cancellationReason, actor); err != nil {
 		orders, _ := app.OrderService.GetAllOrders(r.Context())
+		reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
 		data := models.PageData{
-			"Title":  "Manage Orders",
-			"Error":  err.Error(),
-			"Orders": orders,
+			"Title":               "Manage Orders",
+			"Error":               err.Error(),
+			"Orders":              orders,
+			"CancellationReasons": reasons,
 		}
 		app.render(w, r, http.StatusConflict, "admin_orders.html", data)
 		return
@@ -212,11 +217,54 @@ func (app *Application) adminUsersHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	reasons, _ := app.OrderService.GetCancellationReasons(r.Context())
+
 	data := models.PageData{
-		"Title": "Staff & Registered Users",
-		"Users": users,
+		"Title":               "Staff & Registered Users",
+		"Users":               users,
+		"CancellationReasons": reasons,
 	}
 	app.render(w, r, http.StatusOK, "admin_users.html", data)
+}
+
+func (app *Application) adminAddCancellationReasonHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	reason := r.FormValue("reason")
+	if err := app.OrderService.AddCancellationReason(r.Context(), reason); err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		app.AuditService.LogEvent(r.Context(), actor, "REASON_ADDED", "Added cancellation reason: '"+reason+"'", services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app *Application) adminDeleteCancellationReasonHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+
+	reason := r.FormValue("reason")
+	if err := app.OrderService.DeleteCancellationReason(r.Context(), reason); err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	if app.AuditService != nil {
+		actor := middleware.GetUserFromContext(r)
+		app.AuditService.LogEvent(r.Context(), actor, "REASON_DELETED", "Deleted cancellation reason: '"+reason+"'", services.GetClientIP(r))
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
 }
 
 func (app *Application) adminCreateStaffHandler(w http.ResponseWriter, r *http.Request) {

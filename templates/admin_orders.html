@@ -117,18 +117,91 @@
     </div>
 </section>
 
+<!-- Cancellation Reason Selection Modal -->
+<div class="modal-overlay" id="cancellation-modal">
+    <div class="modal-card" style="max-width:480px;">
+        <div class="modal-header">
+            <h3 style="color:#dc2626;"><i class="fa-solid fa-circle-exclamation"></i> Select Cancellation Reason</h3>
+            <button type="button" class="modal-close-btn" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:1.25rem;">
+            <p style="margin-bottom:1rem; color:var(--text-muted);">Select a predefined cancellation reason for <strong id="modal-order-title">Order #</strong>:</p>
+            
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label for="modal-reason-select" style="font-weight:700; font-size:0.9rem; margin-bottom:0.4rem; display:block;">Reason Preset</label>
+                <select id="modal-reason-select" class="form-select" onchange="toggleCustomReasonInput(this)" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:6px; font-size:0.95rem;">
+                    {{range .CancellationReasons}}
+                    <option value="{{.}}">{{.}}</option>
+                    {{end}}
+                    <option value="__custom__">Other (Enter custom reason below)</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="custom-reason-container" style="margin-top:0.75rem;">
+                <label for="modal-custom-reason" style="font-weight:700; font-size:0.9rem; margin-bottom:0.4rem; display:block;">Custom Reason Explanation</label>
+                <input type="text" id="modal-custom-reason" class="form-input" placeholder="Specify exact reason..." style="width:100%; padding:0.7rem; border:1px solid var(--border-color); border-radius:6px;">
+            </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.5rem; padding:1rem 1.25rem; background:#f9fafb; border-top:1px solid #f3f4f6;">
+            <button type="button" class="btn btn-secondary" onclick="closeCancelModal()">Abort</button>
+            <button type="button" class="btn btn-danger" onclick="confirmCancelModal()" style="background:#dc2626; color:#fff; border:none; padding:0.65rem 1.25rem; border-radius:6px; font-weight:700; cursor:pointer;">
+                <i class="fa-solid fa-ban"></i> Confirm Cancellation
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+let pendingCancelSelect = null;
+let pendingCancelOrderId = null;
+
 function handleStatusChange(selectElem, orderId) {
     if (selectElem.value === 'Cancelled') {
-        const reason = prompt("Mandatory Action: Please enter the reason for cancelling Order #" + orderId + ":");
-        if (!reason || reason.trim() === "") {
-            alert("Cancellation aborted: A valid reason is required to cancel an order.");
-            selectElem.value = selectElem.getAttribute('data-prev') || 'Pending';
-            return;
-        }
-        document.getElementById('cancel-reason-' + orderId).value = reason.trim();
+        pendingCancelSelect = selectElem;
+        pendingCancelOrderId = orderId;
+        document.getElementById('modal-order-title').innerText = 'Order #' + orderId;
+        document.getElementById('cancellation-modal').classList.add('active');
+        return;
     }
     selectElem.form.submit();
+}
+
+function toggleCustomReasonInput(selectElem) {
+    const customContainer = document.getElementById('custom-reason-container');
+    if (selectElem.value === '__custom__') {
+        customContainer.classList.remove('hidden');
+        document.getElementById('modal-custom-reason').focus();
+    } else {
+        customContainer.classList.add('hidden');
+    }
+}
+
+function closeCancelModal() {
+    if (pendingCancelSelect) {
+        pendingCancelSelect.value = pendingCancelSelect.getAttribute('data-prev') || 'Pending';
+    }
+    document.getElementById('cancellation-modal').classList.remove('active');
+    pendingCancelSelect = null;
+    pendingCancelOrderId = null;
+}
+
+function confirmCancelModal() {
+    if (!pendingCancelSelect || !pendingCancelOrderId) return;
+    
+    const reasonSelect = document.getElementById('modal-reason-select');
+    let chosenReason = reasonSelect.value;
+    
+    if (chosenReason === '__custom__') {
+        chosenReason = document.getElementById('modal-custom-reason').value.trim();
+        if (!chosenReason) {
+            alert("Please enter a custom explanation for cancelling this order.");
+            return;
+        }
+    }
+    
+    document.getElementById('cancel-reason-' + pendingCancelOrderId).value = chosenReason;
+    document.getElementById('cancellation-modal').classList.remove('active');
+    pendingCancelSelect.form.submit();
 }
 </script>
 {{end}}

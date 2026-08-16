@@ -66,6 +66,8 @@ func (app *Application) RegisterRoutes(mux *http.ServeMux) {
 	// Superadmin specific handlers
 	router.Handle("GET /admin/users", mw.RequireSuperadmin(http.HandlerFunc(app.adminUsersHandler)))
 	router.Handle("POST /admin/users/create", mw.RequireSuperadmin(http.HandlerFunc(app.adminCreateStaffHandler)))
+	router.Handle("POST /admin/cancellation-reasons/add", mw.RequireSuperadmin(http.HandlerFunc(app.adminAddCancellationReasonHandler)))
+	router.Handle("POST /admin/cancellation-reasons/delete", mw.RequireSuperadmin(http.HandlerFunc(app.adminDeleteCancellationReasonHandler)))
 	router.Handle("GET /admin/audit-logs", mw.RequireSuperadmin(http.HandlerFunc(app.adminAuditLogsHandler)))
 	router.Handle("GET /admin/reports", mw.RequireSuperadmin(http.HandlerFunc(app.adminReportsHandler)))
 
