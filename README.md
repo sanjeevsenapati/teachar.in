@@ -1,6 +1,6 @@
 # TEACHAR.in
 
-A modern, high-performance, and responsive web application for **TEACHAR**, built using **100% Pure Go Standard Library** (zero third-party dependencies).
+A modern, high-performance, and responsive web application for **TEACHAR**, built using **Go** and an embedded CGO-free **SQLite** database (`modernc.org/sqlite`).
 
 ---
 
@@ -31,7 +31,15 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
 
 ## 🌟 Overview
 
-**TEACHAR.in** is a digital platform for an artisanal tea, coffee, and gourmet snack house. It demonstrates the power, performance, and completeness of Go's standard library for web development—featuring domain-isolated persistent JSON storage, cryptographic authentication, role-based access control, an interactive customer shopping cart, multi-channel payment gateway, real-time order tracking, live staff order search, printable GST tax invoices, customer rating & review system, store inventory & capital asset register, operating expenditure log, financial year tax audit reports, developer API Key authentication system, TLS/SSL HTTPS engine, IP rate limiting, and a comprehensive superadmin executive dashboard.
+**TEACHAR.in** is a modern artisanal beverage and gastronomy platform logically separated into two distinct, high-performance web applications powered by a single embedded **SQLite** database (`data/teachar.db` with WAL mode):
+
+1. **🍵 Public Customer Web App** (`https://teachar.in:8080` / `https://localhost:8080`):
+   - Fast, elegant customer storefront: Artisan Menu (`/menu`), About (`/about`), Membership (`/membership`), Customer Auth (`/login`, `/register`), 2-Column Checkout Drawer, Multi-Channel Payment Gateway, Live Order Tracking (`/orders`), and Customer Reviews.
+   - Admin routes are completely unexposed and blocked (returning HTTP 404).
+
+2. **🔐 Private Staff & Admin Portal** (`https://admin.teachar.in:8081` / `https://localhost:8081`):
+   - Dedicated workplace for Counter Staff, Cafe Admins, and SuperAdmins.
+   - Live Order Queue & Staff claim tagging, Menu Management, Staff Speed & SLA Compliance Analytics, Store Inventory & Asset Register, Operating Expenditure Log, Financial Year Tax Audit Statements, User/Staff Management, Promo Coupons, System Audit Trails, API Keys, and Store Settings.
 
 ---
 
@@ -58,7 +66,7 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
 ### 🔒 Security, TLS/SSL & API Key System
 
 #### 🔑 API Key Authentication (`/admin/api-keys`)
-- **Key Generation & SHA-256 Hashing**: Issue cryptographically secure secret tokens (`tch_live_<32 hex bytes>`). Secret keys are displayed **ONCE** upon generation, with SHA-256 hashes stored in domain persistence (`data/api_keys.json`).
+- **Key Generation & SHA-256 Hashing**: Issue cryptographically secure secret tokens (`tch_live_<32 hex bytes>`). Secret keys are displayed **ONCE** upon generation, with SHA-256 hashes stored securely in the SQLite database (`api_keys` table).
 - **Standard Auth Headers**: Authenticate REST requests via `X-API-Key: tch_live_...` or `Authorization: Bearer tch_live_...`.
 - **Superadmin API Portal**: Issue, inspect, and revoke API keys for external POS terminals, partner platforms, or mobile clients.
 
@@ -123,7 +131,7 @@ For testing all roles and user flows:
 
 ## ⚡ High-Performance Architecture
 
-The application uses a **Multi-File Domain-Isolated Architecture** (`MultiFileRepository`) engineered for high-concurrency (100+ concurrent user logins & order creations) using **100% native Go standard library packages**:
+The application uses an **Embedded SQLite Architecture** (`SQLiteRepository`) with Write-Ahead Logging (WAL mode) engineered for high concurrency, fast query performance, and ACID transactional integrity using Go's `database/sql` interface and `modernc.org/sqlite`:
 
 ```text
 HTTP Request
@@ -134,18 +142,17 @@ Handlers Layer (Web Pages, Auth, Client Portal, Staff Order Search, Admin Portal
      ↓
 Services Layer (MenuService, AuthService, OrderService, AuditService, ReportService, InventoryService, SecurityService, CouponService)
      ↓
-Multi-File Repository Layer (MultiFileRepository with Fine-Grained RWMutexes & O(1) Memory Maps)
+SQLite Repository Layer (SQLiteRepository with Prepared Statements & Transaction Management)
      ↓
-Domain Storage Files (data/users.json, data/sessions.json, data/orders.json, data/menu.json, data/inventory.json, data/expenses.json, data/api_keys.json, data/audit_logs.json)
+Embedded SQLite Database (data/teachar.db with WAL mode & foreign key constraints)
 ```
 
-### High-Concurrency Features:
-- **Domain-Isolated JSON Files**: Isolated storage for `users.json`, `sessions.json`, `orders.json`, `menu.json`, `inventory.json`, `expenses.json`, `api_keys.json`, and `audit_logs.json`.
-- **Fine-Grained Domain Mutexes**: Independent RWMutex locks (`usersMu`, `sessionsMu`, `ordersMu`, `menuMu`, `inventoryMu`, `expensesMu`, `apiKeysMu`, `auditLogsMu`).
-- **Fast O(1) In-Memory Indexing**: Hash maps (`usersByEmail`, `usersByID`, `sessionsByToken`, `ordersByID`, `menuItemsByID`, `apiKeysByHash`) for instant sub-millisecond lookups.
-- **Atomic ID Generation**: Uses `sync/atomic` (`atomic.Int64`) for lock-free sequence ID increments.
-- **Crash-Resistant Atomic Writes**: Atomic write-to-temp and rename (`os.WriteFile` -> `.tmp` -> `os.Rename`).
-- **100% Native Standard Library**: Built strictly with standard Go packages (`crypto/rand`, `crypto/sha256`, `crypto/x509`, `crypto/rsa`, `sync`, `sync/atomic`, `os`, `encoding/json`, `net/http`).
+### High-Concurrency & Reliability Features:
+- **Embedded SQLite Engine**: Persistent storage via `data/teachar.db` with Write-Ahead Logging (`journal_mode=WAL`) for concurrent reads and writes.
+- **ACID Transaction Support**: Atomic transaction boundaries for multi-table updates (e.g., order creation alongside coupon validation and inventory tracking).
+- **Indexed Relational Schema**: SQL tables (`users`, `sessions`, `orders`, `menu_items`, `inventory`, `expenses`, `api_keys`, `audit_logs`, `coupons`) with B-tree indexes for fast sub-millisecond lookups.
+- **Auto-Migrating Schema**: Automatic DDL table creation and schema migration on server startup.
+- **Hardened Security & Prepared Statements**: Complete protection against SQL injection vulnerabilities using parameterized queries.
 
 ---
 
@@ -166,14 +173,13 @@ teachar.in/
 │   ├── security.go
 │   └── store.go
 │
-├── repository/             # Data access layer (Interfaces, MultiFileRepository & JSONRepository)
+├── repository/             # SQLite Persistent Storage Layer (ACID & WAL mode)
+│   ├── sqlite_repository.go
+│   ├── sqlite_repository_test.go
 │   ├── menu_repository.go
 │   ├── inventory_repository.go
-│   ├── security_repository.go
-│   ├── multi_file_repository.go
-│   ├── multi_file_repository_test.go
-│   ├── json_repository.go
-│   └── json_repository_test.go
+│   ├── membership_repository.go
+│   └── security_repository.go
 │
 ├── services/               # Business logic layer
 │   ├── menu_service.go
@@ -228,16 +234,9 @@ teachar.in/
 │   ├── style.css           # CSS design system, horizontal card grids & print receipt styles
 │   ├── app.js              # Client JS cart, payment selector & OTP modal
 │   └── images/             # Food & beverage assets
-│
-└── data/                   # Domain-Isolated Persistent Data Directory
-    ├── users.json          # Users & Staff accounts
-    ├── sessions.json       # User sessions
-    ├── orders.json         # Customer orders & cancellation reasons
-    ├── menu.json           # Menu items
-    ├── inventory.json      # Raw materials & capital asset inventory
-    ├── expenses.json       # Operating expenditure vouchers
-    ├── api_keys.json       # SHA-256 hashed API authentication keys
-    └── audit_logs.json     # System audit trail logs
+└── data/                   # Embedded Database & Security Assets
+    ├── teachar.db          # Embedded SQLite Database (Tables, Indexes, WAL Mode)
+    └── certs/              # SSL/TLS Certificates
 ```
 
 ---
