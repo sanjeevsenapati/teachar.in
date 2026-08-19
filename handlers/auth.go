@@ -16,10 +16,19 @@ import (
 func (app *Application) loginPageHandler(w http.ResponseWriter, r *http.Request) {
 	redirect := r.URL.Query().Get("redirect")
 	data := models.PageData{
-		"Title":    "Sign In",
+		"Title":    "Customer Sign In",
 		"Redirect": redirect,
 	}
 	app.render(w, r, http.StatusOK, "login.html", data)
+}
+
+func (app *Application) adminLoginPageHandler(w http.ResponseWriter, r *http.Request) {
+	redirect := r.URL.Query().Get("redirect")
+	data := models.PageData{
+		"Title":    "Staff & Admin Sign In",
+		"Redirect": redirect,
+	}
+	app.render(w, r, http.StatusOK, "admin_login.html", data)
 }
 
 func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,16 +40,35 @@ func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Reques
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	redirect := r.FormValue("redirect")
+	isStaffPortal := r.FormValue("is_staff_portal") == "true"
 
 	user, err := app.AuthService.AuthenticateUser(r.Context(), email, password)
 	if err != nil {
+		templateName := "login.html"
+		title := "Customer Sign In"
+		if isStaffPortal {
+			templateName = "admin_login.html"
+			title = "Staff & Admin Sign In"
+		}
 		data := models.PageData{
-			"Title":    "Sign In",
+			"Title":    title,
 			"Error":    "Invalid email or password. Please try again.",
 			"Email":    email,
 			"Redirect": redirect,
 		}
-		app.render(w, r, http.StatusUnauthorized, "login.html", data)
+		app.render(w, r, http.StatusUnauthorized, templateName, data)
+		return
+	}
+
+	// If customer tries to log into staff portal or vice versa, enforce role appropriateness
+	if isStaffPortal && user.Role != "staff" && user.Role != "admin" && user.Role != "superadmin" {
+		data := models.PageData{
+			"Title":    "Staff & Admin Sign In",
+			"Error":    "Access denied. Only authorized staff and administrators may sign in here.",
+			"Email":    email,
+			"Redirect": redirect,
+		}
+		app.render(w, r, http.StatusForbidden, "admin_login.html", data)
 		return
 	}
 
@@ -63,12 +91,16 @@ func (app *Application) loginSubmitHandler(w http.ResponseWriter, r *http.Reques
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	if user.Role == "admin" || user.Role == "superadmin" || user.Role == "staff" {
+	if isStaffPortal || user.Role == "admin" || user.Role == "superadmin" || user.Role == "staff" {
+		if redirect != "" && redirect != "/login" {
+			http.Redirect(w, r, redirect, http.StatusSeeOther)
+			return
+		}
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		return
 	}
 
-	if redirect != "" {
+	if redirect != "" && redirect != "/login" {
 		http.Redirect(w, r, redirect, http.StatusSeeOther)
 		return
 	}

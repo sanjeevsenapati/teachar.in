@@ -1,5 +1,5 @@
 {
-  "next_menu_item_id": 16,
+  "next_menu_item_id": 17,
   "menu_items": [
     {
       "id": 1,
@@ -134,6 +134,15 @@
       "category": "Cold Drinks",
       "price": 65,
       "image": "/static/images/tender-coconut-malai.jpg",
+      "available": true
+    },
+    {
+      "id": 16,
+      "name": "ok",
+      "description": "hh",
+      "category": "Tea",
+      "price": 11,
+      "image": "/static/images/masala-tea.jpg",
       "available": true
     }
   ]

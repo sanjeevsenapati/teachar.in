@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 
 	"teachar.in/models"
@@ -11,10 +12,12 @@ import (
 
 func TestMembershipService(t *testing.T) {
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed initializing repository: %v", err)
 	}
+	defer repo.Close()
 
 	memSvc := services.NewMembershipService(repo)
 	ctx := context.Background()

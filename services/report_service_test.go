@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 
 	"teachar.in/models"
@@ -11,10 +12,12 @@ import (
 
 func TestReportService(t *testing.T) {
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed initializing repo: %v", err)
 	}
+	defer repo.Close()
 
 	reportSvc := services.NewReportService(repo, repo, repo)
 	ctx := context.Background()
@@ -56,7 +59,7 @@ func TestReportService(t *testing.T) {
 		Period:            "today",
 		PaymentMethod:     "UPI",
 		FulfillmentMethod: "Dine-in",
-		OrderStatus:       "Pending",
+		OrderStatus:       "Completed",
 	}
 
 	filteredReport, err := reportSvc.GenerateFilteredFinancialReport(ctx, filter)

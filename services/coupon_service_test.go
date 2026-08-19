@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -12,10 +13,12 @@ import (
 
 func TestCouponService(t *testing.T) {
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed initializing repository: %v", err)
 	}
+	defer repo.Close()
 
 	couponSvc := services.NewCouponService(repo)
 	ctx := context.Background()

@@ -1,5 +1,5 @@
 {
-  "next_audit_log_id": 380,
+  "next_audit_log_id": 403,
   "audit_logs": [
     {
       "id": 1,
@@ -3790,6 +3790,236 @@
       "action": "USER_LOGIN",
       "details": "User logged in successfully.",
       "ip_address": "127.0.0.1:64591"
+    },
+    {
+      "id": 380,
+      "timestamp": "2026-08-17T12:32:53.995125+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64965"
+    },
+    {
+      "id": 381,
+      "timestamp": "2026-08-17T12:33:40.577605+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64965"
+    },
+    {
+      "id": 382,
+      "timestamp": "2026-08-17T12:34:58.148988+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:64965"
+    },
+    {
+      "id": 383,
+      "timestamp": "2026-08-17T12:36:35.247443+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #47 (Dine-in, Total: ₹75.60)",
+      "ip_address": "127.0.0.1:64965"
+    },
+    {
+      "id": 384,
+      "timestamp": "2026-08-17T13:36:19.598863+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 385,
+      "timestamp": "2026-08-17T13:36:33.81823+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #48 (Dine-in, Total: ₹37.80)",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 386,
+      "timestamp": "2026-08-17T13:36:49.520415+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 387,
+      "timestamp": "2026-08-17T13:37:02.688119+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #48 status to 'Preparing' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 388,
+      "timestamp": "2026-08-17T13:37:12.674814+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 389,
+      "timestamp": "2026-08-17T13:37:28.167161+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 390,
+      "timestamp": "2026-08-17T13:37:33.905938+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "ORDER_STATUS_UPDATED",
+      "details": "Updated Order #48 status to 'Completed' (Handled by: Counter Staff)",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 391,
+      "timestamp": "2026-08-17T13:37:48.548056+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 392,
+      "timestamp": "2026-08-17T13:38:32.391675+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 393,
+      "timestamp": "2026-08-17T13:38:52.070556+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:65200"
+    },
+    {
+      "id": 394,
+      "timestamp": "2026-08-18T01:48:21.303815+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:49344"
+    },
+    {
+      "id": 395,
+      "timestamp": "2026-08-18T01:51:54.554255+05:30",
+      "actor_id": 4,
+      "actor_name": "Counter Staff",
+      "actor_role": "staff",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:49344"
+    },
+    {
+      "id": 396,
+      "timestamp": "2026-08-18T01:58:18.542007+05:30",
+      "actor_id": 0,
+      "actor_name": "Anonymous / System",
+      "actor_role": "guest",
+      "action": "ORDER_CREATED",
+      "details": "Placed Order #49 (Dine-in, Total: ₹84.00)",
+      "ip_address": "[::1]:49460"
+    },
+    {
+      "id": 397,
+      "timestamp": "2026-08-18T01:58:41.077009+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:49460"
+    },
+    {
+      "id": 398,
+      "timestamp": "2026-08-18T02:06:20.917299+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "[::1]:51446"
+    },
+    {
+      "id": 399,
+      "timestamp": "2026-08-18T22:38:00.178178+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:50847"
+    },
+    {
+      "id": 400,
+      "timestamp": "2026-08-19T23:03:40.896487+05:30",
+      "actor_id": 2,
+      "actor_name": "TEACHAR Admin",
+      "actor_role": "admin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:52529"
+    },
+    {
+      "id": 401,
+      "timestamp": "2026-08-19T23:28:04.08145+05:30",
+      "actor_id": 3,
+      "actor_name": "Aadvika Senapati",
+      "actor_role": "client",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:52645"
+    },
+    {
+      "id": 402,
+      "timestamp": "2026-08-20T00:23:06.735838+05:30",
+      "actor_id": 1,
+      "actor_name": "Super Admin",
+      "actor_role": "superadmin",
+      "action": "USER_LOGIN",
+      "details": "User logged in successfully.",
+      "ip_address": "127.0.0.1:54157"
     }
   ]
 }

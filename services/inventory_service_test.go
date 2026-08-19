@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -12,10 +13,12 @@ import (
 
 func TestInventoryService(t *testing.T) {
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed initializing repo: %v", err)
 	}
+	defer repo.Close()
 
 	invSvc := services.NewInventoryService(repo, repo)
 	ctx := context.Background()

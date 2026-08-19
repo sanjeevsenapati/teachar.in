@@ -12,6 +12,10 @@ type Config struct {
 	AppName                string `json:"app_name"`
 	Host                   string `json:"host"`
 	Port                   string `json:"port"`
+	PublicHost             string `json:"public_host"`
+	PublicPort             string `json:"public_port"`
+	AdminHost              string `json:"admin_host"`
+	AdminPort              string `json:"admin_port"`
 	Env                    string `json:"env"`
 	EnableTLS              bool   `json:"enable_tls"`
 	SSLCertFile            string `json:"ssl_cert_file"`
@@ -20,6 +24,7 @@ type Config struct {
 	EnableRateLimit        bool   `json:"enable_rate_limit"`
 	RateLimitRequests      int    `json:"rate_limit_requests"`
 	RateLimitWindowSeconds int    `json:"rate_limit_window_seconds"`
+	DBPath                 string `json:"db_path"`
 	LogDir                 string `json:"log_dir"`
 	LogFile                string `json:"log_file"`
 }
@@ -66,6 +71,34 @@ func LoadConfig(configPath string) (*Config, error) {
 	}
 	if cfg.Port == "" {
 		cfg.Port = "8080"
+	}
+
+	if envPublicHost := os.Getenv("PUBLIC_HOST"); envPublicHost != "" {
+		cfg.PublicHost = envPublicHost
+	}
+	if cfg.PublicHost == "" {
+		cfg.PublicHost = cfg.Host
+	}
+
+	if envPublicPort := os.Getenv("PUBLIC_PORT"); envPublicPort != "" {
+		cfg.PublicPort = envPublicPort
+	}
+	if cfg.PublicPort == "" {
+		cfg.PublicPort = cfg.Port
+	}
+
+	if envAdminHost := os.Getenv("ADMIN_HOST"); envAdminHost != "" {
+		cfg.AdminHost = envAdminHost
+	}
+	if cfg.AdminHost == "" {
+		cfg.AdminHost = cfg.Host
+	}
+
+	if envAdminPort := os.Getenv("ADMIN_PORT"); envAdminPort != "" {
+		cfg.AdminPort = envAdminPort
+	}
+	if cfg.AdminPort == "" {
+		cfg.AdminPort = "8081"
 	}
 
 	if envEnv := os.Getenv("APP_ENV"); envEnv != "" {
@@ -120,6 +153,13 @@ func LoadConfig(configPath string) (*Config, error) {
 	}
 	if cfg.RateLimitWindowSeconds <= 0 {
 		cfg.RateLimitWindowSeconds = 60
+	}
+
+	if envDBPath := os.Getenv("DB_PATH"); envDBPath != "" {
+		cfg.DBPath = envDBPath
+	}
+	if cfg.DBPath == "" {
+		cfg.DBPath = filepath.Join("data", "teachar.db")
 	}
 
 	if envLogDir := os.Getenv("LOG_DIR"); envLogDir != "" {

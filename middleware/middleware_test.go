@@ -16,14 +16,18 @@ import (
 func setupTestMiddleware(t *testing.T) *middleware.Manager {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	tempDir := t.TempDir()
-	dbPath := filepath.Join(tempDir, "test_db.json")
-	repo, err := repository.NewJSONRepository(dbPath)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed to create repo: %v", err)
 	}
+	t.Cleanup(func() {
+		_ = repo.Close()
+	})
 
 	authService := services.NewAuthService(repo)
-	return middleware.NewManager(logger, authService)
+	securityService := services.NewSecurityService(repo)
+	return middleware.NewManager(logger, authService, securityService)
 }
 
 func TestMiddlewareChainAndSecurity(t *testing.T) {

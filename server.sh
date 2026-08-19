@@ -6,6 +6,8 @@
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BINARY_NAME="teachar-server"
 BINARY_PATH="${APP_DIR}/${BINARY_NAME}"
+PUBLIC_PORT=8080
+ADMIN_PORT=8081
 PORT=8080
 LOG_DIR="${APP_DIR}/logs"
 LOG_FILE="${LOG_DIR}/app.log"
@@ -14,7 +16,10 @@ mkdir -p "${LOG_DIR}"
 
 get_pid() {
     local pid
-    pid=$(lsof -t -i :${PORT} -sTCP:LISTEN 2>/dev/null)
+    pid=$(lsof -t -i :${PUBLIC_PORT} -sTCP:LISTEN 2>/dev/null)
+    if [ -z "${pid}" ]; then
+        pid=$(lsof -t -i :${ADMIN_PORT} -sTCP:LISTEN 2>/dev/null)
+    fi
     if [ -z "${pid}" ]; then
         pid=$(pgrep -f "${BINARY_NAME}" | head -n 1)
     fi
@@ -36,21 +41,21 @@ start_server() {
     local pid
     pid=$(get_pid)
     if [ -n "${pid}" ]; then
-        echo "⚠️  TEACHAR server is already running (PID: ${pid}) on port ${PORT}."
+        echo "⚠️  TEACHAR server is already running (PID: ${pid})."
         return 0
     fi
 
     build_app
 
-    echo "🚀 Starting TEACHAR SSL server daemon on https://teachar.in:${PORT}..."
+    echo "🚀 Starting TEACHAR Public App (:8080) & Private Admin Portal (:8081)..."
     nohup "${BINARY_PATH}" > "${LOG_FILE}" 2>&1 &
     sleep 2
 
     pid=$(get_pid)
     if [ -n "${pid}" ]; then
-        echo "✅ TEACHAR server started successfully (PID: ${pid})."
-        echo "🌐 Primary URL: https://teachar.in:${PORT}"
-        echo "🌐 Local URL:   https://localhost:${PORT}"
+        echo "✅ TEACHAR dual-application server started successfully (PID: ${pid})."
+        echo "🍵 Public Customer App:        https://localhost:${PUBLIC_PORT} (https://teachar.in:${PUBLIC_PORT})"
+        echo "🔐 Private Staff/Admin Portal: https://localhost:${ADMIN_PORT} (https://admin.teachar.in:${ADMIN_PORT})"
         echo "📜 Logs: tail -f ${LOG_FILE}"
     else
         echo "❌ Failed to start server! Check logs in ${LOG_FILE}."
@@ -65,13 +70,13 @@ stop_server() {
         return 0
     fi
 
-    echo "🛑 Stopping TEACHAR server (PID: ${pid})..."
+    echo "🛑 Stopping TEACHAR servers (PID: ${pid})..."
     kill "${pid}" 2>/dev/null
 
     local count=0
     while [ ${count} -lt 10 ]; do
         if ! kill -0 "${pid}" 2>/dev/null; then
-            echo "✅ Server stopped cleanly."
+            echo "✅ Servers stopped cleanly."
             return 0
         fi
         sleep 1
@@ -84,7 +89,7 @@ stop_server() {
 }
 
 restart_server() {
-    echo "🔄 Restarting TEACHAR server..."
+    echo "🔄 Restarting TEACHAR dual-application server..."
     stop_server
     sleep 1
     start_server
@@ -94,9 +99,9 @@ status_server() {
     local pid
     pid=$(get_pid)
     if [ -n "${pid}" ]; then
-        echo "🟢 TEACHAR server is RUNNING (PID: ${pid}) on port ${PORT}."
-        echo "🌐 Primary URL: https://teachar.in:${PORT}"
-        echo "🌐 Local URL:   https://localhost:${PORT}"
+        echo "🟢 TEACHAR server is RUNNING (PID: ${pid})."
+        echo "🍵 Public Customer App:        https://localhost:${PUBLIC_PORT} (https://teachar.in:${PUBLIC_PORT})"
+        echo "🔐 Private Staff/Admin Portal: https://localhost:${ADMIN_PORT} (https://admin.teachar.in:${ADMIN_PORT})"
         echo "📜 Log File: ${LOG_FILE}"
     else
         echo "🔴 TEACHAR server is STOPPED."

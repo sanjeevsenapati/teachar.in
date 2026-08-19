@@ -59,12 +59,13 @@ func main() {
 		"log_file", cfg.LogFile,
 	)
 
-	// Initialize the high-performance multi-file domain-isolated repository.
-	dbRepo, err := repository.NewMultiFileRepository("data")
+	// Initialize SQLite database repository with auto-migration from existing data files.
+	dbRepo, err := repository.NewSQLiteRepository(cfg.DBPath, "data")
 	if err != nil {
-		logger.Error("failed to initialize multi-file repository", "error", err)
+		logger.Error("failed to initialize sqlite repository", "error", err, "db_path", cfg.DBPath)
 		os.Exit(1)
 	}
+	defer dbRepo.Close()
 
 	// Initialize services.
 	couponSvc := services.NewCouponService(dbRepo)
@@ -93,59 +94,100 @@ func main() {
 		SettingsRepo:      dbRepo,
 	}
 
-	// Initialize router.
-	mux := http.NewServeMux()
-	app.RegisterRoutes(mux)
+	// Initialize Routers: Public Customer Storefront & Private Staff/Admin Portal
+	publicMux := http.NewServeMux()
+	app.RegisterPublicRoutes(publicMux)
 
-	srv := &http.Server{
-		Addr:              fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-		Handler:           mux,
+	adminMux := http.NewServeMux()
+	app.RegisterAdminRoutes(adminMux)
+
+	// Public Customer Web Server (Default :8080)
+	publicSrv := &http.Server{
+		Addr:              fmt.Sprintf("%s:%s", cfg.PublicHost, cfg.PublicPort),
+		Handler:           publicMux,
 		IdleTimeout:       120 * time.Second,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 
-	// Graceful shutdown goroutine.
+	// Private Staff, Admin & Superadmin Portal Web Server (Default :8081)
+	adminSrv := &http.Server{
+		Addr:              fmt.Sprintf("%s:%s", cfg.AdminHost, cfg.AdminPort),
+		Handler:           adminMux,
+		IdleTimeout:       120 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+	}
+
+	// Graceful shutdown goroutine for both servers.
 	go func() {
 		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 		s := <-quit
-		logger.Info("received signal, shutting down server...", "signal", s.String())
+		logger.Info("received signal, shutting down servers...", "signal", s.String())
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
-		if err := srv.Shutdown(ctx); err != nil {
-			logger.Error("server shutdown failed", "error", err)
+		if err := publicSrv.Shutdown(ctx); err != nil {
+			logger.Error("public server shutdown failed", "error", err)
+		}
+		if err := adminSrv.Shutdown(ctx); err != nil {
+			logger.Error("admin server shutdown failed", "error", err)
 		}
 
-		logger.Info("server gracefully stopped")
+		logger.Info("all servers gracefully stopped")
 	}()
 
 	if cfg.EnableTLS {
 		if err := services.GenerateSelfSignedCert(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil {
 			logger.Warn("failed generating TLS certificate", "error", err)
 		}
-		logger.Info("starting HTTPS TLS server for teachar.in",
+
+		// Start Admin Server in background
+		go func() {
+			logger.Info("starting Private Staff & Admin HTTPS portal",
+				"domain_url", fmt.Sprintf("https://admin.teachar.in:%s", cfg.AdminPort),
+				"localhost_url", fmt.Sprintf("https://localhost:%s", cfg.AdminPort),
+				"cert", cfg.SSLCertFile,
+				"key", cfg.SSLKeyFile,
+			)
+			if err := adminSrv.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile); err != nil && err != http.ErrServerClosed {
+				logger.Error("admin server encountered error", "error", err)
+			}
+		}()
+
+		// Start Public Server in foreground
+		logger.Info("starting Public Customer HTTPS storefront",
 			"domain", "teachar.in",
-			"domain_url", fmt.Sprintf("https://teachar.in:%s", cfg.Port),
-			"localhost_url", fmt.Sprintf("https://localhost:%s", cfg.Port),
+			"domain_url", fmt.Sprintf("https://teachar.in:%s", cfg.PublicPort),
+			"localhost_url", fmt.Sprintf("https://localhost:%s", cfg.PublicPort),
 			"cert", cfg.SSLCertFile,
 			"key", cfg.SSLKeyFile,
 			"log_file", cfg.LogFile,
 		)
-		err = srv.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile)
+		err = publicSrv.ListenAndServeTLS(cfg.SSLCertFile, cfg.SSLKeyFile)
 	} else {
-		logger.Info("starting HTTP server",
-			"address", fmt.Sprintf("http://%s:%s", cfg.Host, cfg.Port),
+		// Start Admin Server in background
+		go func() {
+			logger.Info("starting Private Staff & Admin HTTP portal",
+				"address", fmt.Sprintf("http://%s:%s", cfg.AdminHost, cfg.AdminPort),
+			)
+			if err := adminSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				logger.Error("admin server encountered error", "error", err)
+			}
+		}()
+
+		// Start Public Server in foreground
+		logger.Info("starting Public Customer HTTP storefront",
+			"address", fmt.Sprintf("http://%s:%s", cfg.PublicHost, cfg.PublicPort),
 			"log_file", cfg.LogFile,
 			"env", cfg.Env,
 		)
-		err = srv.ListenAndServe()
+		err = publicSrv.ListenAndServe()
 	}
 
 	if err != nil && err != http.ErrServerClosed {
-		logger.Error("server encountered error", "error", err)
+		logger.Error("public server encountered error", "error", err)
 		os.Exit(1)
 	}
 }

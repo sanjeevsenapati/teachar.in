@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"teachar.in/middleware"
+	"teachar.in/services"
 )
 
 // healthCheckHandler provides a simple health check endpoint.
@@ -115,3 +116,85 @@ func (app *Application) apiGetMyCouponsHandler(w http.ResponseWriter, r *http.Re
 	}
 	app.writeJSON(w, r, http.StatusOK, coupons, nil)
 }
+
+// apiAuthStatusHandler returns current user session status
+func (app *Application) apiAuthStatusHandler(w http.ResponseWriter, r *http.Request) {
+	user := middleware.GetUserFromContext(r)
+	if user == nil {
+		app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+			"authenticated": false,
+		}, nil)
+		return
+	}
+
+	app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+		"authenticated": true,
+		"user": map[string]interface{}{
+			"id":            user.ID,
+			"name":          user.Name,
+			"email":         user.Email,
+			"mobile_number": user.MobileNumber,
+			"address":       user.Address,
+			"role":          user.Role,
+		},
+	}, nil)
+}
+
+// apiLoginModalHandler handles JSON-based async login from the checkout modal
+func (app *Application) apiLoginModalHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		app.writeJSON(w, r, http.StatusBadRequest, map[string]interface{}{
+			"success": false,
+			"error":   "Invalid login request format.",
+		}, nil)
+		return
+	}
+
+	user, err := app.AuthService.AuthenticateUser(r.Context(), input.Email, input.Password)
+	if err != nil {
+		app.writeJSON(w, r, http.StatusUnauthorized, map[string]interface{}{
+			"success": false,
+			"error":   "Invalid email or password.",
+		}, nil)
+		return
+	}
+
+	session, err := app.AuthService.CreateSession(r.Context(), user.ID)
+	if err != nil {
+		app.writeJSON(w, r, http.StatusInternalServerError, map[string]interface{}{
+			"success": false,
+			"error":   "Failed to create session.",
+		}, nil)
+		return
+	}
+
+	if app.AuditService != nil {
+		app.AuditService.LogEvent(r.Context(), user, "USER_LOGIN_MODAL", "Customer logged in via Checkout Modal.", services.GetClientIP(r))
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    session.ID,
+		Path:     "/",
+		Expires:  session.ExpiresAt,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"user": map[string]interface{}{
+			"id":            user.ID,
+			"name":          user.Name,
+			"email":         user.Email,
+			"mobile_number": user.MobileNumber,
+			"address":       user.Address,
+		},
+	}, nil)
+}
+

@@ -86,10 +86,17 @@ func (s *SecurityService) ValidateAPIKey(ctx context.Context, rawKey string) (*m
 
 	hashBytes := sha256.Sum256([]byte(rawKey))
 	keyHash := hex.EncodeToString(hashBytes[:])
-
 	key, err := s.securityRepo.GetAPIKeyByHash(ctx, keyHash)
 	if err != nil {
 		return nil, err
+	}
+
+	if !key.IsActive {
+		return nil, errors.New("API key has been revoked")
+	}
+
+	if key.ExpiresAt != nil && time.Now().After(*key.ExpiresAt) {
+		return nil, errors.New("API key has expired")
 	}
 
 	_ = s.securityRepo.UpdateAPIKeyLastUsed(ctx, key.ID)

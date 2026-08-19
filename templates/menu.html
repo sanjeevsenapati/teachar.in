@@ -17,6 +17,9 @@
                 <button class="tab-btn active" data-category="all">
                     <i class="fa-solid fa-border-all"></i> All Items
                 </button>
+                <button class="tab-btn" data-category="favorites" id="favorites-tab-btn" style="color: #ef4444; border-color: #fecaca;">
+                    <i class="fa-solid fa-heart"></i> My Favorites (<span id="favorites-count-badge">0</span>)
+                </button>
                 <button class="tab-btn" data-category="Tea">
                     <i class="fa-solid fa-mug-hot"></i> Tea
                 </button>
@@ -54,9 +57,14 @@
             <div class="menu-card" data-item-id="{{.ID}}" data-category="{{.Category}}" data-name="{{.Name}}" data-price="{{.Price}}">
                 <div class="menu-card-image">
                     <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" onerror="this.src='/static/images/hero-banner.jpg'">
-                    <span class="availability-badge {{if .Available}}available{{else}}unavailable{{end}}">
-                        {{if .Available}}<i class="fa-solid fa-circle-check"></i> Available{{else}}Sold Out{{end}}
-                    </span>
+                    <div class="card-top-badges">
+                        <span class="availability-badge {{if .Available}}available{{else}}unavailable{{end}}">
+                            {{if .Available}}<i class="fa-solid fa-circle-check"></i> Available{{else}}Sold Out{{end}}
+                        </span>
+                        <button type="button" class="fav-btn" data-id="{{.ID}}" data-name="{{.Name}}" data-price="{{.Price}}" data-image="{{.Image}}" onclick="toggleFavorite({id: {{.ID}}, name: '{{.Name}}', price: {{.Price}}, image: '{{.Image}}'}, this)" title="Add to Favorites" aria-label="Add to favorites">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="menu-card-content">
                     <div class="menu-card-header">

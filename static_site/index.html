@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEACHAR.in - Artisanal Chai & Coffee | Opening Soon</title>
+    <meta name="description" content="TEACHAR.in - Handcrafted Indian Chai, Espresso Brews, and Golden Savories. Launching soon in Bangalore!">
+    
+    <!-- Open Graph / Meta -->
+    <meta property="og:title" content="TEACHAR.in - Artisanal Chai & Coffee | Opening Soon">
+    <meta property="og:description" content="Experience Real Chai, Freshly Brewed Everyday. Join our VIP early launch list for free inaugural brews.">
+    <meta property="og:image" content="images/hero-banner.jpg">
+    <meta property="og:type" content="website">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="cs-header">
+        <div class="container cs-header-content">
+            <a href="#" class="cs-logo">
+                <span class="cs-logo-icon"><i class="fa-solid fa-mug-hot"></i></span>
+                <span>TEACHAR<span class="cs-logo-dot">.in</span></span>
+            </a>
+
+            <div class="cs-badge-status">
+                <span class="cs-pulse-dot"></span>
+                <span>Grand Opening Soon</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Hero Section -->
+    <section class="cs-hero">
+        <div class="container cs-hero-grid">
+            
+            <!-- Left Info & CTA -->
+            <div>
+                <div class="cs-pill">
+                    <i class="fa-solid fa-fire-flame-curved"></i> Freshly Brewed Artisanal Experiences
+                </div>
+
+                <h1 class="cs-headline">
+                    Experience Real Chai, <br>
+                    <span class="cs-highlight">Freshly Brewed</span> <br>
+                    Everyday.
+                </h1>
+
+                <p class="cs-subtitle">
+                    We are putting the final artisanal touches on our signature spiced kulhad chai, hand-poured South Indian filter coffee, and golden crispy savories.
+                </p>
+
+                <!-- Live Countdown Timer -->
+                <div class="cs-countdown-box">
+                    <div class="cs-countdown-label">
+                        <i class="fa-solid fa-clock"></i> Official Launch Countdown
+                    </div>
+                    <div class="cs-timer-grid">
+                        <div class="cs-timer-unit">
+                            <div class="cs-timer-num" id="days">14</div>
+                            <div class="cs-timer-text">Days</div>
+                        </div>
+                        <div class="cs-timer-unit">
+                            <div class="cs-timer-num" id="hours">08</div>
+                            <div class="cs-timer-text">Hours</div>
+                        </div>
+                        <div class="cs-timer-unit">
+                            <div class="cs-timer-num" id="minutes">45</div>
+                            <div class="cs-timer-text">Mins</div>
+                        </div>
+                        <div class="cs-timer-unit">
+                            <div class="cs-timer-num" id="seconds">30</div>
+                            <div class="cs-timer-text">Secs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIP Early Access Subscription -->
+                <div class="cs-form-wrap">
+                    <form class="cs-email-form" onsubmit="handleSubscribe(event)">
+                        <input type="email" id="subscriber-email" class="cs-email-input" placeholder="Enter your email for 25% launch voucher..." required>
+                        <button type="submit" class="cs-submit-btn">
+                            <span>Get VIP Invite</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    <div id="sub-msg" class="cs-form-msg success">
+                        <i class="fa-solid fa-circle-check"></i> You're on the list! We've saved your 25% opening discount voucher.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Hero Visual -->
+            <div class="cs-visual-card">
+                <img src="images/hero-banner.jpg" alt="Artisanal Kulhad Masala Chai" class="cs-main-img">
+
+                <!-- Floating Top-Right Badge -->
+                <div class="cs-floating-badge">
+                    <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+                    <strong style="color: #1c130e; font-weight: 800;">Signature Brew</strong>
+                    <span style="color: #6b7280;">Kulhad Chai</span>
+                </div>
+
+                <!-- Floating Bottom-Left Card -->
+                <div class="cs-floating-badge-bottom">
+                    <div style="color: #f59e0b; font-size: 0.9rem; display: flex; gap: 0.15rem;">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <strong style="color: #1c130e; font-size: 0.95rem;">100% Authentic Whole Spices</strong>
+                    <span style="color: #6b7280; font-size: 0.82rem;">Crushed cardamom, ginger, cinnamon & clove</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Artisanal Sneak Peek Menu Preview -->
+    <section class="cs-preview-section">
+        <div class="container">
+            <div class="cs-section-header">
+                <span class="cs-section-tag">Coming Soon Menu Highlights</span>
+                <h2 class="cs-section-title">What We Are Crafting</h2>
+                <p style="color: #6b7280; font-size: 1.05rem;">A sneak preview of our signature recipes crafted for real chai lovers</p>
+            </div>
+
+            <div class="cs-preview-grid">
+                
+                <!-- Item 1: Kulhad Masala Tea -->
+                <div class="cs-item-card">
+                    <img src="images/masala-tea.jpg" alt="Kulhad Masala Tea" class="cs-item-img">
+                    <div class="cs-item-content">
+                        <div class="cs-item-header">
+                            <h3 class="cs-item-title">Kulhad Masala Chai</h3>
+                            <span class="cs-item-price">₹30</span>
+                        </div>
+                        <p class="cs-item-desc">A classic brew infused with fresh cardamom, cinnamon, clove, and aromatic whole spices.</p>
+                    </div>
+                </div>
+
+                <!-- Item 2: Fresh Lemon Tea -->
+                <div class="cs-item-card">
+                    <img src="images/lemon-tea.jpg" alt="Fresh Lemon Tea" class="cs-item-img">
+                    <div class="cs-item-content">
+                        <div class="cs-item-header">
+                            <h3 class="cs-item-title">Fresh Lemon Tea</h3>
+                            <span class="cs-item-price">₹30</span>
+                        </div>
+                        <p class="cs-item-desc">Light, tangy, and invigorating black tea infused with fresh citrus lemon and mint leaves.</p>
+                    </div>
+                </div>
+
+                <!-- Item 3: Cold Coffee -->
+                <div class="cs-item-card">
+                    <img src="images/cold-coffee.jpg" alt="Creamy Cold Coffee" class="cs-item-img">
+                    <div class="cs-item-content">
+                        <div class="cs-item-header">
+                            <h3 class="cs-item-title">Artisanal Cold Coffee</h3>
+                            <span class="cs-item-price">₹80</span>
+                        </div>
+                        <p class="cs-item-desc">Rich double espresso blended with velvety chilled milk, vanilla syrup, and dark chocolate drizzle.</p>
+                    </div>
+                </div>
+
+                <!-- Item 4: Red Tea Combo -->
+                <div class="cs-item-card">
+                    <img src="images/red-tea-combo.jpg" alt="Red Tea Combo" class="cs-item-img">
+                    <div class="cs-item-content">
+                        <div class="cs-item-header">
+                            <h3 class="cs-item-title">Red Tea & Popped Rice</h3>
+                            <span class="cs-item-price">₹50</span>
+                        </div>
+                        <p class="cs-item-desc">Crimson herbal antioxidant tea served with crunchy spiced popped rice topping.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Pillars Section -->
+    <section class="cs-features-section">
+        <div class="container">
+            <div class="cs-features-grid">
+                
+                <div class="cs-feat-card">
+                    <div class="cs-feat-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <h4 class="cs-feat-title">100% Pure & Organic</h4>
+                    <p class="cs-feat-text">Single-origin tea leaves and authentic farm-fresh spices with zero artificial preservatives.</p>
+                </div>
+
+                <div class="cs-feat-card">
+                    <div class="cs-feat-icon"><i class="fa-solid fa-fire"></i></div>
+                    <h4 class="cs-feat-title">Freshly Brewed Hourly</h4>
+                    <p class="cs-feat-text">Small-batch brewing guarantees every cup is served steaming hot at peak aroma.</p>
+                </div>
+
+                <div class="cs-feat-card">
+                    <div class="cs-feat-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <h4 class="cs-feat-title">Express Table & Delivery</h4>
+                    <p class="cs-feat-text">Integrated table QR pay, quick takeaway pickup, and door delivery dispatch.</p>
+                </div>
+
+                <div class="cs-feat-card">
+                    <div class="cs-feat-icon"><i class="fa-solid fa-crown"></i></div>
+                    <h4 class="cs-feat-title">VIP Membership Pass</h4>
+                    <p class="cs-feat-text">Unlock free daily chai cups and 30% savings on every meal with TEACHAR Club.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="cs-footer">
+        <div class="container">
+            <div class="cs-footer-socials">
+                <a href="#" class="cs-social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="cs-social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="cs-social-link" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="cs-social-link" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+            <p class="cs-footer-text">&copy; 2026 TEACHAR.in. All rights reserved. 42 Chai Galleria, MG Road, Bangalore.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Countdown & Form JS -->
+    <script>
+        // Target launch date: 14 days from now
+        const launchDate = new Date();
+        launchDate.setDate(launchDate.getDate() + 14);
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate.getTime() - now;
+
+            if (distance < 0) return;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('subscriber-email');
+            const msg = document.getElementById('sub-msg');
+            if (emailInput && emailInput.value) {
+                // Save locally in demo storage
+                const list = JSON.parse(localStorage.getItem('teachar_subscribers') || '[]');
+                list.push(emailInput.value);
+                localStorage.setItem('teachar_subscribers', JSON.stringify(list));
+                
+                msg.style.display = 'block';
+                emailInput.value = '';
+                emailInput.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

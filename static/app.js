@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAddToCartButtons();
     initBuyNowButtons();
     initOtpModal();
+    initFavorites();
 });
 
 function initActiveNav() {
@@ -25,10 +26,12 @@ function initActiveNav() {
 }
 
 let cart = JSON.parse(localStorage.getItem('teachar_cart') || '[]');
+let favorites = JSON.parse(localStorage.getItem('teachar_favorites') || '[]');
 let selectedPaymentMethod = 'UPI';
 let selectedOrderType = 'Dine-in';
 let appliedCouponCode = '';
 let discountAmount = 0;
+let pendingOrderAction = null; // Stored callback executed immediately after in-modal login
 
 function saveCart() {
     localStorage.setItem('teachar_cart', JSON.stringify(cart));
@@ -279,6 +282,18 @@ function initCartDrawer() {
             if (cart.length === 0) return;
 
             if (!validateFulfillmentFields()) {
+                return;
+            }
+
+            // Customer must be logged in before placing order
+            if (!window.IS_AUTHENTICATED) {
+                openAuthRequiredModal(async () => {
+                    if (selectedPaymentMethod === 'Card') {
+                        openOtpModal();
+                        return;
+                    }
+                    await executeOrderPlacement(selectedPaymentMethod);
+                });
                 return;
             }
 
@@ -729,6 +744,18 @@ window.handleQuickOrderSubmit = async function(event) {
         }
     }
 
+    // Check if customer is authenticated before placing quick order
+    if (!window.IS_AUTHENTICATED) {
+        openAuthRequiredModal(async () => {
+            await doQuickOrderPlacement(submitBtn, orderType, paymentMethod, tableNumber, phone, address, note);
+        });
+        return;
+    }
+
+    await doQuickOrderPlacement(submitBtn, orderType, paymentMethod, tableNumber, phone, address, note);
+};
+
+async function doQuickOrderPlacement(submitBtn, orderType, paymentMethod, tableNumber, phone, address, note) {
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Placing Order...';
@@ -829,4 +856,244 @@ window.confirmFormAction = function(formElem, title, message, confirmText) {
         formElem.submit();
     });
     return false;
+};
+
+/* ==========================================================================
+   Customer Login Required Modal Management
+   ========================================================================== */
+
+window.openAuthRequiredModal = function(onSuccessCallback) {
+    pendingOrderAction = onSuccessCallback;
+    const modal = document.getElementById('auth-required-modal');
+    const alertEl = document.getElementById('modal-login-alert');
+    if (alertEl) alertEl.style.display = 'none';
+
+    if (modal) modal.classList.add('active');
+    const emailInput = document.getElementById('modal-login-email');
+    if (emailInput) emailInput.focus();
+};
+
+window.closeAuthRequiredModal = function() {
+    const modal = document.getElementById('auth-required-modal');
+    if (modal) modal.classList.remove('active');
+    pendingOrderAction = null;
+};
+
+window.fillModalCustomerDemo = function() {
+    const email = document.getElementById('modal-login-email');
+    const pass = document.getElementById('modal-login-password');
+    if (email) email.value = 'client@teachar.in';
+    if (pass) pass.value = 'Client@123';
+};
+
+window.handleModalLoginSubmit = async function(event) {
+    event.preventDefault();
+    const email = document.getElementById('modal-login-email')?.value.trim();
+    const password = document.getElementById('modal-login-password')?.value;
+    const alertEl = document.getElementById('modal-login-alert');
+    const errorEl = document.getElementById('modal-login-error');
+    const submitBtn = document.getElementById('modal-login-btn');
+
+    if (!email || !password) return;
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Authenticating...';
+    }
+
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success) {
+            window.IS_AUTHENTICATED = true;
+            window.CURRENT_USER = data.user;
+
+            showToast(`Welcome back, ${data.user.name || 'Customer'}!`);
+            
+            const modal = document.getElementById('auth-required-modal');
+            if (modal) modal.classList.remove('active');
+
+            // Re-populate phone and address if present
+            const phoneInput = document.getElementById('checkout-takeaway-mobile') || document.getElementById('checkout-delivery-mobile') || document.getElementById('quick-order-phone');
+            if (phoneInput && data.user.mobile_number && !phoneInput.value) {
+                phoneInput.value = data.user.mobile_number;
+            }
+
+            const addressInput = document.getElementById('checkout-delivery-address') || document.getElementById('quick-order-address');
+            if (addressInput && data.user.address && !addressInput.value) {
+                addressInput.value = data.user.address;
+            }
+
+            // Immediately continue the pending order placement action
+            if (typeof pendingOrderAction === 'function') {
+                const action = pendingOrderAction;
+                pendingOrderAction = null;
+                await action();
+            }
+        } else {
+            if (alertEl && errorEl) {
+                errorEl.textContent = data.error || 'Invalid email or password. Please try again.';
+                alertEl.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        if (alertEl && errorEl) {
+            errorEl.textContent = 'Connection error. Please try again.';
+            alertEl.style.display = 'block';
+        }
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Sign In & Continue Order</span> <i class="fa-solid fa-arrow-right"></i>';
+        }
+    }
+};
+
+/* ==========================================================================
+   Add To Favorite Feature
+   ========================================================================== */
+
+function initFavorites() {
+    updateFavoriteButtonsUI();
+    updateFavoritesBadgeCount();
+}
+
+function updateFavoritesBadgeCount() {
+    const badge = document.getElementById('favorites-count-badge');
+    if (badge) {
+        badge.textContent = favorites.length;
+    }
+}
+
+function isFavorite(id) {
+    const numId = parseInt(id, 10);
+    return favorites.some(item => (item.id === numId || item === numId));
+}
+
+window.toggleFavorite = function(item, btn) {
+    if (!item || !item.id) return;
+    const numId = parseInt(item.id, 10);
+    const existingIndex = favorites.findIndex(f => (typeof f === 'object' ? f.id === numId : f === numId));
+
+    if (existingIndex > -1) {
+        favorites.splice(existingIndex, 1);
+        showToast(`Removed "${item.name}" from favorites`);
+    } else {
+        favorites.push({
+            id: numId,
+            name: item.name,
+            price: item.price,
+            image: item.image
+        });
+        showToast(`❤️ Added "${item.name}" to favorites!`);
+    }
+
+    localStorage.setItem('teachar_favorites', JSON.stringify(favorites));
+    updateFavoriteButtonsUI();
+    updateFavoritesBadgeCount();
+
+    // If favorites tab is active, re-filter view
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab && activeTab.dataset.category === 'favorites') {
+        filterMenu('favorites', getSearchTerm());
+    }
+};
+
+// Global click event listener for .fav-btn ensuring reliable clicks
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fav-btn');
+    if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = parseInt(btn.dataset.id, 10);
+        const name = btn.dataset.name || 'Item';
+        const price = parseFloat(btn.dataset.price) || 0;
+        const image = btn.dataset.image || '';
+        toggleFavorite({ id, name, price, image }, btn);
+    }
+});
+
+function updateFavoriteButtonsUI() {
+    document.querySelectorAll('.fav-btn').forEach(btn => {
+        const id = parseInt(btn.dataset.id, 10);
+        if (isFavorite(id)) {
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            btn.title = 'Remove from Favorites';
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+            btn.title = 'Add to Favorites';
+        }
+    });
+}
+
+// Override filterMenu to support 'favorites' filter
+const originalFilterMenu = window.filterMenu || filterMenu;
+window.filterMenu = function(category, searchTerm) {
+    const categoryBlocks = document.querySelectorAll('.menu-category-block');
+    const cards = document.querySelectorAll('.menu-card');
+    const noResultsEl = document.getElementById('no-search-results');
+
+    let visibleCardsCount = 0;
+
+    cards.forEach(card => {
+        const itemId = parseInt(card.dataset.itemId || card.getAttribute('data-item-id'), 10);
+        const itemCategory = card.dataset.category || card.getAttribute('data-category');
+        const itemName = (card.dataset.name || card.getAttribute('data-name') || '').toLowerCase();
+
+        let matchesCategory = false;
+        if (category === 'all') {
+            matchesCategory = true;
+        } else if (category === 'favorites') {
+            matchesCategory = isFavorite(itemId);
+        } else {
+            matchesCategory = (itemCategory === category);
+        }
+
+        const matchesSearch = (!searchTerm || itemName.includes(searchTerm));
+
+        if (matchesCategory && matchesSearch) {
+            card.classList.remove('hidden');
+            visibleCardsCount++;
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+
+    categoryBlocks.forEach(block => {
+        const visibleCardsInBlock = block.querySelectorAll('.menu-card:not(.hidden)');
+        if (visibleCardsInBlock.length === 0) {
+            block.classList.add('hidden');
+        } else {
+            block.classList.remove('hidden');
+        }
+    });
+
+    if (noResultsEl) {
+        if (visibleCardsCount === 0) {
+            if (category === 'favorites') {
+                noResultsEl.innerHTML = `
+                    <i class="fa-regular fa-heart" style="font-size:2.5rem; color:#ef4444; margin-bottom:0.75rem;"></i>
+                    <h3 style="margin-bottom:0.4rem;">No Favorites Yet</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem;">Click the heart icon on any tea, coffee, or snack to save your favorites here!</p>
+                `;
+            } else {
+                noResultsEl.innerHTML = `
+                    <i class="fa-solid fa-circle-question" style="font-size:2.5rem; color:var(--text-muted); margin-bottom:0.75rem;"></i>
+                    <h3 style="margin-bottom:0.4rem;">No matching items found</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem;">Try adjusting your search or category filter</p>
+                `;
+            }
+            noResultsEl.classList.remove('hidden');
+        } else {
+            noResultsEl.classList.add('hidden');
+        }
+    }
 };

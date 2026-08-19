@@ -286,7 +286,12 @@
             <div class="menu-card" data-item-id="{{.ID}}" data-item-name="{{.Name}}" data-item-price="{{.Price}}">
                 <div class="menu-card-image">
                     <img src="{{.Image}}" alt="{{.Name}}" loading="lazy" onerror="this.src='/static/images/hero-banner.jpg'">
-                    <span class="category-pill">{{.Category}}</span>
+                    <div class="card-top-badges">
+                        <span class="availability-badge available" style="background: rgba(28, 19, 14, 0.88); color: #ffffff;">{{.Category}}</span>
+                        <button type="button" class="fav-btn" data-id="{{.ID}}" data-name="{{.Name}}" data-price="{{.Price}}" data-image="{{.Image}}" onclick="toggleFavorite({id: {{.ID}}, name: '{{.Name}}', price: {{.Price}}, image: '{{.Image}}'}, this)" title="Add to Favorites" aria-label="Add to favorites">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="menu-card-content">
                     <div class="menu-card-header">

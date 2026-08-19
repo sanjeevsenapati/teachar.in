@@ -11,12 +11,13 @@ import (
 
 func TestMenuService(t *testing.T) {
 	tempDir := t.TempDir()
-	dbPath := filepath.Join(tempDir, "test_db.json")
+	dbPath := filepath.Join(tempDir, "test.db")
 
-	repo, err := repository.NewJSONRepository(dbPath)
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed to create repo: %v", err)
 	}
+	defer repo.Close()
 
 	service := services.NewMenuService(repo)
 	ctx := context.Background()

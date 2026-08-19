@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="steam-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded Square Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg-grad)" />
+  
+  <!-- Steam lines -->
+  <path d="M170 160 C 160 120, 190 100, 180 60" stroke="url(#steam-grad)" stroke-width="20" stroke-linecap="round" fill="none" />
+  <path d="M256 150 C 246 110, 276 90, 266 50" stroke="url(#steam-grad)" stroke-width="22" stroke-linecap="round" fill="none" />
+  <path d="M342 160 C 332 120, 362 100, 352 60" stroke="url(#steam-grad)" stroke-width="20" stroke-linecap="round" fill="none" opacity="0.9" />
+  
+  <!-- Tea Mug Body -->
+  <path d="M120 200 H 340 V 320 C 340 375, 295 420, 240 420 H 220 C 165 420, 120 375, 120 320 Z" fill="#ffffff" />
+  <!-- Mug Handle -->
+  <path d="M340 230 H 370 C 405 230, 430 255, 430 290 C 430 325, 405 350, 370 350 H 340" stroke="#ffffff" stroke-width="32" stroke-linecap="round" fill="none" />
+  <!-- Saucer / Base Line -->
+  <rect x="100" y="440" width="280" height="24" rx="12" fill="#ffffff" opacity="0.9" />
+</svg>

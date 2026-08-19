@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -11,10 +12,12 @@ import (
 
 func TestSecurityService(t *testing.T) {
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
 		t.Fatalf("failed initializing repo: %v", err)
 	}
+	defer repo.Close()
 
 	secSvc := services.NewSecurityService(repo)
 	ctx := context.Background()

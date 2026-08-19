@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"testing"
 
 	"teachar.in/config"
@@ -19,10 +20,14 @@ func setupTestApp(t *testing.T) http.Handler {
 	cfg, _ := config.New()
 	
 	tempDir := t.TempDir()
-	repo, err := repository.NewMultiFileRepository(tempDir)
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
 	if err != nil {
-		t.Fatalf("failed to create test repo: %v", err)
+		t.Fatalf("failed to create test sqlite repo: %v", err)
 	}
+	t.Cleanup(func() {
+		_ = repo.Close()
+	})
 
 	couponService := services.NewCouponService(repo)
 	menuService := services.NewMenuService(repo)
@@ -32,6 +37,8 @@ func setupTestApp(t *testing.T) http.Handler {
 	auditService := services.NewAuditService(repo)
 	reportService := services.NewReportService(repo, repo, repo)
 	inventoryService := services.NewInventoryService(repo, repo)
+
+	securityService := services.NewSecurityService(repo)
 
 	app := &handlers.Application{
 		Logger:            logger,
@@ -43,7 +50,9 @@ func setupTestApp(t *testing.T) http.Handler {
 		ReportService:     reportService,
 		CouponService:     couponService,
 		InventoryService:  inventoryService,
+		SecurityService:   securityService,
 		MembershipService: membershipService,
+		SettingsRepo:      repo,
 	}
 
 	mux := http.NewServeMux()
@@ -149,3 +158,77 @@ func TestPageHandlers(t *testing.T) {
 		})
 	}
 }
+
+func TestPublicAndAdminRouteSeparation(t *testing.T) {
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	cfg, _ := config.New()
+
+	tempDir := t.TempDir()
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
+	if err != nil {
+		t.Fatalf("failed creating repo: %v", err)
+	}
+	defer repo.Close()
+
+	couponSvc := services.NewCouponService(repo)
+	menuSvc := services.NewMenuService(repo)
+	authSvc := services.NewAuthService(repo)
+	membershipSvc := services.NewMembershipService(repo)
+	orderSvc := services.NewOrderService(repo, couponSvc, membershipSvc)
+	auditSvc := services.NewAuditService(repo)
+	reportSvc := services.NewReportService(repo, repo, repo)
+	inventorySvc := services.NewInventoryService(repo, repo)
+	secSvc := services.NewSecurityService(repo)
+
+	app := &handlers.Application{
+		Logger:            logger,
+		Config:            cfg,
+		MenuService:       menuSvc,
+		AuthService:       authSvc,
+		OrderService:      orderSvc,
+		AuditService:      auditSvc,
+		ReportService:     reportSvc,
+		CouponService:     couponSvc,
+		InventoryService:  inventorySvc,
+		SecurityService:   secSvc,
+		MembershipService: membershipSvc,
+		SettingsRepo:      repo,
+	}
+
+	publicMux := http.NewServeMux()
+	app.RegisterPublicRoutes(publicMux)
+
+	adminMux := http.NewServeMux()
+	app.RegisterAdminRoutes(adminMux)
+
+	t.Run("PublicApp_HasCustomerRoutes", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/menu", nil)
+		rec := httptest.NewRecorder()
+		publicMux.ServeHTTP(rec, req)
+		if rec.Result().StatusCode != http.StatusOK {
+			t.Errorf("expected public app to serve /menu, got %d", rec.Result().StatusCode)
+		}
+	})
+
+	t.Run("PublicApp_BlocksAdminRoutes", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/admin", nil)
+		rec := httptest.NewRecorder()
+		publicMux.ServeHTTP(rec, req)
+		if rec.Result().StatusCode != http.StatusNotFound {
+			t.Errorf("expected public app to return 404 for /admin, got %d", rec.Result().StatusCode)
+		}
+	})
+
+	t.Run("AdminPortal_ServesAdminRoutes", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/admin", nil)
+		rec := httptest.NewRecorder()
+		adminMux.ServeHTTP(rec, req)
+		// Unauthenticated should redirect to /login or return 303/302
+		status := rec.Result().StatusCode
+		if status != http.StatusSeeOther && status != http.StatusFound && status != http.StatusOK {
+			t.Errorf("expected admin portal to handle /admin, got %d", status)
+		}
+	})
+}
+
