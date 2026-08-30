@@ -57,7 +57,10 @@ A modern, high-performance, and responsive web application for **TEACHAR**, buil
     - **Cash on Delivery (COD)**: Pay at table or on delivery (*Pending COD*).
     - **Tax Calculation**: Automated 5% GST tax breakdown.
 - **Customer Authentication**: Secure sign-up (`/register`), sign-in (`/login`), and sign-out (`/logout`).
-- **Order & Receipt Tracking (`/orders`)**: Monitor order fulfillment status (*Pending*, *Preparing*, *Ready*, *Completed*, *Cancelled*), view Payment Method pills (*UPI*, *Card*, *COD*), Payment Status badges (*Paid*, *Pending COD*), Staff Claim tags, Cancellation reasons, and unique Transaction IDs (`TXN...`).
+- **Order & Receipt Tracking (`/orders`)**:
+  - **Live Real-Time Auto-Polling (`GET /api/orders/status`)**: Automatic background polling synchronizes status changes from the staff portal in real-time without needing a manual browser refresh.
+  - **Visual Order Status Stepper**: High-contrast visual progress timeline (`Pending` ➔ `Preparing` ➔ `Ready` ➔ `Fulfilled` / `Cancelled`) with color-coded step indicators and active status descriptions.
+  - **Complete Order Metadata**: View Payment Method pills (*UPI*, *Card*, *COD*), Payment Status badges (*Paid*, *Pending COD*), Assigned Staff Claim tags, Cancellation reasons, and unique Transaction IDs (`TXN...`).
 - **Interactive Rating & Review System**: Once an order reaches *Completed* status, customers can submit a **1 to 5 Star Rating** and written review directly on their order receipt.
 - **User Profile (`/account`)**: Manage personal account information and view purchase statistics.
 

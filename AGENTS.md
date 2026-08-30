@@ -83,7 +83,10 @@ When performing changes on this project:
 - Live order tracking with estimated preparation time & staff claim tagging.
 - Automated self-signed TLS cert engine & sliding window rate limiter.
 - API Key system with SHA-256 hashing (`/admin/api-keys`).
-- Real-time order status tracking stepper & auto-polling API endpoint (`/api/orders/status`).
+- **Real-Time Customer Order Tracking**:
+  - Live status progress stepper (`Pending` ➔ `Preparing` ➔ `Ready` ➔ `Fulfilled` / `Cancelled`).
+  - Client-side auto-polling JSON API endpoint (`GET /api/orders/status`).
+  - Backend staff/admin auto-assignment logic upon status updates for unassigned orders (`UpdateOrderStatusWithStaff`).
 
 ### 🟡 Active Development / In Progress
 - Static site design & interactive enhancements (`static_site/index.html`, `static_site/style.css`).
