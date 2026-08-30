@@ -147,7 +147,7 @@
                                     {{end}}
                                 </td>
                                 <td style="padding:1rem 1.25rem; text-align:center; vertical-align:middle;">
-                                    <span class="order-status-badge status-{{.Status}}" style="font-weight:800; padding:0.35rem 0.85rem; border-radius:var(--border-radius-full); font-size:0.8rem; white-space:nowrap; display:inline-block;">
+                                    <span id="order-status-badge-{{.ID}}" class="order-status-badge status-{{.Status}}" style="font-weight:800; padding:0.35rem 0.85rem; border-radius:var(--border-radius-full); font-size:0.8rem; white-space:nowrap; display:inline-block;">
                                         {{if eq .Status "Pending"}}<i class="fa-solid fa-clock me-1"></i>Pending
                                         {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire text-warning me-1"></i>Preparing
                                         {{else if eq .Status "Ready"}}<i class="fa-solid fa-bell text-warning me-1"></i>Ready
@@ -169,6 +169,63 @@
                             <tr id="details-row-{{.ID}}" style="display: {{if ne .Status "Pending"}}none{{else}}table-row{{end}}; background:#ffffff;">
                                 <td colspan="6" style="padding:0;">
                                     <div class="order-details-body" id="details-body-{{.ID}}">
+
+                                        <!-- Live Order Visual Status Stepper -->
+                                        <div id="order-stepper-container-{{.ID}}" style="background:#fdfbf7; border:1px solid #fef3c7; border-radius:10px; padding:1rem; margin-bottom:1.25rem;">
+                                            <div style="font-size:0.78rem; font-weight:800; color:#b45309; text-transform:uppercase; margin-bottom:0.75rem; display:flex; align-items:center; justify-content:space-between;">
+                                                <span><i class="fa-solid fa-signal me-1"></i> Live Fulfillment Status Tracker</span>
+                                                <span id="order-stepper-text-{{.ID}}" style="font-size:0.82rem; font-weight:900; color:var(--primary);">
+                                                    {{if eq .Status "Pending"}}<i class="fa-solid fa-clock me-1"></i> Order Received by Kitchen
+                                                    {{else if eq .Status "Preparing"}}<i class="fa-solid fa-fire me-1 text-warning"></i> Chef is Preparing Your Items
+                                                    {{else if eq .Status "Ready"}}<i class="fa-solid fa-bell me-1 text-warning"></i> Order Ready for Pickup/Serving!
+                                                    {{else if eq .Status "Completed"}}<i class="fa-solid fa-circle-check me-1 text-success"></i> Order Fulfilled & Served
+                                                    {{else}}<i class="fa-solid fa-ban me-1 text-danger"></i> Order Cancelled{{end}}
+                                                </span>
+                                            </div>
+
+                                            <div class="order-stepper-track" style="display:flex; justify-content:space-between; align-items:center; position:relative;">
+                                                <!-- Step 1: Pending -->
+                                                <div class="stepper-step step-pending" style="flex:1; text-align:center; position:relative; z-index:2;">
+                                                    <div class="step-circle" id="step-circle-pending-{{.ID}}" style="width:32px; height:32px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; background:{{if or (eq .Status "Pending") (eq .Status "Preparing") (eq .Status "Ready") (eq .Status "Completed")}}#d97706{{else}}#cbd5e1{{end}}; color:#ffffff;">
+                                                        <i class="fa-solid fa-clock"></i>
+                                                    </div>
+                                                    <span style="font-size:0.72rem; font-weight:800; display:block; margin-top:0.35rem; color:#475569;">Received</span>
+                                                </div>
+
+                                                <!-- Connector 1 -->
+                                                <div style="flex:1; height:3px; background:{{if or (eq .Status "Preparing") (eq .Status "Ready") (eq .Status "Completed")}}#d97706{{else}}#e2e8f0{{end}}; margin-top:-1.2rem;" id="step-line-1-{{.ID}}"></div>
+
+                                                <!-- Step 2: Preparing -->
+                                                <div class="stepper-step step-preparing" style="flex:1; text-align:center; position:relative; z-index:2;">
+                                                    <div class="step-circle" id="step-circle-preparing-{{.ID}}" style="width:32px; height:32px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; background:{{if or (eq .Status "Preparing") (eq .Status "Ready") (eq .Status "Completed")}}#d97706{{else}}#cbd5e1{{end}}; color:#ffffff;">
+                                                        <i class="fa-solid fa-fire"></i>
+                                                    </div>
+                                                    <span style="font-size:0.72rem; font-weight:800; display:block; margin-top:0.35rem; color:#475569;">Preparing</span>
+                                                </div>
+
+                                                <!-- Connector 2 -->
+                                                <div style="flex:1; height:3px; background:{{if or (eq .Status "Ready") (eq .Status "Completed")}}#d97706{{else}}#e2e8f0{{end}}; margin-top:-1.2rem;" id="step-line-2-{{.ID}}"></div>
+
+                                                <!-- Step 3: Ready -->
+                                                <div class="stepper-step step-ready" style="flex:1; text-align:center; position:relative; z-index:2;">
+                                                    <div class="step-circle" id="step-circle-ready-{{.ID}}" style="width:32px; height:32px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; background:{{if or (eq .Status "Ready") (eq .Status "Completed")}}#d97706{{else}}#cbd5e1{{end}}; color:#ffffff;">
+                                                        <i class="fa-solid fa-bell"></i>
+                                                    </div>
+                                                    <span style="font-size:0.72rem; font-weight:800; display:block; margin-top:0.35rem; color:#475569;">Ready</span>
+                                                </div>
+
+                                                <!-- Connector 3 -->
+                                                <div style="flex:1; height:3px; background:{{if eq .Status "Completed"}}#059669{{else}}#e2e8f0{{end}}; margin-top:-1.2rem;" id="step-line-3-{{.ID}}"></div>
+
+                                                <!-- Step 4: Completed -->
+                                                <div class="stepper-step step-completed" style="flex:1; text-align:center; position:relative; z-index:2;">
+                                                    <div class="step-circle" id="step-circle-completed-{{.ID}}" style="width:32px; height:32px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:800; background:{{if eq .Status "Completed"}}#059669{{else}}#cbd5e1{{end}}; color:#ffffff;">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </div>
+                                                    <span style="font-size:0.72rem; font-weight:800; display:block; margin-top:0.35rem; color:#475569;">Fulfilled</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
                                         <!-- Customer & Fulfillment Metadata Bar -->
                                         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; padding:0.85rem 1rem; background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; margin-bottom:1.25rem; font-size:0.85rem;">
@@ -405,5 +462,65 @@ function openCustomerInvoice(id, txn, date, cust, phone, type, payMethod, paySta
 function closeCustomerInvoice() {
     document.getElementById('customer-invoice-modal').classList.remove('active');
 }
+
+// Live Real-Time Order Status Auto-Polling
+async function pollOrderStatusUpdates() {
+    try {
+        const res = await fetch('/api/orders/status');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.success || !Array.isArray(data.orders)) return;
+
+        data.orders.forEach(order => {
+            const badge = document.getElementById('order-status-badge-' + order.id);
+            if (badge) {
+                badge.className = `order-status-badge status-${order.status}`;
+                let badgeHTML = '';
+                if (order.status === 'Pending') badgeHTML = '<i class="fa-solid fa-clock me-1"></i>Pending';
+                else if (order.status === 'Preparing') badgeHTML = '<i class="fa-solid fa-fire text-warning me-1"></i>Preparing';
+                else if (order.status === 'Ready') badgeHTML = '<i class="fa-solid fa-bell text-warning me-1"></i>Ready';
+                else if (order.status === 'Completed') badgeHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i>Fulfilled';
+                else badgeHTML = '<i class="fa-solid fa-circle-xmark text-danger me-1"></i>Cancelled';
+                badge.innerHTML = badgeHTML;
+            }
+
+            const stepperText = document.getElementById('order-stepper-text-' + order.id);
+            if (stepperText) {
+                let textHTML = '';
+                if (order.status === 'Pending') textHTML = '<i class="fa-solid fa-clock me-1"></i> Order Received by Kitchen';
+                else if (order.status === 'Preparing') textHTML = '<i class="fa-solid fa-fire me-1 text-warning"></i> Chef is Preparing Your Items';
+                else if (order.status === 'Ready') textHTML = '<i class="fa-solid fa-bell me-1 text-warning"></i> Order Ready for Pickup/Serving!';
+                else if (order.status === 'Completed') textHTML = '<i class="fa-solid fa-circle-check me-1 text-success"></i> Order Fulfilled & Served';
+                else textHTML = '<i class="fa-solid fa-ban me-1 text-danger"></i> Order Cancelled';
+                stepperText.innerHTML = textHTML;
+            }
+
+            // Update Stepper Colors
+            const cPending = document.getElementById('step-circle-pending-' + order.id);
+            const cPreparing = document.getElementById('step-circle-preparing-' + order.id);
+            const cReady = document.getElementById('step-circle-ready-' + order.id);
+            const cCompleted = document.getElementById('step-circle-completed-' + order.id);
+
+            const l1 = document.getElementById('step-line-1-' + order.id);
+            const l2 = document.getElementById('step-line-2-' + order.id);
+            const l3 = document.getElementById('step-line-3-' + order.id);
+
+            const st = order.status;
+            if (cPending) cPending.style.background = ['Pending', 'Preparing', 'Ready', 'Completed'].includes(st) ? '#d97706' : '#cbd5e1';
+            if (cPreparing) cPreparing.style.background = ['Preparing', 'Ready', 'Completed'].includes(st) ? '#d97706' : '#cbd5e1';
+            if (cReady) cReady.style.background = ['Ready', 'Completed'].includes(st) ? '#d97706' : '#cbd5e1';
+            if (cCompleted) cCompleted.style.background = (st === 'Completed') ? '#059669' : '#cbd5e1';
+
+            if (l1) l1.style.background = ['Preparing', 'Ready', 'Completed'].includes(st) ? '#d97706' : '#e2e8f0';
+            if (l2) l2.style.background = ['Ready', 'Completed'].includes(st) ? '#d97706' : '#e2e8f0';
+            if (l3) l3.style.background = (st === 'Completed') ? '#059669' : '#e2e8f0';
+        });
+    } catch (err) {
+        console.error('Order status poll error:', err);
+    }
+}
+
+// Poll every 5 seconds
+setInterval(pollOrderStatusUpdates, 5000);
 </script>
 {{end}}

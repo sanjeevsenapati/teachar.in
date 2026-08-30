@@ -174,16 +174,8 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 		return err
 	}
 
-	// Superadmin / Admin restriction:
-	// Superadmin/Admin must not claim an order directly. They must assign it to a staff member.
-	if staff != nil && (staff.Role == "superadmin" || staff.Role == "admin") {
-		if order.AssignedStaffID == 0 && status != "Cancelled" {
-			return errors.New("As Superadmin/Admin, you cannot claim or fulfill orders directly. Please assign this order to a staff member to fulfill it.")
-		}
-	}
-
 	// Duplicate protection logic:
-	// If order is already claimed by another staff member, block staff update unless actor is admin/superadmin
+	// If order is already claimed by another staff member, block non-admin staff update
 	if staff != nil && order.AssignedStaffID != 0 && order.AssignedStaffID != staff.ID {
 		if staff.Role != "superadmin" && staff.Role != "admin" {
 			return fmt.Errorf("Order #%d is already claimed and being handled by %s", id, order.AssignedStaffName)
@@ -193,8 +185,8 @@ func (s *OrderService) UpdateOrderStatusWithStaff(ctx context.Context, id int64,
 	staffID := order.AssignedStaffID
 	staffName := order.AssignedStaffName
 
-	// Staff members (role == "staff") can claim unassigned orders directly
-	if staff != nil && staff.Role == "staff" {
+	// Auto-assign staff or admin if order is currently unassigned
+	if staff != nil {
 		if staffID == 0 || staffID == staff.ID {
 			staffID = staff.ID
 			staffName = staff.Name

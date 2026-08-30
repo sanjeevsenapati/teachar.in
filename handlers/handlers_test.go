@@ -11,6 +11,7 @@ import (
 
 	"teachar.in/config"
 	"teachar.in/handlers"
+	"teachar.in/models"
 	"teachar.in/repository"
 	"teachar.in/services"
 )
@@ -231,4 +232,92 @@ func TestPublicAndAdminRouteSeparation(t *testing.T) {
 		}
 	})
 }
+
+func TestOrderStatusUpdateAndPolling(t *testing.T) {
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	cfg, _ := config.New()
+
+	tempDir := t.TempDir()
+	dbPath := filepath.Join(tempDir, "test.db")
+	repo, err := repository.NewSQLiteRepository(dbPath, tempDir)
+	if err != nil {
+		t.Fatalf("failed creating repo: %v", err)
+	}
+	defer repo.Close()
+
+	couponSvc := services.NewCouponService(repo)
+	menuSvc := services.NewMenuService(repo)
+	authSvc := services.NewAuthService(repo)
+	membershipSvc := services.NewMembershipService(repo)
+	orderSvc := services.NewOrderService(repo, couponSvc, membershipSvc)
+	auditSvc := services.NewAuditService(repo)
+	reportSvc := services.NewReportService(repo, repo, repo)
+	inventorySvc := services.NewInventoryService(repo, repo)
+	secSvc := services.NewSecurityService(repo)
+
+	app := &handlers.Application{
+		Logger:            logger,
+		Config:            cfg,
+		MenuService:       menuSvc,
+		AuthService:       authSvc,
+		OrderService:      orderSvc,
+		AuditService:      auditSvc,
+		ReportService:     reportSvc,
+		CouponService:     couponSvc,
+		InventoryService:  inventorySvc,
+		SecurityService:   secSvc,
+		MembershipService: membershipSvc,
+		SettingsRepo:      repo,
+	}
+
+	mux := http.NewServeMux()
+	app.RegisterRoutes(mux)
+
+	// Create user
+	user, err := authSvc.RegisterUser(t.Context(), "Test User", "testuser@teachar.in", "9876543210", "Password123!")
+	if err != nil {
+		t.Fatalf("failed creating user: %v", err)
+	}
+
+	// Create order
+	ord, err := orderSvc.CreateOrder(t.Context(), models.Order{
+		UserID:        user.ID,
+		CustomerName:  user.Name,
+		CustomerPhone: user.MobileNumber,
+		OrderType:     "Dine-in",
+		TableNumber:   "4",
+		PaymentMethod: "UPI",
+		PaymentStatus: "Paid",
+		Items: []models.OrderItem{
+			{MenuItemID: 1, ItemName: "Masala Chai", Quantity: 2, Price: 30.0},
+		},
+	})
+	if err != nil {
+		t.Fatalf("failed creating order: %v", err)
+	}
+
+	if ord.Status != "Pending" {
+		t.Fatalf("expected initial order status Pending, got %s", ord.Status)
+	}
+
+	// Admin actor updates order status to "Preparing"
+	adminUser := &models.User{ID: 100, Name: "Admin User", Role: "admin"}
+	err = orderSvc.UpdateOrderStatusWithStaff(t.Context(), ord.ID, "Preparing", "", adminUser)
+	if err != nil {
+		t.Fatalf("UpdateOrderStatusWithStaff failed: %v", err)
+	}
+
+	// Verify status updated in DB
+	updatedOrd, err := repo.GetOrderByID(t.Context(), ord.ID)
+	if err != nil {
+		t.Fatalf("failed getting order: %v", err)
+	}
+	if updatedOrd.Status != "Preparing" {
+		t.Errorf("expected status Preparing, got %s", updatedOrd.Status)
+	}
+	if updatedOrd.AssignedStaffID != adminUser.ID {
+		t.Errorf("expected assigned staff ID %d, got %d", adminUser.ID, updatedOrd.AssignedStaffID)
+	}
+}
+
 

@@ -164,3 +164,24 @@ func (app *Application) apiSubmitOrderReviewHandler(w http.ResponseWriter, r *ht
 
 	http.Redirect(w, r, "/orders", http.StatusSeeOther)
 }
+
+func (app *Application) apiGetClientOrdersStatusHandler(w http.ResponseWriter, r *http.Request) {
+	user := middleware.GetUserFromContext(r)
+	if user == nil {
+		app.writeJSON(w, r, http.StatusUnauthorized, map[string]interface{}{
+			"error": "Authentication required",
+		}, nil)
+		return
+	}
+
+	orders, err := app.OrderService.GetClientOrders(r.Context(), user.ID)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	app.writeJSON(w, r, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"orders":  orders,
+	}, nil)
+}
